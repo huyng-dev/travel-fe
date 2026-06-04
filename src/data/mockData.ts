@@ -135,7 +135,7 @@ export const mockCruises: Cruise[] = [
     description: "Ambassador Cruise là một trong những siêu du thuyền lớn nhất trên Vịnh Hạ Long, nổi tiếng với thiết kế hiện đại sang trọng bậc nhất, boong tắm nắng 2 tầng khổng lồ rộng tới 600m² và bể sục Jacuzzi ngoài trời cao cấp. Nơi đây mang đến dịch vụ ẩm thực tôm hùm chuẩn 5 sao cùng các chương trình giải trí ca nhạc sống chất lượng cao mỗi tối.",
     imageGallery: [
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200", // Sunny beach/water view
-      "https://images.unsplash.com/photo-1599640842228-85f17f1087b2?q=80&w=1200", // Cruise deck view
+      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1200", // Cruise deck view
       "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1200", // Limestone islets
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200"  // Dining with views
     ],
