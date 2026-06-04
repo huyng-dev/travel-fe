@@ -620,7 +620,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
             {[
-              { id: "overview", label: "Giới thiệu chung" },
+              { id: "overview", label: "Giới thiệu" },
               { id: "cabins", label: "Hạng phòng" },
               { id: "activities", label: "Dịch vụ" },
               { id: "regulations", label: "Quy định" },

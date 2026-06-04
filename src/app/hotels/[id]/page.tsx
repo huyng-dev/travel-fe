@@ -102,7 +102,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["overview", "rooms", "regulations", "reviews"];
+      const sections = ["overview", "rooms", "regulations", "map", "reviews"];
       let currentSection = sections[0];
       const scrollPosition = window.scrollY + 200;
 
@@ -275,6 +275,20 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   const allReviews = useMemo(() => {
     return [...addedReviews, ...matchedReviews];
   }, [addedReviews, matchedReviews]);
+
+  // Google Maps Embed URLs mapping for each hotel
+  const hotelMapUrl = useMemo(() => {
+    switch (hotel?.id) {
+      case "hotel-vinpearl-halong":
+        return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.7533887413697!2d107.0381665759557!3d20.96245869005391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a59af5b8ab55f%3A0xe54e60bc21df0c94!2zVmlucGVhcmwgUmVzb3J0ICYgU3BhIEjhuqEgTG9uZw!5e0!3m2!1svi!2svn!4v1716912345680!5m2!1svi!2svn";
+      case "hotel-yoko-onsen-quang-hanh":
+        return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3726.6575306560946!2d107.19972237595462!3d20.92615699128038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a43b2f5619379%3A0x6bba84ec6be5f356!2zWW9rbyBPbnNlbiBRdWFuZyBIYW5o!5e0!3m2!1svi!2svn!4v1716912345681!5m2!1svi!2svn";
+      case "hotel-premier-village-halong":
+        return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.7675127599026!2d107.02636257595568!3d20.961889490073284!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a5840d5555555%3A0x286377e8a9cf733e!2sPremier%20Village%20Ha%20Long%20Bay%20Resort!5e0!3m2!1svi!2svn!4v1716912345682!5m2!1svi!2svn";
+      default:
+        return "";
+    }
+  }, [hotel?.id]);
 
   if (!hotel) {
     return (
@@ -457,6 +471,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               { id: "overview", label: "Giới thiệu" },
               { id: "rooms", label: "Hạng phòng" },
               { id: "regulations", label: "Quy định" },
+              { id: "map", label: "Bản đồ" },
               { id: "reviews", label: "Đánh giá" },
             ].map((tab) => {
               const isActive = activeSection === tab.id;
@@ -691,6 +706,46 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* MAP & ADDRESS SECTION */}
+      <section id="map" className="py-16 bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          <div className="border-b border-slate-100 pb-6">
+            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">BẢN ĐỒ & VỊ TRÍ</h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            {/* Text info */}
+            <div className="space-y-4 text-sm text-slate-700 font-sans">
+              <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">Thông tin địa điểm</h3>
+              <ul className="list-disc pl-5 space-y-3 font-light text-slate-650 leading-relaxed md:text-base">
+                <li className="pl-1">
+                  Khách sạn <span className="font-semibold text-slate-800">{hotel.name}</span> tọa lạc tại địa chỉ: <span className="font-semibold text-slate-800">{hotel.location}</span>.
+                </li>
+                <li className="pl-1">
+                  Vị trí đắc địa, thuận tiện di chuyển, kết nối thuận lợi tới các điểm vui chơi, nhà hàng và khu mua sắm trung tâm tại Quảng Ninh.
+                </li>
+              </ul>
+            </div>
+
+            {/* Map iframe */}
+            {hotelMapUrl && (
+              <div className="w-full h-[350px] lg:h-[400px] border border-slate-200 rounded-sm overflow-hidden shadow-sm">
+                <iframe
+                  src={hotelMapUrl}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`Bản đồ vị trí ${hotel.name}`}
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>
