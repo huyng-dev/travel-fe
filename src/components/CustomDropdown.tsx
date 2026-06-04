@@ -17,6 +17,7 @@ interface CustomDropdownProps {
   icon: React.ReactNode;
   placeholder?: string;
   placement?: "top" | "bottom";
+  variant?: "light" | "dark";
 }
 
 export default function CustomDropdown({
@@ -27,6 +28,7 @@ export default function CustomDropdown({
   icon,
   placeholder = "Chọn...",
   placement = "bottom",
+  variant = "dark",
 }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,8 @@ export default function CustomDropdown({
 
   const selectedOption = options.find((opt) => opt.value === value) || options[0];
 
+  const isLight = variant === "light";
+
   return (
     <div ref={dropdownRef} className="relative w-full select-none">
       {/* Trigger Button */}
@@ -52,23 +56,31 @@ export default function CustomDropdown({
         className="w-full flex items-center gap-3 cursor-pointer py-1"
       >
         {/* Left Circle Icon */}
-        <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white flex-shrink-0 transition-all duration-300 hover:bg-white/10">
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+          isLight
+            ? "bg-slate-100 border border-slate-200/60 text-accent hover:bg-slate-200/50"
+            : "bg-white/5 border border-white/10 text-white hover:bg-white/10"
+        }`}>
           {icon}
         </div>
 
         {/* Text Area */}
         <div className="flex-1 min-w-0 pr-2">
-          <span className="text-[10px] uppercase tracking-[0.12em] text-white/60 font-semibold block">
+          <span className={`text-[10px] uppercase tracking-[0.12em] font-semibold block ${
+            isLight ? "text-slate-500" : "text-white/60"
+          }`}>
             {label}
           </span>
           <div className="flex items-center justify-between mt-0.5">
-            <span className="text-white text-sm font-semibold truncate">
+            <span className={`text-sm font-semibold truncate ${
+              isLight ? "text-slate-800" : "text-white"
+            }`}>
               {selectedOption ? selectedOption.label : placeholder}
             </span>
             <ChevronDown
-              className={`w-3.5 h-3.5 text-white/60 transition-transform duration-300 flex-shrink-0 ml-1 ${
-                isOpen ? "rotate-180" : ""
-              }`}
+              className={`w-3.5 h-3.5 transition-transform duration-300 flex-shrink-0 ml-1 ${
+                isLight ? "text-slate-400" : "text-white/60"
+              } ${isOpen ? "rotate-180" : ""}`}
             />
           </div>
         </div>

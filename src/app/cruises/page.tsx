@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import { mockCruises } from "@/data/mockData";
-import { ChevronRight, Home, ShieldAlert, SlidersHorizontal, Trash2, Search, X, Star, Ship, MapPin } from "lucide-react";
+import { ChevronRight, Home, ShieldAlert, SlidersHorizontal, Trash2, Search, X, Star, Ship, MapPin, Grid, List } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomDropdown from "@/components/CustomDropdown";
 
@@ -25,7 +25,7 @@ function CruiseListContent() {
   const [bannerName, setBannerName] = useState(nameQuery);
   const [bannerDest, setBannerDest] = useState(destQuery);
 
-  // States của bộ lọc nâng cao
+  // State của bộ lọc nâng cao
   const [appliedDests, setAppliedDests] = useState<string[]>(destQuery ? [destQuery] : []);
   const [appliedStars, setAppliedStars] = useState<number[]>(starsQuery ? [parseInt(starsQuery)] : []);
   const [appliedAmenities, setAppliedAmenities] = useState<string[]>([]);
@@ -37,6 +37,24 @@ function CruiseListContent() {
 
   // State mở Sidebar bộ lọc
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Sync state from query params during rendering (React pattern to avoid useEffect cascading renders)
+  const [prevName, setPrevName] = useState(nameQuery);
+  const [prevDest, setPrevDest] = useState(destQuery);
+  const [prevStars, setPrevStars] = useState(starsQuery);
+
+  if (nameQuery !== prevName || destQuery !== prevDest || starsQuery !== prevStars) {
+    setPrevName(nameQuery);
+    setPrevDest(destQuery);
+    setPrevStars(starsQuery);
+    setBannerName(nameQuery);
+    setBannerDest(destQuery);
+    setAppliedDests(destQuery ? [destQuery] : []);
+    setTempDests(destQuery ? [destQuery] : []);
+    setAppliedStars(starsQuery ? [parseInt(starsQuery)] : []);
+    setTempStars(starsQuery ? [parseInt(starsQuery)] : []);
+  }
 
   useEffect(() => {
     if (isSidebarOpen) {
@@ -52,7 +70,20 @@ function CruiseListContent() {
   // State sắp xếp (Sort)
   const [sortOption, setSortOption] = useState<string>("default");
 
-  // Ô tìm kiếm và bộ lọc tự động khởi tạo theo các tham số URL
+  // Đồng bộ hóa URL khi lọc từ Banner Search hoặc Left Sidebar
+  const updateUrl = (dests: string[], stars: number[]) => {
+    const params = new URLSearchParams();
+    if (bannerName) params.set("name", bannerName);
+    if (dests.length === 1) {
+      params.set("destination", dests[0]);
+    } else if (dests.length > 1 && bannerDest) {
+      params.set("destination", bannerDest);
+    }
+    if (stars.length === 1) {
+      params.set("stars", stars[0].toString());
+    }
+    router.push(`/cruises?${params.toString()}`, { scroll: false });
+  };
 
   // Đồng bộ hóa URL khi lọc từ Banner Search
   const handleBannerSearch = () => {
@@ -68,12 +99,10 @@ function CruiseListContent() {
     setAppliedAmenities([]);
     setTempAmenities([]);
 
-    router.push(`/cruises?${params.toString()}`);
+    router.push(`/cruises?${params.toString()}`, { scroll: false });
   };
 
-
-
-  // Xử lý Checkbox trong Sidebar
+  // Xử lý Checkbox trong Sidebar trượt (Mobile)
   const toggleDest = (dest: string) => {
     setTempDests(prev =>
       prev.includes(dest) ? prev.filter(d => d !== dest) : [...prev, dest]
@@ -92,26 +121,41 @@ function CruiseListContent() {
     );
   };
 
-  // Áp dụng bộ lọc từ Sidebar
+  // Xử lý Checkbox trực tiếp trong Left Sidebar (Desktop)
+  const toggleDestDirect = (dest: string) => {
+    const next = appliedDests.includes(dest)
+      ? appliedDests.filter(d => d !== dest)
+      : [...appliedDests, dest];
+    setAppliedDests(next);
+    setTempDests(next); // Đồng bộ trạng thái temp
+    updateUrl(next, appliedStars);
+  };
+
+  const toggleStarDirect = (star: number) => {
+    const next = appliedStars.includes(star)
+      ? appliedStars.filter(s => s !== star)
+      : [...appliedStars, star];
+    setAppliedStars(next);
+    setTempStars(next);
+    updateUrl(appliedDests, next);
+  };
+
+  const toggleAmenityDirect = (amenity: string) => {
+    const next = appliedAmenities.includes(amenity)
+      ? appliedAmenities.filter(a => a !== amenity)
+      : [...appliedAmenities, amenity];
+    setAppliedAmenities(next);
+    setTempAmenities(next);
+    updateUrl(appliedDests, appliedStars);
+  };
+
+  // Áp dụng bộ lọc từ Sidebar trượt (Mobile)
   const handleApplyFilters = () => {
     setAppliedDests(tempDests);
     setAppliedStars(tempStars);
     setAppliedAmenities(tempAmenities);
     setIsSidebarOpen(false);
-
-    // Đồng bộ lại URL query parameters
-    const params = new URLSearchParams();
-    if (bannerName) params.set("name", bannerName);
-    if (tempDests.length === 1) {
-      params.set("destination", tempDests[0]);
-    } else if (tempDests.length > 1) {
-      // nếu chọn nhiều thì URL giữ điểm đến của banner hoặc không cần
-      if (bannerDest) params.set("destination", bannerDest);
-    }
-    if (tempStars.length === 1) {
-      params.set("stars", tempStars[0].toString());
-    }
-    router.push(`/cruises?${params.toString()}`);
+    updateUrl(tempDests, tempStars);
   };
 
   // Xóa toàn bộ bộ lọc
@@ -125,7 +169,7 @@ function CruiseListContent() {
     setBannerName("");
     setBannerDest("");
     setIsSidebarOpen(false);
-    router.push("/cruises");
+    router.push("/cruises", { scroll: false });
   };
 
   // Đóng sidebar và khôi phục lại giá trị cũ (chưa áp dụng)
@@ -139,16 +183,16 @@ function CruiseListContent() {
   // Tất cả các điểm đến & tiện ích độc nhất của mock dữ liệu để tạo bộ lọc
   const availableDests = ["Vịnh Hạ Long", "Vịnh Lan Hạ", "Đảo Cát Bà"];
   const availableAmenities = [
-    "Hồ bơi vô cực nước mặn",
-    "Sân đỗ trực thăng riêng",
-    "Phòng mô phỏng Golf 3D",
-    "Hầm rượu vang & Cigar",
-    "Dịch vụ quản gia 24/7",
-    "Bể sục Jacuzzi ngoài trời",
-    "Tiệc tối buffet tôm hùm thả ga",
-    "Ban nhạc sống biểu diễn hàng tối",
-    "Triển lãm tranh họa sĩ Phạm Lực",
-    "Hồ bơi bốn mùa trên boong tàu"
+    "Bể bơi vô cực",
+    "Sân trực thăng",
+    "Phòng Golf 3D",
+    "Hầm rượu & Cigar",
+    "Quản gia 24/7",
+    "Bể sục Jacuzzi",
+    "Buffet tôm hùm",
+    "Nhạc sống tối",
+    "Triển lãm tranh",
+    "Bể bơi 4 mùa"
   ];
 
   // Logic lọc du thuyền
@@ -200,7 +244,7 @@ function CruiseListContent() {
   return (
     <div className="w-full">
       {/* 1. COMPACT SEARCH BANNER */}
-      <div className="relative h-[560px] md:h-[600px] w-full flex items-center justify-center bg-slate-900 z-30">
+      <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
           src="https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1920"
           alt="Cruises Banner"
@@ -231,15 +275,15 @@ function CruiseListContent() {
           {/* Banner Search Input Overlay */}
           <form
             onSubmit={(e) => { e.preventDefault(); handleBannerSearch(); }}
-            className="max-w-3xl mx-auto bg-white/10 border border-white/20 backdrop-blur-xl md:rounded-full rounded-2xl p-3 md:pl-8 md:pr-3 md:py-3 shadow-2xl flex flex-col md:flex-row items-center gap-4 md:gap-0 text-left w-full mt-6"
+            className="max-w-3xl mx-auto bg-white border border-slate-100 shadow-xl md:rounded-full rounded-2xl p-3 md:pl-8 md:pr-3 md:py-3 flex flex-col md:flex-row items-center gap-4 md:gap-0 text-left w-full mt-6"
           >
             {/* Tên du thuyền */}
             <div className="w-full md:flex-1 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white flex-shrink-0 transition-all duration-300 hover:bg-white/10">
-                <Ship className="w-4 h-4 text-white" />
+              <div className="w-10 h-10 rounded-full bg-slate-100 text-accent flex items-center justify-center flex-shrink-0 transition-all duration-300 hover:bg-slate-200/60">
+                <Ship className="w-4 h-4 text-accent" />
               </div>
               <div className="flex-1 min-w-0 pr-2">
-                <label className="text-[10px] uppercase tracking-[0.12em] text-white/60 font-semibold block">
+                <label className="text-[10px] uppercase tracking-[0.12em] text-slate-500 font-semibold block">
                   Tên du thuyền
                 </label>
                 <input
@@ -247,13 +291,13 @@ function CruiseListContent() {
                   placeholder="Tìm theo tên du thuyền..."
                   value={bannerName}
                   onChange={(e) => setBannerName(e.target.value)}
-                  className="w-full bg-transparent text-white text-sm font-semibold border-none focus:outline-none placeholder-white/45 mt-0.5 focus:ring-0 p-0"
+                  className="w-full bg-transparent text-slate-800 text-sm font-semibold border-none focus:outline-none placeholder-slate-400 mt-0.5 focus:ring-0 p-0"
                 />
               </div>
             </div>
 
             {/* Vertical Divider (Desktop only) */}
-            <div className="hidden md:block w-[1px] h-8 bg-white/15 mx-6" />
+            <div className="hidden md:block w-[1px] h-8 bg-slate-200/80 mx-6" />
 
             {/* Dropdown: Destination */}
             <div className="w-full md:flex-1 md:mr-8">
@@ -265,8 +309,9 @@ function CruiseListContent() {
                   { value: "", label: "Tất cả điểm đến" },
                   ...availableDests.map(d => ({ value: d, label: d }))
                 ]}
-                icon={<MapPin className="w-4 h-4 text-white" />}
+                icon={<MapPin className="w-4 h-4 text-accent" />}
                 placement="bottom"
+                variant="light"
               />
             </div>
 
@@ -274,7 +319,7 @@ function CruiseListContent() {
             <div className="w-full md:w-auto flex-shrink-0">
               <button
                 type="submit"
-                className="w-full md:w-auto px-8 py-3.5 bg-white hover:bg-accent text-[#001226] font-bold text-xs uppercase tracking-[0.15em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] cursor-pointer"
+                className="w-full md:w-auto px-8 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold text-xs uppercase tracking-[0.1em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02] cursor-pointer border-none"
               >
                 <Search className="w-4 h-4" />
                 Tìm kiếm
@@ -284,14 +329,14 @@ function CruiseListContent() {
         </div>
       </div>
 
-      {/* 2. FILTER BAR */}
-      <div className="border-b border-slate-100 bg-white sticky top-[72px] z-20 shadow-sm py-4">
+      {/* 2. FILTER BAR (Mobile only) */}
+      <div className="border-b border-slate-100 bg-white sticky top-[72px] z-20 shadow-sm py-4 lg:hidden">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4 overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-2.5">
             {/* Hạng sao Filter Button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className={`px-4 py-2 border rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer hidden sm:flex ${
+              className={`px-4 py-2 border rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer flex ${
                 appliedStars.length > 0
                   ? "border-[#001226] bg-slate-50 text-[#001226]"
                   : "border-slate-200 hover:border-slate-800 text-slate-650 hover:bg-slate-50"
@@ -303,7 +348,7 @@ function CruiseListContent() {
             {/* Tiện ích Filter Button */}
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className={`px-4 py-2 border rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer hidden sm:flex ${
+              className={`px-4 py-2 border rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer flex ${
                 appliedAmenities.length > 0
                   ? "border-[#001226] bg-slate-50 text-[#001226]"
                   : "border-slate-200 hover:border-slate-800 text-slate-650 hover:bg-slate-50"
@@ -323,7 +368,7 @@ function CruiseListContent() {
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>Bộ lọc nâng cao</span>
+            <span>Bộ lọc</span>
             {totalActiveFilters > 0 && (
               <span className="w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-bold bg-accent text-[#001226]">
                 {totalActiveFilters}
@@ -333,78 +378,204 @@ function CruiseListContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10 space-y-8 min-h-[50vh]">
-        {/* Results Header (Count & Sort) */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-100">
-          <div className="space-y-1">
-            <h2 className="font-serif text-2xl font-normal text-slate-900 tracking-wide">
-              {nameQuery ? `Kế quả tìm kiếm: "${nameQuery}"` : "Hải trình khám phá"}
-            </h2>
-            <p className="text-xs text-slate-500 font-medium">
-              Tìm thấy <span className="font-bold text-slate-850">{sortedCruises.length}</span> du thuyền phù hợp
-            </p>
-          </div>
+      {/* 3. MAIN PAGE CONTAINER */}
+      <div className="max-w-7xl mx-auto px-6 py-10 min-h-[50vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+          
+          {/* DESKTOP STICKY LEFT SIDEBAR */}
+          <aside className="hidden lg:block lg:col-span-1 sticky top-28 bg-white border border-slate-100 rounded-2xl p-6 shadow-[0_4px_12px_rgba(0,0,0,0.03)] space-y-7">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-slate-850" />
+                <h3 className="font-serif text-sm font-bold text-slate-850 uppercase tracking-wider">Bộ lọc tìm kiếm</h3>
+              </div>
+              {totalActiveFilters > 0 && (
+                <button
+                  onClick={handleClearFilters}
+                  className="text-[10px] uppercase tracking-wider font-bold text-accent hover:text-accent-dark transition-colors cursor-pointer"
+                >
+                  Xóa bộ lọc
+                </button>
+              )}
+            </div>
 
-          {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className="text-xs font-semibold text-slate-500 whitespace-nowrap">Sắp xếp:</span>
-            <select
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-              className="text-xs font-bold focus:outline-none bg-slate-50 border border-slate-200 rounded-full px-4 py-2 cursor-pointer text-slate-700"
-            >
-              <option value="default">Lựa chọn của chúng tôi</option>
-              <option value="price-asc">Giá tăng dần</option>
-              <option value="price-desc">Giá giảm dần</option>
-              <option value="stars-desc">Hạng sao cao nhất</option>
-            </select>
+            {/* 1. Tuyến Điểm */}
+            <div className="space-y-3">
+              <h4 className="font-serif text-xs font-bold text-slate-850 uppercase tracking-wide border-b border-slate-100 pb-2">
+                Tuyến điểm du ngoạn
+              </h4>
+              <div className="space-y-2">
+                {availableDests.map((dest) => {
+                  const isChecked = appliedDests.includes(dest);
+                  return (
+                    <label key={dest} className="flex items-center gap-2.5 text-xs font-semibold text-slate-650 cursor-pointer select-none hover:text-accent transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleDestDirect(dest)}
+                        className="w-4 h-4 rounded border-slate-200 text-[#001226] focus:ring-[#001226] cursor-pointer"
+                      />
+                      <span>{dest}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 2. Hạng sao */}
+            <div className="space-y-3">
+              <h4 className="font-serif text-xs font-bold text-slate-850 uppercase tracking-wide border-b border-slate-100 pb-2">
+                Hạng sao du thuyền
+              </h4>
+              <div className="space-y-2">
+                {[5, 4].map((star) => {
+                  const isChecked = appliedStars.includes(star);
+                  return (
+                    <label key={star} className="flex items-center gap-2.5 text-xs font-semibold text-slate-650 cursor-pointer select-none hover:text-accent transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleStarDirect(star)}
+                        className="w-4 h-4 rounded border-slate-200 text-[#001226] focus:ring-[#001226] cursor-pointer"
+                      />
+                      <div className="flex items-center gap-0.5 text-accent">
+                        {Array.from({ length: star }).map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-accent text-accent" />
+                        ))}
+                        <span className="text-[10px] text-slate-500 font-medium ml-1">
+                          ({star} sao)
+                        </span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. Tiện ích */}
+            <div className="space-y-3">
+              <h4 className="font-serif text-xs font-bold text-slate-850 uppercase tracking-wide border-b border-slate-100 pb-2">
+                Tiện ích nổi bật
+              </h4>
+              <div className="space-y-2">
+                {availableAmenities.map((amenity) => {
+                  const isChecked = appliedAmenities.includes(amenity);
+                  return (
+                    <label key={amenity} className="flex items-center gap-2.5 text-xs font-semibold text-slate-650 cursor-pointer select-none hover:text-accent transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleAmenityDirect(amenity)}
+                        className="w-4 h-4 rounded border-slate-200 text-[#001226] focus:ring-[#001226] cursor-pointer"
+                      />
+                      <span className="leading-tight">{amenity}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          </aside>
+
+          {/* RIGHT PRODUCTS CONTENT */}
+          <div className="lg:col-span-3 space-y-8">
+            {/* Results Header (Count & Sort) */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-100">
+              <div className="space-y-1">
+                <h2 className="font-serif text-2xl font-normal text-slate-900 tracking-wide">
+                  {nameQuery ? `Kết quả tìm kiếm: "${nameQuery}"` : "Hải trình khám phá"}
+                </h2>
+                <p className="text-xs text-slate-500 font-medium">
+                  Tìm thấy <span className="font-bold text-slate-850">{sortedCruises.length}</span> du thuyền phù hợp
+                </p>
+              </div>
+
+              {/* Sort & View Mode Dropdown */}
+              <div className="flex items-center gap-4 self-start sm:self-auto">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-500 whitespace-nowrap">Sắp xếp:</span>
+                  <select
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
+                    className="text-xs font-bold focus:outline-none bg-slate-50 border border-slate-200 rounded-full px-4 py-2 cursor-pointer text-slate-700"
+                  >
+                    <option value="default">Lựa chọn của chúng tôi</option>
+                    <option value="price-asc">Giá tăng dần</option>
+                    <option value="price-desc">Giá giảm dần</option>
+                    <option value="stars-desc">Hạng sao cao nhất</option>
+                  </select>
+                </div>
+
+                {/* View Mode Toggle */}
+                <div className="hidden sm:flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-full shadow-xs">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-1.5 rounded-full transition-all cursor-pointer ${
+                      viewMode === "grid" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-800"
+                    }`}
+                    aria-label="Grid view"
+                  >
+                    <Grid className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-1.5 rounded-full transition-all cursor-pointer ${
+                      viewMode === "list" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-800"
+                    }`}
+                    aria-label="List view"
+                  >
+                    <List className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Cruises Grid/List */}
+            {sortedCruises.length > 0 ? (
+              <div className={viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "flex flex-col gap-6"}>
+                {sortedCruises.map((cruise) => (
+                  <ProductCard
+                    key={cruise.id}
+                    id={cruise.id}
+                    type="cruise"
+                    name={cruise.name}
+                    tagline={cruise.tagline}
+                    image={cruise.imageGallery[0]}
+                    stars={cruise.stars}
+                    price={cruise.priceFrom}
+                    durationDays={cruise.durationDays}
+                    location={cruise.destinations[0]}
+                    amenities={cruise.amenities}
+                    launchYear={cruise.launchYear}
+                    material={cruise.material}
+                    cabinCount={cruise.cabinCount}
+                    variant="detailed"
+                    viewMode={viewMode}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-slate-50 border border-slate-200 rounded-sm p-8 text-center max-w-xl mx-auto space-y-4 shadow-sm py-12">
+                <ShieldAlert className="w-12 h-12 text-accent-dark mx-auto animate-bounce" />
+                <h3 className="font-serif text-lg font-bold text-slate-800">Không tìm thấy du thuyền phù hợp</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Rất tiếc, các tiêu chí lọc của quý khách hiện không trùng khớp với du thuyền nào trong hạm đội của chúng tôi. 
+                  Vui lòng xóa bộ lọc hoặc chọn các tiêu chí khác để tìm kiếm lại.
+                </p>
+                <div className="pt-2">
+                  <button
+                    onClick={handleClearFilters}
+                    className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] font-bold text-xs uppercase tracking-[0.12em] rounded-full transition-all duration-300 inline-block border border-[#001226] hover:border-accent cursor-pointer"
+                  >
+                    Xóa tất cả bộ lọc
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Cruises Grid */}
-        {sortedCruises.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sortedCruises.map((cruise) => (
-              <ProductCard
-                key={cruise.id}
-                id={cruise.id}
-                type="cruise"
-                name={cruise.name}
-                tagline={cruise.tagline}
-                image={cruise.imageGallery[0]}
-                stars={cruise.stars}
-                price={cruise.priceFrom}
-                durationDays={cruise.durationDays}
-                location={cruise.destinations[0]}
-                amenities={cruise.amenities}
-                launchYear={cruise.launchYear}
-                material={cruise.material}
-                cabinCount={cruise.cabinCount}
-                variant="detailed"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="bg-slate-50 border border-slate-200 rounded-sm p-8 text-center max-w-xl mx-auto space-y-4 shadow-sm py-12">
-            <ShieldAlert className="w-12 h-12 text-accent-dark mx-auto animate-bounce" />
-            <h3 className="font-serif text-lg font-bold text-slate-800">Không tìm thấy du thuyền phù hợp</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Rất tiếc, các tiêu chí lọc của quý khách hiện không trùng khớp với du thuyền nào trong hạm đội của chúng tôi. 
-              Vui lòng xóa bộ lọc hoặc chọn các tiêu chí khác để tìm kiếm lại.
-            </p>
-            <div className="pt-2">
-              <button
-                onClick={handleClearFilters}
-                className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] font-bold text-xs uppercase tracking-[0.12em] rounded-full transition-all duration-300 inline-block border border-[#001226] hover:border-accent cursor-pointer"
-              >
-                Xóa tất cả bộ lọc
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* 3. FILTER SIDEBAR (Trượt từ phải sang) */}
+      {/* 4. MOBILE SLIDE-IN FILTER DRAWER */}
       <AnimatePresence>
         {isSidebarOpen && (
           <>
@@ -502,7 +673,7 @@ function CruiseListContent() {
                   <h4 className="font-serif text-sm font-bold text-slate-850 uppercase tracking-wide border-b border-slate-100 pb-2">
                     Tiện ích nổi bật
                   </h4>
-                  <div className="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
+                  <div className="space-y-2.5">
                     {availableAmenities.map((amenity) => {
                       const isChecked = tempAmenities.includes(amenity);
                       return (
@@ -525,7 +696,7 @@ function CruiseListContent() {
               <div className="p-6 border-t border-slate-150 bg-slate-50 flex items-center justify-between gap-4">
                 <button
                   onClick={handleClearFilters}
-                  className="flex items-center gap-1.5 px-4 py-3 border border-slate-300 hover:border-slate-800 text-slate-600 hover:text-slate-900 text-xs uppercase tracking-wider font-bold rounded-full transition-all duration-300 cursor-pointer bg-white"
+                  className="flex items-center gap-1.5 px-4 py-3 border border-slate-300 hover:border-slate-800 text-slate-650 hover:text-slate-900 text-xs uppercase tracking-wider font-bold rounded-full transition-all duration-300 cursor-pointer bg-white"
                 >
                   <Trash2 className="w-4 h-4" />
                   Xóa bộ lọc
@@ -547,11 +718,7 @@ function CruiseListContent() {
 }
 
 function CruiseListContentWithKey() {
-  const searchParams = useSearchParams();
-  const name = searchParams.get("name") || "";
-  const dest = searchParams.get("destination") || "";
-  const stars = searchParams.get("stars") || "";
-  return <CruiseListContent key={`${name}-${dest}-${stars}`} />;
+  return <CruiseListContent />;
 }
 
 export default function CruisesPage() {

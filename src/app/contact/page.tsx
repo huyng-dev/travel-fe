@@ -13,7 +13,7 @@ export default function ContactPage() {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
-  const [subject, setSubject] = useState("");
+  const [subject] = useState("Yêu cầu tư vấn từ khách hàng");
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -36,7 +36,6 @@ export default function ContactPage() {
       setFullName("");
       setPhoneNumber("");
       setEmailAddress("");
-      setSubject("");
       setMessage("");
     }, 1000);
   };
@@ -47,13 +46,13 @@ export default function ContactPage() {
 
       <main className="flex-grow pt-0 bg-white text-slate-800">
         {/* 1. COMPACT BANNER */}
-        <div className="relative h-[560px] md:h-[400px] w-full flex items-center justify-center bg-slate-900">
+        <div className="relative h-[280px] w-full flex items-center justify-center bg-slate-900">
           <img
-            src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1920"
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920"
             alt="Contact Banner"
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
+            className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001226]/30 via-[#001226]/50 to-[#001226]/85" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#001226]/40 via-[#001226]/60 to-[#001226]/90" />
           
           {/* Breadcrumb Path absolute inside banner */}
           <div className="absolute top-28 left-0 right-0 z-20">
@@ -67,183 +66,236 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <div className="relative z-10 text-center text-white space-y-4 px-6 w-full max-w-4xl mt-20">
+          <div className="relative z-10 text-center text-white space-y-3 px-6 w-full max-w-4xl mt-20">
             <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold block">
               Dịch Vụ Khách Hàng Cao Cấp
             </span>
             <h1 className="font-serif text-3xl md:text-4xl tracking-wide font-normal">
-              LIÊN HỆ VỚI CHÚNG TÔI
+              KẾT NỐI VỚI TRAVEL
             </h1>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-16 space-y-16">
-          {/* Grid Layout: Contact Form & Info/Map */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        {/* 2. SPLIT SECTION: CONTACT FORM & MAP */}
+        <div className="max-w-7xl mx-auto px-6 py-12 lg:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            {/* Left Column: Message Form */}
-            <div className="lg:col-span-7 bg-slate-50 border border-slate-200 p-6 md:p-8 rounded shadow-sm space-y-6">
-              <div className="border-b border-slate-200 pb-4">
-                <h3 className="font-serif text-xl font-bold text-slate-800">
-                  Gửi Tin Nhắn Cho Chúng Tôi
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Vui lòng nhập thông tin liên hệ và nội dung yêu cầu, chuyên viên của chúng tôi sẽ liên hệ lại ngay.
+            {/* Left Column: Form Card */}
+            <div className="lg:col-span-7 bg-white border border-slate-100 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] p-6 md:p-10 lg:p-12 flex flex-col justify-between">
+              <div className="space-y-3 pb-6 border-b border-slate-100">
+                <h2 className="font-serif text-2xl md:text-3xl font-normal tracking-wide text-[#001226]">
+                  Khám phá Việt Nam cùng TRAVEL
+                </h2>
+                <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                  Hãy liên hệ ngay để nhận tư vấn chuyên sâu và thiết kế hành trình du lịch độc bản dành riêng cho quý khách!
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-semibold block">Họ và tên của quý khách *</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Nguyễn Văn A..."
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-sm p-3.5 focus:border-accent focus:outline-none transition-colors"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-semibold block">Số điện thoại liên hệ *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="0901234567..."
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-sm p-3.5 focus:border-accent focus:outline-none transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-semibold block">Địa chỉ Email nhận phản hồi *</label>
-                  <input
-                    type="email"
-                    required
-                    placeholder="email@example.com..."
-                    value={emailAddress}
-                    onChange={(e) => setEmailAddress(e.target.value)}
-                    className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-sm p-3.5 focus:border-accent focus:outline-none transition-colors"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-semibold block">Tiêu đề liên hệ *</label>
+              <form onSubmit={handleSubmit} className="mt-8 space-y-6 flex-grow">
+                {/* Row 1: Họ và tên */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-bold block">
+                    Họ và tên <span className="text-accent">*</span>
+                  </label>
                   <input
                     type="text"
                     required
-                    placeholder="Ví dụ: Tư vấn lịch trình du thuyền Essence Grand..."
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-sm p-3.5 focus:border-accent focus:outline-none transition-colors"
+                    placeholder="Nhập họ và tên..."
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:border-accent text-slate-800 text-xs rounded-full px-5 py-4 focus:outline-none focus:ring-0 transition-all duration-300 font-medium"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[10px] uppercase tracking-[0.1em] text-slate-500 font-semibold block">Nội dung yêu cầu chi tiết *</label>
+                {/* Row 2: Email & Số điện thoại */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-bold block">
+                      Địa chỉ Email <span className="text-accent">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="Nhập email..."
+                      value={emailAddress}
+                      onChange={(e) => setEmailAddress(e.target.value)}
+                      className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:border-accent text-slate-800 text-xs rounded-full px-5 py-4 focus:outline-none focus:ring-0 transition-all duration-300 font-medium"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-bold block">
+                      Số điện thoại <span className="text-accent">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Nhập số điện thoại..."
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:border-accent text-slate-800 text-xs rounded-full px-5 py-4 focus:outline-none focus:ring-0 transition-all duration-300 font-medium"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3: Nội dung */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-bold block">
+                    Nội dung yêu cầu <span className="text-accent">*</span>
+                  </label>
                   <textarea
                     required
-                    rows={5}
-                    placeholder="Quý khách muốn tìm hiểu về dịch vụ nào, thời gian khởi hành mong muốn..."
+                    rows={4}
+                    placeholder="Nhập yêu cầu của bạn (Tên du thuyền/khách sạn, ngày đi, số khách...)"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-sm p-3.5 focus:border-accent focus:outline-none transition-colors resize-none"
+                    className="w-full bg-slate-50/50 hover:bg-slate-50 border border-slate-200 focus:border-accent text-slate-800 text-xs rounded-2xl px-5 py-4 focus:outline-none focus:ring-0 transition-all duration-300 resize-none font-medium leading-relaxed"
                   />
                 </div>
 
+                {/* Submit button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] font-semibold text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-75"
+                  className="w-full py-4 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-75 cursor-pointer shadow-md hover:shadow-lg transform hover:-translate-y-[1px] active:translate-y-0 mt-2"
                 >
                   {loading ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      ĐANG GỬI TIN NHẮN...
+                      Đang xử lý yêu cầu...
                     </>
                   ) : (
                     <>
-                      Gửi Yêu Cầu Liên Hệ
-                      <Send className="w-4 h-4" />
+                      Gửi yêu cầu liên hệ
+                      <Send className="w-3.5 h-3.5" />
                     </>
                   )}
                 </button>
               </form>
             </div>
 
-            {/* Right Column: Contact Details & Location Map */}
-            <div className="lg:col-span-5 space-y-8">
-              {/* Information Card */}
-              <div className="bg-slate-50 border border-slate-200 p-6 rounded space-y-6">
-                <h3 className="font-serif text-lg font-bold text-slate-800 border-b border-slate-200 pb-3">
-                  Thông Tin Đại Diện Công Ty
-                </h3>
-                
-                <div className="space-y-4 text-xs">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-4 h-4 text-accent-dark flex-shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-slate-500 block font-semibold uppercase tracking-wider text-[9px]">Địa chỉ văn phòng</span>
-                      <span className="text-slate-800 font-medium leading-relaxed">
-                        Hạ Long, Quảng Ninh, Việt Nam
-                      </span>
-                    </div>
-                  </div>
+            {/* Right Column: Map Card */}
+            <div className="lg:col-span-5 bg-white border border-slate-100 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] p-4 flex flex-col h-[400px] lg:h-auto min-h-[450px]">
+              <div className="w-full h-full overflow-hidden rounded-2xl border border-slate-100 relative">
+                <iframe
+                  src="https://maps.google.com/maps?q=H%E1%BA%A1%20Long,%20Qu%E1%BA%A3ng%20Ninh,%20Vi%E1%BB%87t%20Nam&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, filter: "grayscale(10%) contrast(102%) brightness(99%)" }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  title="Văn phòng TRAVEL Hạ Long"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
 
-                  <div className="flex items-start gap-3">
-                    <Phone className="w-4 h-4 text-accent-dark flex-shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-slate-500 block font-semibold uppercase tracking-wider text-[9px]">Tổng đài hỗ trợ 24/7</span>
-                      <a href="tel:19001234" className="text-slate-800 font-bold hover:text-accent">
-                        1900 1234
-                      </a>
-                    </div>
-                  </div>
+          </div>
+        </div>
 
-                  <div className="flex items-start gap-3">
-                    <Mail className="w-4 h-4 text-accent-dark flex-shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-slate-500 block font-semibold uppercase tracking-wider text-[9px]">Thư điện tử</span>
-                      <a href="mailto:booking@travel.vn" className="text-slate-800 font-bold hover:text-accent">
-                        booking@travel.vn
-                      </a>
-                    </div>
-                  </div>
+        {/* 3. CONTACT INFORMATION GRID */}
+        <div className="bg-white py-20 border-t border-slate-100">
+          <div className="max-w-7xl mx-auto px-6 space-y-12">
+            <div className="text-center max-w-2xl mx-auto space-y-3">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-accent font-bold block">
+                Kết nối trực tiếp
+              </span>
+              <h2 className="font-serif text-2xl md:text-3xl text-[#001226] tracking-wide font-normal">
+                THÔNG TIN VĂN PHÒNG ĐẠI DIỆN
+              </h2>
+              <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                Quý khách có thể ghé thăm trực tiếp văn phòng hoặc kết nối với chúng tôi qua các kênh hỗ trợ khẩn cấp dưới đây.
+              </p>
+            </div>
 
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-4 h-4 text-accent-dark flex-shrink-0 mt-0.5" />
-                    <div>
-                      <span className="text-slate-500 block font-semibold uppercase tracking-wider text-[9px]">Giờ phục vụ</span>
-                      <span className="text-slate-800 font-medium">
-                        Thứ 2 - Thứ 7: 8:00 - 18:00 | Chủ nhật: Hỗ trợ khẩn cấp qua hotline
-                      </span>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Card 1: Address */}
+              <div className="bg-slate-50/60 border border-slate-200/60 rounded-3xl p-6 text-center space-y-4 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto text-accent">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-sm font-bold text-slate-800">Trụ sở chính</h4>
+                  <p className="text-xs text-slate-655 leading-relaxed font-medium">
+                    Hạ Long, Quảng Ninh, Việt Nam
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <a
+                    href="https://maps.google.com/?q=H%E1%BA%A1+Long,+Qu%E1%BA%A3ng+Ninh,+Vi%E1%BB%87t+Nam"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] uppercase tracking-wider font-bold text-[#001226] hover:text-accent transition-colors flex items-center justify-center gap-1"
+                  >
+                    Xem vị trí bản đồ
+                  </a>
                 </div>
               </div>
 
-              {/* Embedded Google Maps */}
-              <div className="space-y-2">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-500 font-bold block">
-                  Vị trí trên bản đồ
-                </span>
-                <div className="overflow-hidden border border-slate-200 rounded shadow-sm bg-slate-150">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.424167443916!2d106.70014291535647!3d10.778796862094258!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f48f49e4917%3A0xe54e60fa236d6c6!2zMjIgTLSqIFRow6FuaCBUw7RuLCBC4bq_biBOZ2jDqSwgUXXhuq1uIDEsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmnhu4d0IE5hbQ!5e0!3m2!1svi!2s!4v1655000000000!5m2!1svi!2s"
-                    width="100%"
-                    height="320"
-                    style={{ border: 0 }}
-                    allowFullScreen={false}
-                    loading="lazy"
-                    title="Văn phòng TRAVEL Hạ Long"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
+              {/* Card 2: Hotline */}
+              <div className="bg-slate-50/60 border border-slate-200/60 rounded-3xl p-6 text-center space-y-4 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto text-accent">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-sm font-bold text-slate-800">Tổng đài 24/7</h4>
+                  <p className="text-xs text-slate-655 leading-relaxed font-medium">
+                    Luôn sẵn sàng lắng nghe và giải đáp mọi thắc mắc của quý khách.
+                  </p>
+                  <p className="text-sm font-bold text-slate-850">1900 1234</p>
+                </div>
+                <div className="pt-2">
+                  <a
+                    href="tel:19001234"
+                    className="text-[10px] uppercase tracking-wider font-bold text-[#001226] hover:text-accent transition-colors"
+                  >
+                    Gọi hỗ trợ ngay
+                  </a>
                 </div>
               </div>
 
+              {/* Card 3: Email */}
+              <div className="bg-slate-50/60 border border-slate-200/60 rounded-3xl p-6 text-center space-y-4 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto text-accent">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-sm font-bold text-slate-850">Thư điện tử</h4>
+                  <p className="text-xs text-slate-655 leading-relaxed font-medium">
+                    Phản hồi thông tin và gửi báo giá chi tiết lịch trình du hành.
+                  </p>
+                  <p className="text-xs font-bold text-slate-850">booking@travel.vn</p>
+                </div>
+                <div className="pt-2">
+                  <a
+                    href="mailto:booking@travel.vn"
+                    className="text-[10px] uppercase tracking-wider font-bold text-[#001226] hover:text-accent transition-colors"
+                  >
+                    Gửi thư yêu cầu
+                  </a>
+                </div>
+              </div>
+
+              {/* Card 4: Hours */}
+              <div className="bg-slate-50/60 border border-slate-200/60 rounded-3xl p-6 text-center space-y-4 hover:shadow-md transition-all duration-300">
+                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto text-accent">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div className="space-y-1.5">
+                  <h4 className="font-serif text-sm font-bold text-slate-800">Giờ làm việc</h4>
+                  <p className="text-xs text-slate-655 leading-relaxed font-medium">
+                    Thứ 2 - Thứ 7: 8:00 - 18:00
+                  </p>
+                  <p className="text-xs text-slate-655 leading-relaxed font-medium">
+                    Chủ nhật: Hỗ trợ khẩn cấp hotline
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-accent">
+                    Phục vụ tận tâm
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

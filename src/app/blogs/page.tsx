@@ -71,7 +71,7 @@ function BlogListContent() {
   return (
     <div className="w-full">
       {/* 1. COMPACT BANNER */}
-      <div className="relative h-[560px] md:h-[400px] w-full flex items-center justify-center bg-slate-900">
+      <div className="relative h-[280px] w-full flex items-center justify-center bg-slate-900">
         <img
           src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1920"
           alt="Blogs Banner"
@@ -87,7 +87,7 @@ function BlogListContent() {
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3 text-white/40" />
-            <span className="text-white/90">Bản tin</span>
+            <span className="text-white/90">Blog</span>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ function BlogListContent() {
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <span className="absolute top-4 left-4 z-10 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] font-semibold bg-[#001226] text-accent rounded-sm">
+                  <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-white text-accent rounded-full shadow-md">
                     {blog.category}
                   </span>
                 </div>

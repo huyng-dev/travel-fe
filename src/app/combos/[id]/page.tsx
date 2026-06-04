@@ -7,11 +7,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import Lightbox from "@/components/Lightbox";
 import { mockCombos, mockCruises, mockHotels, mockReviews, Review } from "@/data/mockData";
-import { 
-  Star, 
-  ChevronRight, 
-  Home, 
+import {
+  Star,
+  ChevronRight,
+  Home,
   Send,
   MessageSquare,
   Calendar,
@@ -48,8 +49,9 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
   const [reviewComment, setReviewComment] = useState("");
   const [activeTab, setActiveTab] = useState<"policy" | "child" | "cancel">("policy");
 
-  // Photo Gallery Slider State
-  const [activePhotoIdx, setActivePhotoIdx] = useState(0);
+  // Lightbox Modal States
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   // Tomorrow's date helper
   const getTomorrowString = () => {
@@ -84,9 +86,35 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
     ];
   }, [cruiseObj, hotelObj]);
 
-  // Lock background scroll when booking modal is open
+  // Scrollspy state for Nav Tabs
+  const [activeSection, setActiveSection] = useState("overview");
+
   useEffect(() => {
-    if (isBookingModalOpen) {
+    const handleScroll = () => {
+      const sections = ["overview", "itinerary", "regulations", "reviews"];
+      let currentSection = sections[0];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const top = element.offsetTop;
+          if (scrollPosition >= top) {
+            currentSection = section;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock background scroll when booking modal or lightbox is open
+  useEffect(() => {
+    if (isBookingModalOpen || lightboxOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -94,7 +122,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isBookingModalOpen]);
+  }, [isBookingModalOpen, lightboxOpen]);
 
   // Calculate itinerary length
   const itineraryText = useMemo(() => {
@@ -123,12 +151,10 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
       toast.error("Vui lòng chọn ngày khởi hành.");
       return;
     }
-    
-    // Simulate API request
+
     toast.success("Gửi yêu cầu đặt combo thành công! TRAVEL sẽ liên hệ lại trong ít phút.");
     setIsBookingModalOpen(false);
-    
-    // Reset form fields
+
     setBookingName("");
     setBookingPhone("");
     setBookingEmail("");
@@ -142,15 +168,14 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
   // Load reviews matching this combo
   const matchedReviews = useMemo(() => {
     if (!combo || !cruiseObj || !hotelObj) return [];
-    
-    // Grab some reviews matching either the cruise or hotel
+
     const cruiseReviews = mockReviews.filter(
       (r) => r.stayType.toLowerCase().includes(cruiseObj.name.split(" ")[0].toLowerCase())
     );
     const hotelReviews = mockReviews.filter(
       (r) => r.stayType.toLowerCase().includes(hotelObj.name.split(" ")[0].toLowerCase())
     );
-    
+
     const combined = [...cruiseReviews, ...hotelReviews];
     if (combined.length === 0) {
       return [
@@ -188,7 +213,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
   if (!combo || !cruiseObj || !hotelObj) {
     return (
       <>
-        <Navbar />
+        <Navbar solid />
         <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white px-6">
           <Luggage className="w-16 h-16 text-accent animate-pulse mb-4" />
           <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy gói combo</h2>
@@ -237,7 +262,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
       toast.error("Vui lòng điền đầy đủ họ tên và nội dung đánh giá.");
       return;
     }
-    
+
     const newReview: Review = {
       id: `rev-new-combo-${Date.now()}`,
       userName: reviewName,
@@ -253,14 +278,6 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
     setReviewComment("");
     setReviewRating(5);
     toast.success("Đánh giá của bạn đã được gửi thành công và đang chờ duyệt!");
-  };
-
-  const handlePrevPhoto = () => {
-    setActivePhotoIdx((prev) => (prev === 0 ? imageGallery.length - 1 : prev - 1));
-  };
-
-  const handleNextPhoto = () => {
-    setActivePhotoIdx((prev) => (prev === imageGallery.length - 1 ? 0 : prev + 1));
   };
 
   // Suggestions (exclude current combo)
@@ -293,90 +310,142 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="w-full bg-white text-slate-800">
-      <Navbar />
+      <Navbar solid />
 
-      {/* 1. HERO BANNER */}
-      <section className="relative h-[80vh] w-full bg-slate-900 overflow-hidden">
-        <img
-          src={cruiseObj.imageGallery[0]}
-          alt={combo.name}
-          className="absolute inset-0 w-full h-full object-cover opacity-75 animate-[subtle-zoom_20s_infinite_alternate]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#001226]/20 via-[#001226]/40 to-[#001226]/95" />
-
-        {/* Breadcrumb Path */}
-        <div className="absolute top-28 left-0 right-0 z-20">
-          <div className="max-w-7xl mx-auto px-6 flex items-center gap-2 text-[10px] text-white/60 uppercase tracking-widest font-semibold">
-            <Link href="/" className="hover:text-accent flex items-center gap-1">
+      {/* 1. HEADER SECTION (White background) */}
+      <section className="bg-white pt-28 pb-6">
+        <div className="max-w-7xl mx-auto px-6 space-y-4">
+          {/* Breadcrumb Path */}
+          <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
+            <Link href="/" className="hover:text-[#001226] flex items-center gap-1">
               <Home className="w-3.5 h-3.5" />
               Trang chủ
             </Link>
-            <ChevronRight className="w-3 h-3 text-white/40" />
-            <Link href="/combos" className="hover:text-accent">Combo du lịch</Link>
-            <ChevronRight className="w-3 h-3 text-white/40" />
-            <span className="text-white/95">{combo.name}</span>
+            <ChevronRight className="w-3 h-3 text-slate-300" />
+            <Link href="/combos" className="hover:text-[#001226]">Combo du lịch</Link>
+            <ChevronRight className="w-3 h-3 text-slate-300" />
+            <span className="text-slate-800">{combo.name}</span>
           </div>
-        </div>
 
-        {/* Floating Glassmorphic Footer inside Hero Banner */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 pb-8 pt-20 bg-gradient-to-t from-[#001226] via-[#001226]/80 to-transparent">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 w-full">
-            
-            {/* Left Column: Title (Limited width to prevent squishing) */}
-            <div className="space-y-3 text-white flex-1 min-w-0 max-w-xl md:max-w-2xl lg:max-w-3xl text-left">
-              <span className="inline-block px-3 py-1 bg-accent/20 border border-accent/30 text-accent text-[9px] uppercase tracking-[0.15em] font-semibold rounded-sm">
+          {/* Title, Badge, Tagline */}
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-block px-3 py-1 bg-accent/10 border border-accent/20 text-accent text-[9px] uppercase tracking-[0.15em] font-semibold rounded-sm">
                 Combo Đặc Quyền
               </span>
-              <h1 className="font-serif text-2xl md:text-4xl tracking-wide font-normal drop-shadow-md break-words leading-tight uppercase">
-                {combo.name}
-              </h1>
-              <p className="text-xs md:text-sm text-white/70 italic max-w-xl leading-relaxed">
-                {combo.tagline}
-              </p>
             </div>
-
-            {/* Right Column: Booking Section (Never wraps, never squished) */}
-            <div className="flex items-center gap-6 flex-shrink-0 whitespace-nowrap">
-              <div className="text-right hidden sm:block">
-                <span className="block text-[10px] uppercase tracking-widest text-white/50">Đơn giá combo từ</span>
-                <span className="text-xl font-bold text-accent font-serif">{formatPrice(combo.salePrice)}</span>
-                <span className="text-[10px] text-white/40 block">/ khách trọn gói</span>
-              </div>
-
-              <button
-                onClick={handleBookingClick}
-                className="px-8 py-4 bg-accent hover:bg-white text-[#001226] font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.03] cursor-pointer whitespace-nowrap flex-shrink-0"
-              >
-                Đặt Combo Ngay
-              </button>
-            </div>
-
+            <h1 className="font-serif text-2xl md:text-4xl text-slate-900 tracking-wide font-normal">{combo.name}</h1>
+            <p className="text-sm text-slate-500 italic">{combo.tagline}</p>
           </div>
         </div>
       </section>
 
+      {/* GALLERY GRID */}
+      <section className="bg-white px-6 pb-6">
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 h-auto md:h-[450px]">
+            {/* Main large image */}
+            <div
+              className="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-sm cursor-pointer aspect-video md:aspect-auto"
+              onClick={() => {
+                setLightboxIdx(0);
+                setLightboxOpen(true);
+              }}
+            >
+              <img
+                src={imageGallery[0]}
+                alt={`${combo.name} 1`}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            {/* Thumbnails */}
+            {[1, 2, 3, 4].map((imgIdx) => (
+              <div
+                key={imgIdx}
+                className="hidden md:block relative overflow-hidden rounded-sm cursor-pointer"
+                onClick={() => {
+                  setLightboxIdx(imgIdx);
+                  setLightboxOpen(true);
+                }}
+              >
+                <img
+                  src={imageGallery[imgIdx] || imageGallery[0]}
+                  alt={`${combo.name} ${imgIdx + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+          {/* View all photos button */}
+          <button
+            onClick={() => {
+              setLightboxIdx(0);
+              setLightboxOpen(true);
+            }}
+            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-sm shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+          >
+            <span>Xem tất cả ảnh</span>
+            <span className="text-slate-400">({imageGallery.length})</span>
+          </button>
+        </div>
+      </section>
+
+      {/* STICKY NAV TABS */}
+      <div className="sticky top-[72px] z-40 bg-white/90 backdrop-blur-md hidden md:block pb-1 pt-2">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
+            {[
+              { id: "overview", label: "Giới thiệu" },
+              { id: "itinerary", label: "Lịch trình" },
+              { id: "regulations", label: "Quy định" },
+              { id: "reviews", label: "Đánh giá" },
+            ].map((tab) => {
+              const isActive = activeSection === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    const el = document.getElementById(tab.id);
+                    if (el) {
+                      const y = el.getBoundingClientRect().top + window.scrollY - 130;
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
+                  }}
+                  className={`px-5 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-all duration-300 cursor-pointer ${
+                    isActive
+                      ? "bg-[#001226] text-white shadow-sm"
+                      : "bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 border border-slate-100"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       {/* 2. OVERVIEW & INCLUSIONS */}
-      <section className="py-16 bg-white">
+      <section id="overview" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-          
+
           {/* Left Side: Overview & Inclusions (col-span-2) */}
           <div className="lg:col-span-2 space-y-12 text-left">
-            
+
             {/* Overview text */}
             <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Tổng quan gói combo</span>
               <h2 className="font-serif text-2xl md:text-3xl text-slate-900 leading-tight">
                 Hành Trình Kết Hợp Độc Bản: Đất Liền và Biển Khơi
               </h2>
-              <p className="text-slate-655 text-sm md:text-base leading-relaxed font-sans font-light">
+              <p className="text-slate-650 text-sm md:text-base leading-relaxed font-sans font-light">
                 {combo.description}
               </p>
             </div>
 
             {/* Inclusions Split */}
             <div className="space-y-8 pt-8 border-t border-slate-100">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Chi tiết dịch vụ bao gồm</span>
-              
+              <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">CHI TIẾT DỊCH VỤ BAO GỒM</h3>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Cruise Inclusion */}
                 <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs">
@@ -389,7 +458,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                       <h3 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wide leading-tight">{cruiseObj.name}</h3>
                     </div>
                   </div>
-                  
+
                   <div className="aspect-[16/10] rounded-sm overflow-hidden bg-slate-200">
                     <img src={cruiseObj.imageGallery[0]} alt={cruiseObj.name} className="w-full h-full object-cover" />
                   </div>
@@ -462,40 +531,57 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
           </div>
 
-          {/* Right Side: Specs Widget */}
-          <div className="lg:col-span-1 lg:sticky lg:top-28">
-            <div className="bg-slate-50 border border-slate-200/60 p-8 rounded-sm space-y-6 shadow-sm text-left">
-              <div className="border-b border-slate-200/60 pb-4 flex items-center gap-2">
-                <Luggage className="w-5 h-5 text-accent" />
-                <h4 className="font-serif text-base font-bold text-slate-900 uppercase tracking-wide">
-                  THÔNG SỐ GÓI COMBO
-                </h4>
+          {/* Right Side: Price, CTA & Specs Widget */}
+          <div className="lg:col-span-1 lg:sticky lg:top-36">
+            <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 space-y-6 text-left">
+              {/* Price */}
+              <div className="border-b border-slate-100 pb-5">
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold mb-1">Đơn giá combo từ</span>
+                <div className="flex items-baseline gap-2.5">
+                  <div className="text-3xl font-serif font-bold text-[#001226]">{formatPrice(combo.salePrice)}</div>
+                  {combo.netPrice > combo.salePrice && (
+                    <span className="text-sm text-slate-400 line-through font-sans">{formatPrice(combo.netPrice)}</span>
+                  )}
+                </div>
+                <span className="text-xs text-slate-400">/ khách trọn gói</span>
               </div>
 
-              <div className="space-y-4 text-xs">
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">DU THUYỀN</span>
-                  <span className="font-bold text-slate-800 text-right max-w-[180px]">{cruiseObj.name}</span>
+              {/* Booking CTA Button */}
+              <button
+                onClick={handleBookingClick}
+                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-md cursor-pointer"
+              >
+                Đặt Combo Ngay
+              </button>
+
+              {/* Specs */}
+              <div className="border-t border-slate-100 pt-5 space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                  <Luggage className="w-4 h-4 text-accent" />
+                  <h4 className="font-serif text-xs font-bold text-slate-900 uppercase tracking-wide">THÔNG SỐ GÓI COMBO</h4>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">KHÁCH SẠN</span>
-                  <span className="font-bold text-slate-800 text-right max-w-[180px]">{hotelObj.name}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">LỊCH TRÌNH</span>
-                  <span className="font-bold text-slate-800 text-right">{itineraryText.title}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">Bao gồm</span>
-                  <span className="font-bold text-slate-800 text-right max-w-[180px]">{itineraryText.details}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">HẠNG PHÒNG ĐỊNH SẴN</span>
-                  <span className="font-bold text-slate-800 text-right uppercase">Standard Cabin & Room</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium uppercase tracking-wider">Khởi hành</span>
-                  <span className="font-bold text-slate-800 uppercase text-accent">Hàng ngày</span>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">DU THUYỀN</span>
+                    <span className="font-bold text-slate-800 text-right max-w-[160px]">{cruiseObj.name}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">KHÁCH SẠN</span>
+                    <span className="font-bold text-slate-800 text-right max-w-[160px]">{hotelObj.name}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">LỊCH TRÌNH</span>
+                    <span className="font-bold text-slate-800 text-right">{itineraryText.title}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">BAO GỒM</span>
+                    <span className="font-bold text-slate-800 text-right max-w-[160px]">{itineraryText.details}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">KHỞI HÀNH</span>
+                    <span className="font-bold text-slate-800 uppercase text-accent">Hàng ngày</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -504,64 +590,10 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 3. GALLERY SLIDESHOW */}
-      <section className="py-20 bg-slate-50 border-t border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 space-y-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Hình ảnh thực tế</span>
-            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              KHÔNG GIAN TRẢI NGHIỆM THỰC TẾ
-            </h2>
-          </div>
-
-          <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden rounded-sm bg-slate-900 shadow-lg group">
-            <img
-              src={imageGallery[activePhotoIdx]}
-              alt={`Combo view ${activePhotoIdx + 1}`}
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out"
-            />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
-
-            {/* Bottom-left: Dots */}
-            <div className="absolute bottom-6 left-6 z-10 flex items-center gap-1.5">
-              {imageGallery.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActivePhotoIdx(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === activePhotoIdx ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Bottom-right: Arrows */}
-            <div className="absolute bottom-6 right-6 z-10 flex items-center gap-3">
-              <button
-                onClick={handlePrevPhoto}
-                className="w-10 h-10 rounded-full border border-white/44 hover:border-white text-white hover:bg-white/10 flex items-center justify-center transition-all cursor-pointer"
-                aria-label="Previous image"
-              >
-                <ChevronRight className="w-4 h-4 rotate-180" />
-              </button>
-              <button
-                onClick={handleNextPhoto}
-                className="w-10 h-10 rounded-full border border-white/44 hover:border-white text-white hover:bg-white/10 flex items-center justify-center transition-all cursor-pointer"
-                aria-label="Next image"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. PROPOSED ITINERARY SECTION */}
-      <section className="py-20 bg-white">
+      {/* 3. PROPOSED ITINERARY SECTION */}
+      <section id="itinerary" className="py-16 bg-white border-t border-slate-100">
         <div className="max-w-4xl mx-auto px-6 space-y-12 text-left">
-          <div className="text-center space-y-2">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Chương trình đề xuất</span>
+          <div className="space-y-2">
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
               LỊCH TRÌNH TRẢI NGHIỆM CHI TIẾT
             </h2>
@@ -596,15 +628,11 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 5. REGULATIONS & NOTES */}
-      <section className="py-20 bg-slate-50 border-t border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 space-y-10">
-          
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Điều khoản đặt chỗ</span>
-            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              QUY ĐỊNH CHUNG & LƯU Ý
-            </h2>
+      {/* 4. REGULATIONS & NOTES */}
+      <section id="regulations" className="py-16 bg-slate-50 border-t border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">QUY ĐỊNH CHUNG & LƯU Ý</h2>
           </div>
 
           <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col md:flex-row">
@@ -612,9 +640,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={() => setActiveTab("policy")}
                 className={`w-full text-left px-4 py-3 rounded-sm text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                  activeTab === "policy"
-                    ? "bg-[#001226] text-white shadow-sm"
-                    : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
+                  activeTab === "policy" ? "bg-[#001226] text-white shadow-sm" : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <span>Quy định chung</span>
@@ -623,9 +649,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={() => setActiveTab("child")}
                 className={`w-full text-left px-4 py-3 rounded-sm text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                  activeTab === "child"
-                    ? "bg-[#001226] text-white shadow-sm"
-                    : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
+                  activeTab === "child" ? "bg-[#001226] text-white shadow-sm" : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <span>Chính sách trẻ em</span>
@@ -634,9 +658,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={() => setActiveTab("cancel")}
                 className={`w-full text-left px-4 py-3 rounded-sm text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                  activeTab === "cancel"
-                    ? "bg-[#001226] text-white shadow-sm"
-                    : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
+                  activeTab === "cancel" ? "bg-[#001226] text-white shadow-sm" : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <span>Chính sách hoãn hủy</span>
@@ -660,13 +682,12 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 6. REVIEWS & FEEDBACK */}
-      <section className="py-20 bg-white">
+      {/* 5. REVIEWS & FEEDBACK */}
+      <section id="reviews" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
-          
+
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-2 text-left">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Phản hồi thực tế</span>
               <h3 className="font-serif text-xl font-bold text-slate-900 uppercase">ĐÁNH GIÁ TỪ DU KHÁCH</h3>
             </div>
 
@@ -675,7 +696,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                 <span className="text-4xl font-serif font-bold text-[#001226]">{avgRating}</span>
                 <span className="text-[10px] text-slate-400 font-semibold block uppercase">Điểm đánh giá</span>
               </div>
-              
+
               <div className="flex-1 space-y-2 border-l border-slate-200 pl-6 w-full text-left">
                 <div className="flex items-center gap-0.5 text-accent">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -694,11 +715,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                 <div key={rev.id} className="p-6 border-b border-slate-100 last:border-0 space-y-4">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={rev.userAvatar}
-                        alt={rev.userName}
-                        className="w-10 h-10 rounded-full object-cover border border-slate-200"
-                      />
+                      <img src={rev.userAvatar} alt={rev.userName} className="w-10 h-10 rounded-full object-cover border border-slate-200" />
                       <div className="text-left">
                         <h5 className="text-xs font-bold text-slate-800">{rev.userName}</h5>
                         <span className="text-[10px] text-slate-400 font-medium">{rev.date}</span>
@@ -707,10 +724,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
                     <div className="flex items-center gap-0.5 text-accent">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`w-3.5 h-3.5 ${i < Math.floor(rev.rating) ? "fill-accent text-accent" : "text-slate-200"}`} 
-                        />
+                        <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(rev.rating) ? "fill-accent text-accent" : "text-slate-200"}`} />
                       ))}
                     </div>
                   </div>
@@ -734,40 +748,18 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
             <form onSubmit={handleAddReview} className="space-y-5">
               <div className="space-y-1.5 text-left">
-                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                  Họ và tên của bạn
-                </label>
-                <input
-                  type="text"
-                  placeholder="Nhập đầy đủ họ tên..."
-                  value={reviewName}
-                  onChange={(e) => setReviewName(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-sm px-4 py-3 text-xs font-semibold focus:outline-none focus:border-accent"
-                />
+                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">Họ và tên của bạn</label>
+                <input type="text" placeholder="Nhập đầy đủ họ tên..." value={reviewName} onChange={(e) => setReviewName(e.target.value)} className="w-full bg-white border border-slate-300 rounded-sm px-4 py-3 text-xs font-semibold focus:outline-none focus:border-accent" />
               </div>
 
               <div className="space-y-1.5 text-left">
-                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                  Đánh giá số sao
-                </label>
+                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">Đánh giá số sao</label>
                 <div className="flex items-center gap-1.5">
                   {Array.from({ length: 5 }).map((_, i) => {
                     const starVal = i + 1;
                     return (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => setReviewRating(starVal)}
-                        className="p-1 hover:scale-115 transition-transform cursor-pointer"
-                        aria-label={`Đánh giá ${starVal} sao`}
-                      >
-                        <Star 
-                          className={`w-6 h-6 ${
-                            starVal <= reviewRating 
-                              ? "fill-accent text-accent" 
-                              : "text-slate-300 hover:text-accent/60"
-                          }`} 
-                        />
+                      <button key={i} type="button" onClick={() => setReviewRating(starVal)} className="p-1 hover:scale-115 transition-transform cursor-pointer" aria-label={`Đánh giá ${starVal} sao`}>
+                        <Star className={`w-6 h-6 ${starVal <= reviewRating ? "fill-accent text-accent" : "text-slate-300 hover:text-accent/60"}`} />
                       </button>
                     );
                   })}
@@ -775,22 +767,11 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="space-y-1.5 text-left">
-                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                  Nội dung bình luận
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Chia sẻ cảm nhận thực tế của quý khách..."
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-sm p-4 text-xs font-medium focus:outline-none focus:border-accent"
-                />
+                <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">Nội dung bình luận</label>
+                <textarea rows={4} placeholder="Chia sẻ cảm nhận thực tế của quý khách..." value={reviewComment} onChange={(e) => setReviewComment(e.target.value)} className="w-full bg-white border border-slate-300 rounded-sm p-4 text-xs font-medium focus:outline-none focus:border-accent" />
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-3.5 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-              >
+              <button type="submit" className="w-full py-3.5 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm">
                 <Send className="w-4 h-4" />
                 Gửi phản hồi của bạn
               </button>
@@ -799,11 +780,11 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 7. RELATED SUGGESTED COMBOS */}
+      {/* 6. RELATED SUGGESTED COMBOS */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Khám khám thêm</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Khám phá thêm</span>
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
               GỢI Ý CÁC GÓI COMBO KHÁC
             </h2>
@@ -834,6 +815,16 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
       </section>
 
       <Footer />
+
+      {/* LIGHTBOX MODAL */}
+      <Lightbox
+        images={imageGallery}
+        isOpen={lightboxOpen}
+        initialIndex={lightboxIdx}
+        onClose={() => setLightboxOpen(false)}
+        title={combo.name}
+        location={`${cruiseObj.name} · ${hotelObj.name}`}
+      />
 
       {/* COMBO BOOKING POPUP MODAL */}
       <AnimatePresence>
@@ -876,7 +867,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <form onSubmit={handleBookingSubmit} className="space-y-5">
-                  
+
                   {/* Departure Date selection */}
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
@@ -901,143 +892,54 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                       Số lượng hành khách đi combo
                     </label>
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <span className="text-[9px] font-bold text-slate-700 block">Người lớn</span>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingAdults(prev => Math.max(1, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingAdults}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingAdults(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
+                      {[
+                        { label: "Người lớn", sub: null, val: bookingAdults, setter: setBookingAdults, min: 1 },
+                        { label: "Trẻ em", sub: "4 - 11 tuổi (-30%)", val: bookingChildren, setter: setBookingChildren, min: 0 },
+                        { label: "Em bé", sub: "Dưới 4 tuổi (Free)", val: bookingInfants, setter: setBookingInfants, min: 0 },
+                      ].map(({ label, sub, val, setter, min }) => (
+                        <div key={label} className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
+                          <div className="space-y-0">
+                            <span className="text-[9px] font-bold text-slate-700 block">{label}</span>
+                            {sub && <span className="text-[7px] text-slate-400 block -mt-0.5">{sub}</span>}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <button type="button" onClick={() => setter((prev: number) => Math.max(min, prev - 1))} className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 font-bold text-xs select-none cursor-pointer">-</button>
+                            <span className="text-xs font-bold text-slate-800">{val}</span>
+                            <button type="button" onClick={() => setter((prev: number) => prev + 1)} className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 font-bold text-xs select-none cursor-pointer">+</button>
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <div className="space-y-0">
-                          <span className="text-[9px] font-bold text-slate-700 block">Trẻ em</span>
-                          <span className="text-[7px] text-slate-400 block -mt-0.5">4 - 11 tuổi (-30%)</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingChildren(prev => Math.max(0, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingChildren}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingChildren(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <div className="space-y-0">
-                          <span className="text-[9px] font-bold text-slate-700 block">Em bé</span>
-                          <span className="text-[7px] text-slate-400 block -mt-0.5">Dưới 4 tuổi (Free)</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingInfants(prev => Math.max(0, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingInfants}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingInfants(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Contact Info */}
                   <div className="space-y-4 pt-2 border-t border-slate-100">
                     <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Thông tin liên hệ</span>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                          Họ và tên *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Nguyễn Văn A..."
-                          value={bookingName}
-                          onChange={(e) => setBookingName(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                        />
+                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Họ và tên *</label>
+                        <input type="text" required placeholder="Nguyễn Văn A..." value={bookingName} onChange={(e) => setBookingName(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                       </div>
-                      
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                          Số điện thoại *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="0912345xxx..."
-                          value={bookingPhone}
-                          onChange={(e) => setBookingPhone(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                        />
+                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Số điện thoại *</label>
+                        <input type="tel" required placeholder="0912345xxx..." value={bookingPhone} onChange={(e) => setBookingPhone(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Địa chỉ Email
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="email@example.com..."
-                        value={bookingEmail}
-                        onChange={(e) => setBookingEmail(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                      />
+                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Địa chỉ Email</label>
+                      <input type="email" placeholder="email@example.com..." value={bookingEmail} onChange={(e) => setBookingEmail(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Yêu cầu thêm
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Ví dụ: Cần xe đưa đón khứ hồi từ Hà Nội, phòng khách sạn tầng cao..."
-                        value={bookingNotes}
-                        onChange={(e) => setBookingNotes(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                      />
+                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Yêu cầu thêm</label>
+                      <textarea rows={2} placeholder="Ví dụ: Cần xe đưa đón khứ hồi từ Hà Nội, phòng khách sạn tầng cao..." value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                     </div>
                   </div>
 
                   <div className="block md:hidden pt-4 border-t border-slate-100">
-                    <button
-                      type="submit"
-                      className="w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer"
-                    >
+                    <button type="submit" className="w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer">
                       Gửi yêu cầu đặt combo
                     </button>
                   </div>
@@ -1053,11 +955,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
                   {/* Combo Preview Image */}
                   <div className="aspect-[16/10] rounded-lg overflow-hidden bg-slate-200 shadow-inner relative">
-                    <img
-                      src={cruiseObj.imageGallery[0]}
-                      alt="Combo Preview"
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={cruiseObj.imageGallery[0]} alt="Combo Preview" className="w-full h-full object-cover" />
                     <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[8px] font-bold text-slate-900 shadow-xs uppercase tracking-wider flex items-center gap-1">
                       <Clock className="w-3 h-3 text-accent" />
                       Lịch trình: {itineraryText.title}
@@ -1070,14 +968,12 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                       <span className="font-medium text-slate-500">Gói combo:</span>
                       <span className="font-bold text-slate-800 text-right max-w-[170px] truncate" title={combo.name}>{combo.name}</span>
                     </div>
-
                     <div className="flex justify-between border-b border-slate-150 pb-2">
                       <span className="font-medium text-slate-500">Khởi hành:</span>
                       <span className="font-bold text-slate-800 text-right">
                         {bookingDate ? new Date(bookingDate).toLocaleDateString("vi-VN") : "Chưa chọn"}
                       </span>
                     </div>
-
                     <div className="flex justify-between border-b border-slate-150 pb-2">
                       <span className="font-medium text-slate-500">Khách đi combo:</span>
                       <span className="font-bold text-slate-800 text-right">
@@ -1146,6 +1042,11 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

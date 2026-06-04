@@ -96,7 +96,6 @@ export default function Home() {
   const router = useRouter();
   const [filter, setFilter] = useState<"cruise" | "hotel" | "combo">("cruise");
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentDiscoverSlide, setCurrentDiscoverSlide] = useState(0);
   const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -179,12 +178,7 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDiscoverSlide((prev: number) => (prev + 1) % discoverSlides.length);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, []);
+
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -262,10 +256,10 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-grow pt-0 bg-white">
-        {/* HERO SECTION - FULL SCREEN 100VH */}
-        <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-          {/* Hero background images slideshow */}
-          <div className="absolute inset-0 z-0">
+        {/* HERO SECTION - TIGHTER HEIGHT & OVERLAPPING SEARCH BAR */}
+        <section className="relative h-[68vh] w-full flex items-center justify-center overflow-visible mb-16 md:mb-20">
+          {/* Hero background images slideshow (overflow-hidden & rounded bottom) */}
+          <div className="absolute inset-0 z-0 overflow-hidden rounded-b-[2rem] md:rounded-b-[4.5rem] shadow-xl">
             <AnimatePresence mode="popLayout">
               <motion.img
                 key={currentSlide}
@@ -279,51 +273,51 @@ export default function Home() {
               />
             </AnimatePresence>
             {/* Overlay gradients for readability */}
-            <div className="absolute inset-0 bg-black/35 z-[1]" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/30 z-[1]" />
+            <div className="absolute inset-0 bg-black/30 z-[1]" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/35 z-[1]" />
           </div>
 
           {/* Hero Content */}
-          <div className="max-w-7xl mx-auto px-6 w-full z-10 text-center flex flex-col justify-between h-full pt-32 pb-12">
+          <div className="max-w-7xl mx-auto px-6 w-full z-10 text-center flex flex-col justify-center h-full pt-12 pb-16 relative">
             {/* Slide Text Container (Centered in remaining height) */}
-            <div className="flex-grow flex flex-col items-center justify-center max-w-3xl mx-auto">
+            <div className="max-w-3xl mx-auto space-y-6">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentSlide}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: 0.6 }}
                   className="space-y-6"
                 >
-                  <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-white leading-tight tracking-wide drop-shadow-lg whitespace-pre-line">
+                  <h1 className="font-serif text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-wide drop-shadow-lg whitespace-pre-line">
                     {heroSlides[currentSlide].title}
                   </h1>
-                  <p className="text-xs sm:text-sm md:text-base text-slate-200 font-light leading-relaxed tracking-wider max-w-2xl mx-auto drop-shadow-sm">
+                  <p className="text-xs sm:text-sm md:text-base text-slate-100 font-light leading-relaxed tracking-wider max-w-2xl mx-auto drop-shadow-sm">
                     {heroSlides[currentSlide].description}
                   </p>
                 </motion.div>
               </AnimatePresence>
             </div>
 
-            {/* FLOATING QUICK CRUISE SEARCH BAR (Pushed to bottom) */}
+            {/* FLOATING QUICK CRUISE SEARCH BAR (Absolute positioned overlapping bottom edge) */}
             <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 1 }}
-              className="w-full max-w-4xl mx-auto z-20 px-4 md:px-0"
+              initial={{ opacity: 0, y: 25, x: "-50%" }}
+              animate={{ opacity: 1, y: 0, x: "-50%" }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="absolute bottom-0 left-1/2 translate-y-1/2 w-full max-w-4xl z-20 px-6 md:px-0"
             >
               <form
                 onSubmit={handleHeroSearch}
-                className="bg-white/10 border border-white/20 backdrop-blur-xl md:rounded-full rounded-2xl p-3 md:pl-8 md:pr-3 md:py-3 shadow-2xl flex flex-col md:flex-row items-center gap-4 md:gap-0 text-left"
+                className="bg-white border border-slate-100 shadow-xl md:rounded-full rounded-3xl p-3 md:pl-8 md:pr-3 md:py-3 flex flex-col md:flex-row items-center gap-4 md:gap-0 text-left"
               >
                 {/* Search Input: Name */}
                 <div className="w-full md:flex-1 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white flex-shrink-0 transition-all duration-300 hover:bg-white/10">
-                    <Ship className="w-4 h-4 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-slate-100 text-accent flex items-center justify-center flex-shrink-0 transition-all duration-300 hover:bg-slate-200/60">
+                    <Ship className="w-4 h-4 text-accent" />
                   </div>
                   <div className="flex-1 min-w-0 pr-2">
-                    <label className="text-[10px] uppercase tracking-[0.12em] text-white/60 font-semibold block">
+                    <label className="text-[10px] uppercase tracking-[0.12em] text-slate-500 font-semibold block">
                       Tên du thuyền
                     </label>
                     <input
@@ -331,13 +325,13 @@ export default function Home() {
                       placeholder="Nhập tên du thuyền..."
                       value={searchName}
                       onChange={(e) => setSearchName(e.target.value)}
-                      className="w-full bg-transparent text-white text-sm font-semibold border-none focus:outline-none placeholder-white/45 mt-0.5 focus:ring-0 p-0"
+                      className="w-full bg-transparent text-slate-800 text-sm font-semibold border-none focus:outline-none placeholder-slate-400 mt-0.5 focus:ring-0 p-0"
                     />
                   </div>
                 </div>
 
                 {/* Vertical Divider (Desktop only) */}
-                <div className="hidden md:block w-[1px] h-8 bg-white/15 mx-6" />
+                <div className="hidden md:block w-[1px] h-8 bg-slate-200/80 mx-6" />
 
                 {/* Dropdown: Destination */}
                 <div className="w-full md:flex-1 md:mr-8">
@@ -351,8 +345,8 @@ export default function Home() {
                       { value: "Vịnh Lan Hạ", label: "Vịnh Lan Hạ" },
                       { value: "Đảo Cát Bà", label: "Đảo Cát Bà" },
                     ]}
-                    icon={<MapPin className="w-4 h-4 text-white" />}
-                    placement="top"
+                    icon={<MapPin className="w-4 h-4 text-accent" />}
+                    variant="light"
                   />
                 </div>
 
@@ -360,7 +354,7 @@ export default function Home() {
                 <div className="w-full md:w-auto flex-shrink-0">
                   <button
                     type="submit"
-                    className="w-full md:w-auto px-8 py-3.5 bg-white hover:bg-accent text-[#001226] font-bold text-xs uppercase tracking-[0.15em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] cursor-pointer"
+                    className="w-full md:w-auto px-8 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold text-xs uppercase tracking-[0.1em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02] cursor-pointer border-none"
                   >
                     <Search className="w-4 h-4" />
                     TÌM KIẾM
@@ -371,162 +365,45 @@ export default function Home() {
           </div>
         </section>
 
-        {/* DISCOVER SECTION */}
-        <section className="py-24 bg-white text-slate-850">
-          <div className="max-w-7xl mx-auto px-6 space-y-12">
-            {/* Header Text */}
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              <span className="text-slate-500 text-[10px] uppercase tracking-[0.25em] font-sans font-semibold block">
-                SỐNG TRỌN TỪNG KHOẢNH KHẮC
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl text-slate-900 tracking-wider font-semibold uppercase">
-                KHÁM PHÁ
-              </h2>
-            </div>
 
-            {/* Slideshow Container */}
-            <div className="relative h-[550px] md:h-[650px] w-full overflow-hidden rounded-2xl shadow-xl bg-slate-950">
-              {/* Background Images with Crossfade */}
-              <div className="absolute inset-0">
-                <AnimatePresence initial={false}>
-                  <motion.img
-                    key={currentDiscoverSlide}
-                    src={discoverSlides[currentDiscoverSlide].bgImage}
-                    initial={{ opacity: 0, scale: 1.03 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="absolute inset-0 object-cover w-full h-full"
-                    alt={discoverSlides[currentDiscoverSlide].title}
-                  />
-                </AnimatePresence>
-                {/* Gradient overlays to darken for accessibility and premium feel */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
-              </div>
-
-              {/* Centered Floating Glassmorphic Card */}
-              <div className="relative z-10 flex items-center justify-center h-full px-4 md:px-6">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentDiscoverSlide}
-                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -30, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="w-full max-w-[360px] md:max-w-[420px] bg-slate-950/40 backdrop-blur-md border border-white/10 rounded-2xl p-5 md:p-7 text-center text-white shadow-2xl flex flex-col items-center"
-                  >
-                    {/* Thumbnail */}
-                    <div className="w-full aspect-[16/10] overflow-hidden rounded-lg mb-5 shadow-lg border border-white/10">
-                      <img
-                        src={discoverSlides[currentDiscoverSlide].thumbnail}
-                        alt={discoverSlides[currentDiscoverSlide].title}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                      />
-                    </div>
-                    {/* Title */}
-                    <h3 className="font-serif text-lg md:text-xl text-white tracking-wide font-medium">
-                      {discoverSlides[currentDiscoverSlide].title}
-                    </h3>
-                    {/* Subtitle */}
-                    <p className="text-slate-200/90 text-xs md:text-sm max-w-sm font-light mt-2.5 leading-relaxed font-sans">
-                      {discoverSlides[currentDiscoverSlide].subtitle}
-                    </p>
-                    {/* Button */}
-                    <button
-                      onClick={() =>
-                        router.push(
-                          `/cruises?destination=${encodeURIComponent(
-                            discoverSlides[currentDiscoverSlide].destination
-                          )}`
-                        )
-                      }
-                      className="mt-6 px-7 py-2.5 border border-white/30 hover:border-transparent bg-transparent hover:bg-[#c5a880] text-white hover:text-[#001226] font-semibold text-[10px] uppercase tracking-[0.2em] rounded-full transition-all duration-300 flex items-center justify-center gap-1.5 group cursor-pointer"
-                    >
-                      Khám Phá
-                      <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                    </button>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Bottom Left: Dots indicator */}
-              <div className="absolute bottom-6 left-6 md:left-8 z-20 flex items-center gap-1.5">
-                {discoverSlides.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentDiscoverSlide(index)}
-                    className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${
-                      index === currentDiscoverSlide ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
-                    }`}
-                    aria-label={`Go to slide ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* Bottom Right: Circular Arrows */}
-              <div className="absolute bottom-6 right-6 md:right-8 z-20 flex items-center gap-2.5">
-                <button
-                  onClick={() =>
-                    setCurrentDiscoverSlide(
-                      (prev: number) => (prev - 1 + discoverSlides.length) % discoverSlides.length
-                    )
-                  }
-                  className="w-10 h-10 rounded-full border border-white/30 hover:border-white hover:bg-white/10 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer"
-                  aria-label="Previous slide"
-                >
-                  <ChevronLeft className="w-4.5 h-4.5" />
-                </button>
-                <button
-                  onClick={() =>
-                    setCurrentDiscoverSlide((prev: number) => (prev + 1) % discoverSlides.length)
-                  }
-                  className="w-10 h-10 rounded-full border border-white/30 hover:border-white hover:bg-white/10 text-white flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer"
-                  aria-label="Next slide"
-                >
-                  <ChevronRight className="w-4.5 h-4.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* DYNAMIC PRODUCT CATALOG SECTION (Light Theme Slate background) */}
-        <section id="catalog" className="py-24 bg-slate-50 border-t border-b border-slate-100">
+        <section id="catalog" className="pt-36 pb-24 bg-slate-50 border-t border-b border-slate-100">
           <div className="max-w-7xl mx-auto px-6 space-y-12">
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-              <div className="space-y-3">
-                <span className="text-xs uppercase tracking-[0.2em] text-accent-dark font-semibold block">
+            <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-6 text-center md:text-left">
+              <div className="space-y-2 text-center md:text-left w-full md:w-auto">
+                <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
                   DỊCH VỤ ĐẲNG CẤP
                 </span>
-                <h2 className="font-serif text-3xl md:text-4xl text-slate-900 tracking-wider font-semibold uppercase">
+                <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
                   HÀNH TRÌNH MỚI NHẤT
                 </h2>
               </div>
 
               {/* Controls and Tabs Container */}
-              <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-6 w-full md:w-auto justify-center">
                 {/* Filter Tabs */}
-                <div className="flex flex-wrap gap-2 bg-white p-1.5 border border-slate-200 rounded-sm shadow-sm">
+                <div className="flex flex-nowrap overflow-x-auto no-scrollbar gap-1.5 bg-white p-1 border border-slate-200/80 rounded-full shadow-sm max-w-full justify-start sm:justify-center scroll-smooth">
                   <button
                     onClick={() => { setFilter("cruise"); setActiveProductDot(0); }}
-                    className={`px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-semibold rounded-sm transition-all duration-300 cursor-pointer ${
-                      filter === "cruise" ? "bg-[#001226] text-white" : "text-slate-500 hover:text-slate-850"
+                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
+                      filter === "cruise" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
                     }`}
                   >
                     Du thuyền
                   </button>
                   <button
                     onClick={() => { setFilter("hotel"); setActiveProductDot(0); }}
-                    className={`px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-semibold rounded-sm transition-all duration-300 cursor-pointer ${
-                      filter === "hotel" ? "bg-[#001226] text-white" : "text-slate-500 hover:text-slate-850"
+                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
+                      filter === "hotel" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
                     }`}
                   >
                     Khách sạn
                   </button>
                   <button
                     onClick={() => { setFilter("combo"); setActiveProductDot(0); }}
-                    className={`px-4 py-2 text-[10px] uppercase tracking-[0.15em] font-semibold rounded-sm transition-all duration-300 cursor-pointer ${
-                      filter === "combo" ? "bg-[#001226] text-white" : "text-slate-500 hover:text-slate-850"
+                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
+                      filter === "combo" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
                     }`}
                   >
                     Combo du lịch
@@ -534,7 +411,7 @@ export default function Home() {
                 </div>
 
                 {/* Circular Navigation Arrows */}
-                <div className="flex gap-2.5">
+                <div className="hidden sm:flex gap-2.5">
                   <button
                     onClick={() => setActiveProductDot((prev) => Math.max(0, prev - 1))}
                     className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer bg-white"
@@ -575,7 +452,7 @@ export default function Home() {
                 {filteredProducts().slice(0, 6).map((product) => (
                   <div
                     key={product.id}
-                    className="flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none"
+                    className="flex-shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none"
                   >
                     <ProductCard
                       id={product.id}
@@ -618,8 +495,8 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               {/* Left Column: Text & Controls */}
               <div className="lg:col-span-5 flex flex-col justify-between min-h-[350px] space-y-8">
-                <div className="space-y-4">
-                  <span className="text-slate-500 text-[10px] uppercase tracking-[0.25em] font-sans font-semibold block">
+                <div className="space-y-2">
+                  <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
                     DỊCH VỤ CỦA TRAVEL
                   </span>
                   <AnimatePresence mode="wait">
@@ -629,12 +506,12 @@ export default function Home() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.2 }}
-                      className="space-y-4"
+                      className="space-y-2"
                     >
-                      <h2 className="font-serif text-3xl md:text-4xl text-slate-900 tracking-wide leading-tight">
+                      <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
                         {serviceSlides[currentServiceSlide].title}
                       </h2>
-                      <p className="text-slate-600 text-sm md:text-base leading-relaxed font-sans font-light">
+                      <p className="text-slate-650 text-sm md:text-base leading-relaxed font-sans font-light pt-2">
                         {serviceSlides[currentServiceSlide].description}
                       </p>
                     </motion.div>
@@ -704,20 +581,193 @@ export default function Home() {
           </div>
         </section>
 
-        {/* DUAL-TAB CROSS REVIEWS SECTION */}
-        <section className="py-24 bg-slate-50 border-t border-b border-slate-100">
+        {/* DUAL-TAB CROSS REVIEWS SECTION - WITH LIGHT TEAL WAVE BACKGROUND */}
+        <section className="py-24 bg-teal-50/30 bg-wave-pattern border-t border-b border-teal-100/50">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-              <span className="text-xs uppercase tracking-[0.25em] text-accent-dark font-semibold block">
+            <div className="text-center max-w-3xl mx-auto space-y-2 mb-12">
+              <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
                 KHÁCH HÀNG PHẢN HỒI
               </span>
-              <h2 className="font-serif text-3xl md:text-4xl text-slate-900 tracking-wider font-semibold uppercase">
+              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
                 TRẢI NGHIỆM THỰC TẾ
               </h2>
-              <div className="w-16 h-[1.5px] bg-accent" />
             </div>
 
             <CrossReviewSection />
+          </div>
+        </section>
+
+        {/* SIMPLIFIED DESTINATIONS SECTION (Moved below reviews) */}
+        <section className="py-24 bg-white text-slate-850">
+          <div className="max-w-7xl mx-auto px-6 space-y-12">
+            <div className="text-center max-w-3xl mx-auto space-y-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
+                ĐIỂM ĐẾN NỔI BẬT
+              </span>
+              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
+                CÁC ĐIỂM ĐẾN
+              </h2>
+            </div>
+
+            {/* 3-card simple grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {discoverSlides.map((slide, index) => (
+                <div
+                  key={index}
+                  onClick={() => router.push(`/cruises?destination=${encodeURIComponent(slide.destination)}`)}
+                  className="group cursor-pointer text-center space-y-4"
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-md border border-slate-100/80">
+                    <img
+                      src={slide.thumbnail}
+                      alt={slide.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg text-slate-850 font-semibold group-hover:text-accent transition-colors">
+                      {slide.title}
+                    </h3>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Khám phá ngay</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PARTNERS SECTION - UNIQUE DESIGN */}
+        <section className="py-24 bg-gradient-to-b from-white to-slate-50/50 bg-wave-pattern border-t border-b border-slate-100/80">
+          <div className="max-w-7xl mx-auto px-6 space-y-12 text-center">
+            {/* Centered Distinct Header */}
+            <div className="max-w-3xl mx-auto space-y-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
+                ĐỐI TÁC
+              </span>
+              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
+                CÁC HÃNG DU THUYỀN LỚN
+              </h2>
+            </div>
+
+            {/* Balanced Grid of Standalone SVGs */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-12 md:gap-x-16 gap-y-12 items-center justify-items-center opacity-75 pt-6">
+              {/* Partner 1: Stellar of the Seas */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <circle cx="20" cy="25" r="3" />
+                  <circle cx="26" cy="19" r="2" />
+                  <circle cx="32" cy="25" r="3" />
+                  <circle cx="26" cy="31" r="2" />
+                  <circle cx="14" cy="25" r="2" />
+                  <circle cx="26" cy="13" r="2" />
+                  <circle cx="38" cy="25" r="2" />
+                  <circle cx="26" cy="37" r="2" />
+                  <text x="48" y="24" className="font-serif text-xs font-bold tracking-[0.1em]">STELLAR</text>
+                  <text x="48" y="34" className="font-sans text-[7.5px] tracking-[0.2em] font-medium">OF THE SEAS</text>
+                </svg>
+              </div>
+
+              {/* Partner 2: Genesis */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M15 35 L17 18 L24 28 L31 18 L33 35 Z M20 15 A 2 2 0 1 1 20 11 A 2 2 0 1 1 20 15 M30 15 A 2 2 0 1 1 30 11 A 2 2 0 1 1 30 15" />
+                  <text x="45" y="26" className="font-serif text-xs font-bold tracking-[0.15em]">GENESIS</text>
+                  <text x="45" y="35" className="font-sans text-[7.5px] tracking-[0.3em] font-medium">REGAL</text>
+                </svg>
+              </div>
+
+              {/* Partner 3: Paradise Vietnam */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M15 35 C 15 22, 25 15, 35 15 C 30 25, 20 30, 15 35 M22 35 C 22 26, 28 20, 35 20 C 32 28, 26 32, 22 35" />
+                  <text x="45" y="24" className="font-serif text-[10px] font-bold tracking-[0.1em]">PARADISE</text>
+                  <text x="45" y="34" className="font-sans text-[7.5px] tracking-[0.2em] font-bold">VIETNAM</text>
+                </svg>
+              </div>
+
+              {/* Partner 4: Capella Cruise */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M12 28 L35 28 L28 15 Z M10 32 L37 32 C 34 35, 25 35, 12 32" />
+                  <text x="45" y="25" className="font-serif text-xs font-bold tracking-[0.1em]">CAPELLA</text>
+                  <text x="45" y="34" className="font-sans text-[7px] tracking-[0.3em] font-medium">CRUISE</text>
+                </svg>
+              </div>
+
+              {/* Partner 5: Bhaya */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M15 20 Q 20 15, 25 20 T 35 20 M15 27 Q 20 22, 25 27 T 35 27 M15 34 Q 20 29, 25 34 T 35 34" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <text x="45" y="27" className="font-serif text-sm font-bold italic tracking-wide">Bhaya</text>
+                  <text x="45" y="36" className="font-sans text-[7px] tracking-[0.25em] font-medium">THE CRUISE CO.</text>
+                </svg>
+              </div>
+
+              {/* Partner 6: Rosy Cruise */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M25 15 L33 22 L25 35 L17 22 Z M25 18 L29 23 L25 30 L21 23 Z" />
+                  <text x="45" y="25" className="font-serif text-xs font-bold tracking-[0.1em]">ROSY CRUISE</text>
+                  <text x="45" y="34" className="font-sans text-[7px] tracking-[0.25em] font-medium">HALONG - LANHA</text>
+                </svg>
+              </div>
+
+              {/* Partner 7: Heritage */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <rect x="15" y="15" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <text x="21" y="29" className="font-serif text-[10px] font-bold">H</text>
+                  <text x="45" y="24" className="font-serif text-xs font-bold tracking-[0.15em]">HERITAGE</text>
+                  <text x="45" y="34" className="font-sans text-[7px] tracking-[0.3em] font-medium">CRUISES</text>
+                </svg>
+              </div>
+
+              {/* Partner 8: Catherine */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M15 25 C15 15, 30 15, 30 25 C30 35, 15 35, 15 25 M20 25 L25 25" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <text x="42" y="25" className="font-serif text-xs font-bold tracking-[0.1em]">CATHERINE</text>
+                  <text x="42" y="34" className="font-sans text-[7px] tracking-[0.2em] font-medium">LUXURY CRUISE</text>
+                </svg>
+              </div>
+
+              {/* Partner 9: Scarlet Pearl */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M25 15 C 20 25, 20 35, 32 32 C 22 30, 22 20, 25 15 Z" />
+                  <circle cx="28" cy="26" r="3.5" />
+                  <text x="45" y="24" className="font-serif text-xs font-bold tracking-[0.1em]">SCARLET</text>
+                  <text x="45" y="34" className="font-sans text-[7.5px] tracking-[0.2em] font-bold">PEARL</text>
+                </svg>
+              </div>
+
+              {/* Partner 10: Ambassador */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M25 12 L35 17 L35 28 C 35 34, 25 38, 25 38 C 25 38, 15 34, 15 28 L15 17 Z M25 17 L20 28 L23 28 L25 22 L27 28 L30 28 Z" />
+                  <text x="45" y="23" className="font-serif text-[10px] font-bold tracking-[0.1em]">AMBASSADOR</text>
+                  <text x="45" y="33" className="font-sans text-[7.5px] tracking-[0.25em] font-medium">CRUISE</text>
+                </svg>
+              </div>
+
+              {/* Partner 11: Essence Grand */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M12 20 Q 20 15, 28 20 T 44 20 M12 27 Q 20 22, 28 27 T 44 27 M12 34 Q 20 29, 28 34 T 44 34" fill="none" stroke="currentColor" strokeWidth="1.5" />
+                  <text x="50" y="24" className="font-serif text-xs font-bold tracking-[0.1em]">ESSENCE</text>
+                  <text x="50" y="34" className="font-sans text-[7.5px] tracking-[0.2em] font-bold">GRAND</text>
+                </svg>
+              </div>
+
+              {/* Partner 12: Indochina Sails */}
+              <div className="hover:opacity-100 transition-all duration-300 flex flex-col items-center select-none text-slate-550 hover:text-accent hover:scale-105 transform">
+                <svg className="w-42 h-14" viewBox="0 0 150 50" fill="currentColor">
+                  <path d="M12 32 L38 32 C35 36, 15 36, 12 32 M15 28 L23 12 L26 28 M28 28 L33 15 L36 28" />
+                  <text x="45" y="24" className="font-serif text-[10px] font-bold tracking-[0.05em]">INDOCHINA</text>
+                  <text x="45" y="34" className="font-sans text-[7.5px] tracking-[0.2em] font-medium">SAILS</text>
+                </svg>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -730,11 +780,11 @@ export default function Home() {
               }
             `}} />
             
-            <div className="text-center max-w-3xl mx-auto space-y-3">
-              <span className="text-slate-500 text-[10px] uppercase tracking-[0.25em] font-sans font-semibold block">
-                CÓ GÌ MỚI TẠI TRAVEL HẠ LONG
+            <div className="text-center max-w-3xl mx-auto space-y-2">
+              <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
+                TIN TỨC MỚI NHẤT
               </span>
-              <h2 className="font-serif text-3xl md:text-4xl text-slate-900 tracking-wider font-semibold uppercase">
+              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
                 BẢN TIN DU HÀNH
               </h2>
             </div>
@@ -742,7 +792,7 @@ export default function Home() {
             {/* Slider container with controls */}
             <div className="relative w-full">
               {/* Controls at upper right */}
-              <div className="flex justify-end gap-2.5 mb-6">
+              <div className="hidden sm:flex justify-end gap-2.5 mb-6">
                 <button
                   onClick={() => setActiveDot((prev) => Math.max(0, prev - 1))}
                   className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer"
@@ -780,7 +830,7 @@ export default function Home() {
                   {mockBlogs.map((blog) => (
                     <article
                       key={blog.id}
-                      className="flex-shrink-0 w-[85vw] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none group cursor-pointer"
+                      className="flex-shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none group cursor-pointer"
                       onClick={() => router.push(`/blogs?category=${encodeURIComponent(blog.category)}`)}
                     >
                       {/* Image */}
@@ -792,7 +842,7 @@ export default function Home() {
                           loading="lazy"
                           draggable="false"
                         />
-                        <span className="absolute top-4 left-4 z-10 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] font-semibold bg-[#001226] text-accent rounded-sm">
+                        <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-white text-accent rounded-full shadow-md">
                           {blog.category}
                         </span>
                       </div>

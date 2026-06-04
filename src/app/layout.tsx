@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mulish, Playfair_Display } from "next/font/google";
+import { Mulish, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -11,10 +11,10 @@ const mulish = Mulish({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["vietnamese", "latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
 
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
-      className={`${mulish.variable} ${playfair.variable} h-full antialiased scroll-smooth`}
+      className={`${mulish.variable} ${montserrat.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-slate-800">
         {children}

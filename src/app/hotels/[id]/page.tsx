@@ -1,21 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { use, useState, useMemo, useEffect, useRef } from "react";
+import React, { use, useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
+import Lightbox from "@/components/Lightbox";
 import { mockHotels, mockReviews, Review } from "@/data/mockData";
-import { 
-  Star, 
-  ChevronRight, 
-  ChevronLeft,
-  ArrowRight,
-  Home, 
-  Building2, 
-  Compass, 
+import {
+  Star,
+  ChevronRight,
+  Home,
+  Building2,
+  Compass,
   Send,
   MessageSquare,
   Waves,
@@ -24,7 +23,9 @@ import {
   Sun,
   Coffee,
   UserCheck,
-  Calendar
+  Calendar,
+  Layers,
+  MapPin,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -56,8 +57,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   const [reviewComment, setReviewComment] = useState("");
   const [activeTab, setActiveTab] = useState<"policy" | "child" | "cancel">("policy");
 
-  // Photo Gallery Slider State
-  const [activePhotoIdx, setActivePhotoIdx] = useState(0);
+  // Lightbox Modal States
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIdx, setLightboxIdx] = useState(0);
 
   // Room Sidebar States (Details Drawer)
   const [selectedRoomIdx, setSelectedRoomIdx] = useState<number | null>(null);
@@ -95,9 +97,35 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   const [bookingEmail, setBookingEmail] = useState("");
   const [bookingNotes, setBookingNotes] = useState("");
 
-  // Lock background scroll when sidebar drawer or booking modal is open
+  // Scrollspy state for Nav Tabs
+  const [activeSection, setActiveSection] = useState("overview");
+
   useEffect(() => {
-    if (selectedRoomIdx !== null || isBookingModalOpen) {
+    const handleScroll = () => {
+      const sections = ["overview", "rooms", "regulations", "reviews"];
+      let currentSection = sections[0];
+      const scrollPosition = window.scrollY + 200;
+
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const top = element.offsetTop;
+          if (scrollPosition >= top) {
+            currentSection = section;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock background scroll when sidebar drawer or booking modal or lightbox is open
+  useEffect(() => {
+    if (selectedRoomIdx !== null || isBookingModalOpen || lightboxOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -105,7 +133,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     return () => {
       document.body.style.overflow = "";
     };
-  }, [selectedRoomIdx, isBookingModalOpen]);
+  }, [selectedRoomIdx, isBookingModalOpen, lightboxOpen]);
 
   // Enriched Room Types mapping
   const mockRooms = useMemo(() => {
@@ -113,14 +141,14 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     return hotel.roomTypes.map((room, idx) => {
       const sizes = ["38 m²", "76 m²", "90 m²", "120 m²"];
       const defaultAmenities = [
-        "Wifi tốc độ cao miễn phí", 
-        "Điều hòa nhiệt độ độc lập", 
-        "Mini bar đầy đủ đồ uống", 
-        "Tivi thông minh màn hình phẳng", 
+        "Wifi tốc độ cao miễn phí",
+        "Điều hòa nhiệt độ độc lập",
+        "Mini bar đầy đủ đồ uống",
+        "Tivi thông minh màn hình phẳng",
         "Trà & Cà phê miễn phí hàng ngày",
         "Két sắt an toàn trong phòng"
       ];
-      
+
       const defaultDetails = [
         "Ban công riêng biệt với tầm nhìn thoáng đãng và ghế ngồi ngắm cảnh.",
         "1 Giường đôi cỡ lớn (King-size) hoặc 2 giường đơn tùy chọn khi nhận phòng.",
@@ -148,7 +176,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
       };
     });
   }, [hotel]);
-
 
   // Calculate stay duration (nights)
   const bookingNights = useMemo(() => {
@@ -194,12 +221,10 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
       toast.error("Vui lòng chọn ít nhất 1 phòng nghỉ.");
       return;
     }
-    
-    // Simulate API request
+
     toast.success("Gửi yêu cầu đặt phòng thành công! TRAVEL sẽ liên hệ lại trong ít phút.");
     setIsBookingModalOpen(false);
-    
-    // Reset form fields
+
     setBookingName("");
     setBookingPhone("");
     setBookingEmail("");
@@ -210,70 +235,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     setBookingAdults(2);
     setBookingChildren(0);
     setBookingInfants(0);
-  };
-
-  // Rooms Carousel States & Refs
-  const roomsScrollRef = useRef<HTMLDivElement>(null);
-  const [activeRoomIdx, setActiveRoomIdx] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(4);
-
-  useEffect(() => {
-    const updateVisibleCount = () => {
-      if (window.innerWidth >= 1024) {
-        setVisibleCount(4);
-      } else if (window.innerWidth >= 640) {
-        setVisibleCount(2);
-      } else {
-        setVisibleCount(1);
-      }
-    };
-    updateVisibleCount();
-    window.addEventListener("resize", updateVisibleCount);
-    return () => window.removeEventListener("resize", updateVisibleCount);
-  }, []);
-
-  const handleRoomsScroll = () => {
-    const container = roomsScrollRef.current;
-    if (!container) return;
-
-    const scrollLeft = container.scrollLeft;
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 24; // gap-6
-    const totalItemWidth = cardWidth + gap;
-
-    if (totalItemWidth > 0) {
-      const index = Math.round(scrollLeft / totalItemWidth);
-      setActiveRoomIdx(index);
-    }
-  };
-
-  const scrollToRoom = (index: number) => {
-    const container = roomsScrollRef.current;
-    if (!container) return;
-
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 24; // gap-6
-    const totalItemWidth = cardWidth + gap;
-
-    container.scrollTo({
-      left: index * totalItemWidth,
-      behavior: "smooth"
-    });
-  };
-
-  const scrollRooms = (direction: "left" | "right") => {
-    const container = roomsScrollRef.current;
-    if (!container) return;
-
-    const cardWidth = container.firstElementChild?.clientWidth || 0;
-    const gap = 24; // gap-6
-    const totalItemWidth = cardWidth + gap;
-
-    const scrollAmount = direction === "left" ? -totalItemWidth : totalItemWidth;
-    container.scrollBy({
-      left: scrollAmount,
-      behavior: "smooth"
-    });
   };
 
   // Load reviews matching this hotel dynamically via useMemo
@@ -318,7 +279,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   if (!hotel) {
     return (
       <>
-        <Navbar />
+        <Navbar solid />
         <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white px-6">
           <Building2 className="w-16 h-16 text-accent animate-pulse mb-4" />
           <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy khách sạn</h2>
@@ -369,7 +330,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
       toast.error("Vui lòng điền đầy đủ họ tên và nội dung đánh giá.");
       return;
     }
-    
+
     const newReview: Review = {
       id: `rev-new-${Date.now()}`,
       userName: reviewName,
@@ -387,14 +348,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     toast.success("Đánh giá của bạn đã được gửi thành công và đang chờ duyệt!");
   };
 
-  const handlePrevPhoto = () => {
-    setActivePhotoIdx((prev) => (prev === 0 ? hotel.imageGallery.length - 1 : prev - 1));
-  };
-
-  const handleNextPhoto = () => {
-    setActivePhotoIdx((prev) => (prev === hotel.imageGallery.length - 1 ? 0 : prev + 1));
-  };
-
   // Suggestions (exclude current hotel)
   const suggestedHotels = mockHotels.filter((h) => h.id !== hotel.id).slice(0, 3);
 
@@ -406,87 +359,138 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div className="w-full bg-white text-slate-800">
-      <Navbar />
+      <Navbar solid />
 
-      {/* 1. HERO BANNER */}
-      <section className="relative h-[80vh] w-full bg-slate-900 overflow-hidden">
-        <img
-          src={hotel.imageGallery[0]}
-          alt={hotel.name}
-          className="absolute inset-0 w-full h-full object-cover opacity-75"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#001226]/20 via-[#001226]/40 to-[#001226]/95" />
-
-        {/* Breadcrumb Path (absolute inside banner like list page) */}
-        <div className="absolute top-28 left-0 right-0 z-20">
-          <div className="max-w-7xl mx-auto px-6 flex items-center gap-2 text-[10px] text-white/60 uppercase tracking-widest font-semibold">
-            <Link href="/" className="hover:text-accent flex items-center gap-1">
+      {/* 1. HEADER SECTION (White background) */}
+      <section className="bg-white pt-28 pb-6">
+        <div className="max-w-7xl mx-auto px-6 space-y-4">
+          {/* Breadcrumb Path */}
+          <div className="flex items-center gap-2 text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
+            <Link href="/" className="hover:text-[#001226] flex items-center gap-1">
               <Home className="w-3.5 h-3.5" />
               Trang chủ
             </Link>
-            <ChevronRight className="w-3 h-3 text-white/40" />
-            <Link href="/hotels" className="hover:text-accent">Khách sạn</Link>
-            <ChevronRight className="w-3 h-3 text-white/40" />
-            <span className="text-white/95">{hotel.name}</span>
+            <ChevronRight className="w-3 h-3 text-slate-300" />
+            <Link href="/hotels" className="hover:text-[#001226]">Khách sạn</Link>
+            <ChevronRight className="w-3 h-3 text-slate-300" />
+            <span className="text-slate-800">{hotel.name}</span>
           </div>
-        </div>
 
-        {/* Floating Glassmorphic Footer inside Hero Banner */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 pb-8 pt-20 bg-gradient-to-t from-[#001226] via-[#001226]/80 to-transparent">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 w-full">
-            
-            {/* Left Column: Title & Ratings (Limited width to prevent squishing) */}
-            <div className="space-y-2 text-white flex-1 min-w-0 max-w-xl md:max-w-2xl lg:max-w-3xl">
-              <div className="space-y-2">
-                <h1 className="font-serif text-3xl md:text-5xl tracking-wide font-normal drop-shadow-md break-words">
-                  {hotel.name.toUpperCase()}
-                </h1>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-0.5 text-accent">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <Star
-                        key={index}
-                        className={`w-4 h-4 ${index < hotel.stars ? "fill-accent text-accent" : "text-white/20"}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs font-semibold text-white/80 tracking-wider">
-                    ({hotel.stars}.0) • {hotel.location.split(",").slice(-1)[0].trim()}
-                  </span>
-                </div>
+          {/* Title, Stars, Location */}
+          <div className="space-y-2">
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <h1 className="font-serif text-2xl md:text-4xl text-slate-900 tracking-wide font-normal">{hotel.name}</h1>
+              <div className="flex items-center gap-1 text-accent">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star
+                    key={index}
+                    className={`w-4 h-4 ${index < hotel.stars ? "fill-accent text-accent" : "text-slate-200"}`}
+                  />
+                ))}
+                <span className="text-xs font-semibold text-slate-500 ml-2">({hotel.stars}.0)</span>
               </div>
             </div>
-
-            {/* Right Column: Booking Section (Never wraps, never squished) */}
-            <div className="flex items-center gap-6 flex-shrink-0 whitespace-nowrap">
-              <div className="text-right hidden sm:block">
-                <span className="block text-[10px] uppercase tracking-widest text-white/50">Giá chỉ từ</span>
-                <span className="text-xl font-bold text-accent font-serif">{formatPrice(priceFrom)}</span>
-                <span className="text-[10px] text-white/40 block">/ đêm phòng</span>
-              </div>
-
-              <button
-                onClick={handleBookingClick}
-                className="px-8 py-4 bg-accent hover:bg-white text-[#001226] font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-[1.03] cursor-pointer whitespace-nowrap flex-shrink-0"
-              >
-                Đặt Lịch Ngay
-              </button>
+            {/* Address */}
+            <div className="flex items-center gap-2 text-slate-500 text-xs">
+              <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0" />
+              <span>{hotel.location}</span>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* 2. OVERVIEW & TECH SPECS */}
-      <section className="py-16 bg-white">
+      {/* GALLERY GRID */}
+      <section className="bg-white px-6 pb-6">
+        <div className="max-w-7xl mx-auto relative">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 h-auto md:h-[450px]">
+            {/* Main large image */}
+            <div
+              className="md:col-span-2 md:row-span-2 relative overflow-hidden rounded-sm cursor-pointer aspect-video md:aspect-auto"
+              onClick={() => {
+                setLightboxIdx(0);
+                setLightboxOpen(true);
+              }}
+            >
+              <img
+                src={hotel.imageGallery[0]}
+                alt={`${hotel.name} 1`}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            {/* Thumbnails */}
+            {[1, 2, 3, 4].map((imgIdx) => (
+              <div
+                key={imgIdx}
+                className="hidden md:block relative overflow-hidden rounded-sm cursor-pointer"
+                onClick={() => {
+                  setLightboxIdx(imgIdx);
+                  setLightboxOpen(true);
+                }}
+              >
+                <img
+                  src={hotel.imageGallery[imgIdx] || hotel.imageGallery[0]}
+                  alt={`${hotel.name} ${imgIdx + 1}`}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
+          {/* View all photos button */}
+          <button
+            onClick={() => {
+              setLightboxIdx(0);
+              setLightboxOpen(true);
+            }}
+            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-sm shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+          >
+            <span>Xem tất cả ảnh</span>
+            <span className="text-slate-400">({hotel.imageGallery.length})</span>
+          </button>
+        </div>
+      </section>
+
+      {/* STICKY NAV TABS */}
+      <div className="sticky top-[72px] z-40 bg-white/90 backdrop-blur-md hidden md:block pb-1 pt-2">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
+            {[
+              { id: "overview", label: "Giới thiệu" },
+              { id: "rooms", label: "Hạng phòng" },
+              { id: "regulations", label: "Quy định" },
+              { id: "reviews", label: "Đánh giá" },
+            ].map((tab) => {
+              const isActive = activeSection === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    const el = document.getElementById(tab.id);
+                    if (el) {
+                      const y = el.getBoundingClientRect().top + window.scrollY - 130;
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
+                  }}
+                  className={`px-5 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap rounded-full transition-all duration-300 cursor-pointer ${
+                    isActive
+                      ? "bg-[#001226] text-white shadow-sm"
+                      : "bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900 border border-slate-100"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* 2. OVERVIEW & SPECS (2-Column Layout) */}
+      <section id="overview" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
-          
           {/* Left Side: Overview & Amenities (col-span-2) */}
-          <div className="lg:col-span-2 space-y-12">
-            
+          <div className="lg:col-span-2 space-y-10">
             {/* Overview text */}
             <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Tổng quan khu nghỉ dưỡng</span>
               <h2 className="font-serif text-2xl md:text-3xl text-slate-900 leading-tight">
                 Không gian nghỉ ngơi tuyệt mỹ và dịch vụ đẳng cấp
               </h2>
@@ -497,15 +501,11 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Amenities Grid */}
             <div className="space-y-6 pt-6 border-t border-slate-100">
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Tiện ích cao cấp</span>
-                <h3 className="font-serif text-lg font-bold text-slate-900">TIỆN ÍCH KHÁCH SẠN</h3>
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">TIỆN ÍCH KHÁCH SẠN</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {hotel.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-sm border border-slate-100 hover:border-accent/20 transition-colors duration-300">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-white shadow-xs flex items-center justify-center flex-shrink-0">
                       {getHotelAmenityIcon(amenity)}
                     </div>
                     <span className="text-xs font-semibold text-slate-700">{amenity}</span>
@@ -513,213 +513,133 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 ))}
               </div>
             </div>
-
           </div>
 
-          {/* Right Side: Technical Specs */}
-          <div className="lg:col-span-1 lg:sticky lg:top-28">
-            <div className="bg-slate-50 border border-slate-200/60 p-8 rounded-sm space-y-6 shadow-sm">
-              <div className="border-b border-slate-200/60 pb-4 flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-accent" />
-                <h4 className="font-serif text-base font-bold text-slate-900 uppercase tracking-wide">
-                  THÔNG TIN KHÁCH SẠN
-                </h4>
+          {/* Right Side: Price, Booking CTA & Specs (col-span-1) */}
+          <div className="lg:col-span-1 lg:sticky lg:top-36">
+            <div className="bg-white border border-slate-200 rounded-sm shadow-sm p-6 space-y-6">
+              {/* Price */}
+              <div className="border-b border-slate-100 pb-5">
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold mb-1">Giá chỉ từ</span>
+                <div className="text-3xl font-serif font-bold text-[#001226]">{formatPrice(priceFrom)}</div>
+                <span className="text-xs text-slate-400">/ đêm phòng</span>
               </div>
 
-              <div className="space-y-4 text-xs">
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium">ĐỊA ĐIỂM</span>
-                  <span className="font-bold text-slate-800 text-right max-w-[180px]">{hotel.location}</span>
+              {/* Booking CTA Button */}
+              <button
+                onClick={handleBookingClick}
+                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-md cursor-pointer"
+              >
+                Đặt Phòng Ngay
+              </button>
+
+              {/* Specs */}
+              <div className="border-t border-slate-100 pt-5 space-y-4">
+                <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
+                  <Building2 className="w-4 h-4 text-accent" />
+                  <h4 className="font-serif text-xs font-bold text-slate-900 uppercase tracking-wide">THÔNG TIN KHÁCH SẠN</h4>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium">TỔNG SỐ PHÒNG NGHỈ</span>
-                  <span className="font-bold text-slate-800 uppercase">{hotel.roomCount} phòng</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-500 font-medium">TIÊU CHUẨN</span>
-                  <span className="font-bold text-slate-800 uppercase">{hotel.stars} sao</span>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">ĐỊA ĐIỂM</span>
+                    <span className="font-bold text-slate-800 text-right max-w-[160px]">{hotel.location.split(",").slice(-1)[0].trim()}</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">TỔNG SỐ PHÒNG</span>
+                    <span className="font-bold text-slate-800 uppercase">{hotel.roomCount} phòng</span>
+                  </div>
+                  <div className="flex justify-between py-1.5 border-b border-slate-50">
+                    <span className="text-slate-500 font-medium">TIÊU CHUẨN</span>
+                    <span className="font-bold text-slate-800 uppercase">{hotel.stars} sao</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </section>
 
-      {/* 3. GALLERY SLIDESHOW */}
-      <section className="py-20 bg-slate-50 border-t border-b border-slate-100">
+      {/* 3. ROOM CATEGORIES SECTION (Vertical List of Row Cards) */}
+      <section id="rooms" className="py-16 bg-white border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-6 space-y-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Hình ảnh thực tế</span>
+          <div className="border-b border-slate-100 pb-6">
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              KHÔNG GIAN NGHỈ DƯỠNG
+              CÁC HẠNG PHÒNG
             </h2>
           </div>
 
-          <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden rounded-sm bg-slate-900 shadow-lg group">
-            <img
-              src={hotel.imageGallery[activePhotoIdx]}
-              alt={`Hotel view ${activePhotoIdx + 1}`}
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out"
-            />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
-
-            {/* Bottom-left: Dots */}
-            <div className="absolute bottom-6 left-6 z-10 flex items-center gap-1.5">
-              {hotel.imageGallery.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActivePhotoIdx(idx)}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                    idx === activePhotoIdx ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
-
-            {/* Bottom-right: Arrows */}
-            <div className="absolute bottom-6 right-6 z-10 flex items-center gap-3">
-              <button
-                onClick={handlePrevPhoto}
-                className="w-10 h-10 rounded-full border border-white/44 hover:border-white text-white hover:bg-white/10 flex items-center justify-center transition-all cursor-pointer"
-                aria-label="Previous image"
-              >
-                <ChevronRight className="w-4 h-4 rotate-180" />
-              </button>
-              <button
-                onClick={handleNextPhoto}
-                className="w-10 h-10 rounded-full border border-white/44 hover:border-white text-white hover:bg-white/10 flex items-center justify-center transition-all cursor-pointer"
-                aria-label="Next image"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. ROOM CATEGORIES SECTION */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6 space-y-12">
-          
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 border-b border-slate-100 pb-8">
-            <div className="text-left space-y-2">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Lựa chọn phòng ngủ</span>
-              <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-                CÁC HẠNG PHÒNG THƯỢNG HẠNG
-              </h2>
-            </div>
-            
-            {/* Navigation arrows */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => scrollRooms("left")}
-                className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 text-slate-655 hover:bg-slate-50 flex items-center justify-center transition-all cursor-pointer bg-white shadow-sm"
-                aria-label="Previous rooms"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => scrollRooms("right")}
-                className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 text-slate-655 hover:bg-slate-50 flex items-center justify-center transition-all cursor-pointer bg-white shadow-sm"
-                aria-label="Next rooms"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Rooms Carousel */}
-          <div 
-            ref={roomsScrollRef}
-            onScroll={handleRoomsScroll}
-            className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pb-4"
-          >
+          <div className="space-y-6">
             {mockRooms.map((room, index) => (
-              <div 
-                key={index} 
-                className="flex-shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] snap-start relative aspect-[3/4] overflow-hidden rounded-sm bg-slate-900 shadow-md group flex flex-col justify-end"
+              <div
+                key={index}
+                className="flex flex-col md:flex-row border border-slate-200 rounded-sm hover:border-slate-350 hover:shadow-xs transition-all duration-300 bg-white overflow-hidden"
               >
-                <img
-                  src={room.image}
-                  alt={room.name}
-                  className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+                {/* Image */}
+                <div
+                  className="w-full md:w-56 h-40 md:h-40 relative overflow-hidden flex-shrink-0 cursor-pointer"
+                  onClick={() => {
+                    setSelectedRoomIdx(index);
+                    setRoomPhotoIdx(0);
+                  }}
+                >
+                  <img
+                    src={room.image}
+                    alt={room.name}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
 
-                <div className="relative z-10 p-6 space-y-4 flex flex-col w-full text-left">
-                  <h3 className="font-serif text-base font-semibold text-white tracking-wide leading-snug">
-                    {room.name}
-                  </h3>
-                  
-                  <div className="space-y-2.5 border-t border-white/20 pt-3">
-                    <div className="flex gap-6 text-[10px] text-white/70">
-                      <div>
-                        <span className="block text-[8px] text-white/70 uppercase tracking-widest font-semibold">Khách tối đa</span>
-                        <span className="font-bold text-white text-xs">{room.capacity}</span>
-                      </div>
-                      <div>
-                        <span className="block text-[8px] text-white/70 uppercase tracking-widest font-semibold">Diện tích</span>
-                        <span className="font-bold text-white text-xs">{room.size}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-baseline pt-1">
-                      <span className="text-[9px] text-white/70 uppercase tracking-widest font-semibold">Giá từ:</span>
-                      <span className="font-serif text-xs md:text-sm font-bold text-accent whitespace-nowrap">{formatPrice(room.price)} / đêm</span>
+                {/* Content */}
+                <div className="flex-1 p-5 md:p-6 flex flex-col justify-between md:h-40">
+                  <div className="space-y-2">
+                    <h3
+                      className="font-serif text-base md:text-lg font-bold text-slate-900 hover:text-accent-dark transition-colors cursor-pointer"
+                      onClick={() => {
+                        setSelectedRoomIdx(index);
+                        setRoomPhotoIdx(0);
+                      }}
+                    >
+                      {room.name}
+                    </h3>
+
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+                      <span className="flex items-center gap-1">
+                        <Layers className="w-3.5 h-3.5" />
+                        Diện tích: {room.size}
+                      </span>
+                      <span>•</span>
+                      <span>Sức chứa: {room.capacity}</span>
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => {
-                      setSelectedRoomIdx(index);
-                      setRoomPhotoIdx(0);
-                    }}
-                    className="w-full py-2.5 bg-white hover:bg-accent text-[#001226] font-bold text-[10px] uppercase tracking-wider rounded-full flex items-center justify-between px-5 transition-colors duration-300 shadow-md cursor-pointer"
-                  >
-                    <span>Khám phá</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-medium">Giá từ</span>
+                      <span className="font-serif text-base font-bold text-slate-900">{formatPrice(room.price)}</span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setSelectedRoomIdx(index);
+                        setRoomPhotoIdx(0);
+                      }}
+                      className="px-5 py-2 bg-slate-900 hover:bg-accent text-white hover:text-slate-900 text-xs font-bold uppercase tracking-wider rounded-sm transition-all duration-300 cursor-pointer"
+                    >
+                      Xem chi tiết
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Dots pagination */}
-          <div className="flex justify-center items-center gap-1.5">
-            {Array.from({ length: Math.max(1, mockRooms.length - visibleCount + 1) }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => scrollToRoom(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  idx === activeRoomIdx ? "w-6 bg-[#001226]" : "w-1.5 bg-slate-300 hover:bg-slate-450"
-                }`}
-                aria-label={`Go to room page ${idx + 1}`}
-              />
-            ))}
-          </div>
-
-          <style>{`
-            .no-scrollbar::-webkit-scrollbar {
-              display: none;
-            }
-            .no-scrollbar {
-              -ms-overflow-style: none;
-              scrollbar-width: none;
-            }
-          `}</style>
         </div>
       </section>
 
-      {/* 5. REGULATIONS & NOTES */}
-      <section className="py-20 bg-slate-50 border-t border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 space-y-10">
-          
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Điều khoản đặt chỗ</span>
-            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              QUY ĐỊNH CHUNG & LƯU Ý
-            </h2>
+      {/* 4. REGULATIONS & NOTES */}
+      <section id="regulations" className="py-16 bg-slate-50 border-t border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">QUY ĐỊNH CHUNG & LƯU Ý</h2>
           </div>
 
           <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden flex flex-col md:flex-row">
@@ -775,13 +695,12 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 6. REVIEWS & FEEDBACK */}
-      <section className="py-20 bg-white">
+      {/* 5. REVIEWS & FEEDBACK */}
+      <section id="reviews" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16">
-          
+
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-2">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Phản hồi thực tế</span>
               <h3 className="font-serif text-xl font-bold text-slate-900 uppercase">ĐÁNH GIÁ TỪ DU KHÁCH</h3>
             </div>
 
@@ -790,7 +709,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 <span className="text-4xl font-serif font-bold text-[#001226]">{avgRating}</span>
                 <span className="text-[10px] text-slate-400 font-semibold block uppercase">Điểm đánh giá</span>
               </div>
-              
+
               <div className="flex-1 space-y-2 border-l border-slate-200 pl-6 w-full text-left">
                 <div className="flex items-center gap-0.5 text-accent">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -822,9 +741,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
                     <div className="flex items-center gap-0.5 text-accent">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`w-3.5 h-3.5 ${i < Math.floor(rev.rating) ? "fill-accent text-accent" : "text-slate-200"}`} 
+                        <Star
+                          key={i}
+                          className={`w-3.5 h-3.5 ${i < Math.floor(rev.rating) ? "fill-accent text-accent" : "text-slate-200"}`}
                         />
                       ))}
                     </div>
@@ -876,12 +795,12 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                         className="p-1 hover:scale-115 transition-transform cursor-pointer"
                         aria-label={`Đánh giá ${starVal} sao`}
                       >
-                        <Star 
+                        <Star
                           className={`w-6 h-6 ${
-                            starVal <= reviewRating 
-                              ? "fill-accent text-accent" 
+                            starVal <= reviewRating
+                              ? "fill-accent text-accent"
                               : "text-slate-300 hover:text-accent/60"
-                          }`} 
+                          }`}
                         />
                       </button>
                     );
@@ -914,11 +833,11 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
         </div>
       </section>
 
-      {/* 7. RELATED SUGGESTED HOTELS */}
+      {/* 6. RELATED SUGGESTED HOTELS */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 space-y-12">
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Khám khám thêm</span>
+            <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Khám phá thêm</span>
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
               GỢI Ý CÁC KHÁCH SẠN KHÁC
             </h2>
@@ -949,19 +868,30 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
       <Footer />
 
+      {/* LIGHTBOX MODAL */}
+      <Lightbox
+        images={hotel.imageGallery}
+        isOpen={lightboxOpen}
+        initialIndex={lightboxIdx}
+        onClose={() => setLightboxOpen(false)}
+        title={hotel.name}
+        stars={hotel.stars}
+        location={hotel.location}
+      />
+
       {/* ROOM DETAILS SIDEBAR / DRAWER */}
       <AnimatePresence>
         {selectedRoomIdx !== null && activeRoom && (
           <div className="fixed inset-0 z-[70] flex justify-end">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedRoomIdx(null)}
               className="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
             />
-            
-            <motion.div 
+
+            <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -971,7 +901,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500 tracking-wider">
                 <span className="uppercase">{hotel.name}</span>
                 <span className="text-slate-900 uppercase font-serif text-[11px] tracking-widest">Hạng phòng & Suites</span>
-                <button 
+                <button
                   onClick={() => setSelectedRoomIdx(null)}
                   className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors text-slate-655 cursor-pointer"
                   aria-label="Đóng"
@@ -981,7 +911,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 scrollbar-thin">
-                
+
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-slate-100 pb-6">
                   <div className="space-y-1 text-left">
                     <span className="text-[10px] uppercase tracking-widest text-accent font-bold">Chi tiết hạng phòng</span>
@@ -989,14 +919,14 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                       {activeRoom.name}
                     </h3>
                   </div>
-                  <div className="flex gap-8 text-right self-start">
+                  <div className="flex gap-6 text-right self-start flex-shrink-0 whitespace-nowrap">
                     <div>
                       <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Diện tích</span>
-                      <span className="font-serif text-xl font-bold text-slate-800">{activeRoom.size}</span>
+                      <span className="font-serif text-xl font-bold text-slate-800 block whitespace-nowrap">{activeRoom.size}</span>
                     </div>
                     <div>
                       <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Sức chứa</span>
-                      <span className="font-serif text-lg font-bold text-slate-800">{activeRoom.capacity}</span>
+                      <span className="font-serif text-xl font-bold text-slate-800 block whitespace-nowrap">{activeRoom.capacity}</span>
                     </div>
                   </div>
                 </div>
@@ -1007,7 +937,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     alt={`${activeRoom.name} view ${roomPhotoIdx + 1}`}
                     className="w-full h-full object-cover transition-all duration-500"
                   />
-                  
+
                   <div className="absolute bottom-4 left-4 z-10 flex items-center gap-1.5">
                     {activeRoom.images.map((_, idx) => (
                       <button
@@ -1039,11 +969,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <div className="space-y-4 text-left">
-                  <h4 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wider">TIỆN NGHI PHÒNG</h4>
-                  <p className="text-xs text-slate-500 font-sans font-light leading-relaxed">
-                    {activeRoom.description}
-                  </p>
-                  
                   <div className="border-t border-slate-100 pt-4 grid grid-cols-2 gap-x-6 gap-y-3">
                     {activeRoom.amenities.map((item, idx) => (
                       <div key={idx} className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-sm border border-slate-100">
@@ -1052,35 +977,39 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                       </div>
                     ))}
                   </div>
-
-                  <div className="border-t border-slate-100 pt-6 flex items-center justify-between gap-4">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] uppercase tracking-widest text-slate-400">Giá phòng nghỉ</span>
-                      <span className="font-serif text-lg font-bold text-slate-900">{formatPrice(activeRoom.price)} <span className="text-[10px] text-slate-450 font-sans font-normal">/ đêm</span></span>
-                    </div>
-                    <button
-                      onClick={() => {
-                        const targetIdx = selectedRoomIdx !== null ? (selectedRoomIdx as number) : 0;
-                        setBookingRoomsQty(mockRooms.map((_, i) => i === targetIdx ? 1 : 0));
-                        setSelectedRoomIdx(null);
-                        setIsBookingModalOpen(true);
-                      }}
-                      className="px-6 py-3 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] border border-[#001226] hover:border-accent text-xs uppercase tracking-widest font-bold rounded-full transition-all cursor-pointer"
-                    >
-                      Đặt phòng này
-                    </button>
-                  </div>
                 </div>
 
               </div>
 
+              {/* Sticky bottom bar: Price + Book CTA */}
+              <div className="border-t border-slate-100 px-6 py-4 bg-white flex items-center justify-between gap-4 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-10">
+                <div className="flex flex-col text-left">
+                  <span className="text-[9px] uppercase tracking-widest text-slate-400 font-semibold block mb-0.5">Giá phòng từ</span>
+                  <span className="font-serif text-base font-bold text-slate-900">
+                    {formatPrice(activeRoom.price)} <span className="text-[10px] text-slate-450 font-sans font-normal">/ đêm</span>
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    const targetIdx = selectedRoomIdx !== null ? (selectedRoomIdx as number) : 0;
+                    setBookingRoomsQty(mockRooms.map((_, i) => i === targetIdx ? 1 : 0));
+                    setSelectedRoomIdx(null);
+                    setIsBookingModalOpen(true);
+                  }}
+                  className="px-6 py-3 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] border border-[#001226] hover:border-accent text-xs uppercase tracking-widest font-bold rounded-full transition-all cursor-pointer"
+                >
+                  Đặt phòng này
+                </button>
+              </div>
+
+              {/* Bottom Navigation (prev/next room) */}
               <div className="border-t border-slate-100 px-6 py-4 bg-slate-50 flex items-center justify-between">
                 <button
                   onClick={() => {
                     setSelectedRoomIdx((prev) => (prev === 0 ? mockRooms.length - 1 : prev! - 1));
                     setRoomPhotoIdx(0);
                   }}
-                  className="flex items-center gap-2 text-xs font-semibold text-slate-655 hover:text-accent-dark transition-colors cursor-pointer"
+                  className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-accent-dark transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4 rotate-180" />
                   <span>
@@ -1093,7 +1022,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     setSelectedRoomIdx((prev) => (prev === mockRooms.length - 1 ? 0 : prev! + 1));
                     setRoomPhotoIdx(0);
                   }}
-                  className="flex items-center gap-2 text-xs font-semibold text-slate-655 hover:text-accent-dark transition-colors cursor-pointer"
+                  className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-accent-dark transition-colors cursor-pointer"
                 >
                   <span>
                     {mockRooms[selectedRoomIdx === mockRooms.length - 1 ? 0 : selectedRoomIdx + 1].name}
@@ -1148,10 +1077,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <form onSubmit={handleBookingSubmit} className="space-y-5">
-                  
+
                   {/* Stay Duration - Check-in & Check-out dates */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Check-in Date */}
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
                         Ngày nhận phòng *
@@ -1169,7 +1097,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                       </div>
                     </div>
 
-                    {/* Check-out Date */}
                     <div className="space-y-2">
                       <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
                         Ngày trả phòng *
@@ -1249,148 +1176,54 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                       Số lượng khách nghỉ
                     </label>
                     <div className="grid grid-cols-3 gap-3">
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <span className="text-[9px] font-bold text-slate-700 block">Người lớn</span>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingAdults(prev => Math.max(1, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingAdults}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingAdults(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
+                      {[
+                        { label: "Người lớn", sub: null, val: bookingAdults, setter: setBookingAdults, min: 1 },
+                        { label: "Trẻ em", sub: "4 - 11 tuổi", val: bookingChildren, setter: setBookingChildren, min: 0 },
+                        { label: "Em bé", sub: "Dưới 4 tuổi", val: bookingInfants, setter: setBookingInfants, min: 0 },
+                      ].map(({ label, sub, val, setter, min }) => (
+                        <div key={label} className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
+                          <div className="space-y-0">
+                            <span className="text-[9px] font-bold text-slate-700 block">{label}</span>
+                            {sub && <span className="text-[7px] text-slate-400 block -mt-0.5">{sub}</span>}
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <button type="button" onClick={() => setter((prev: number) => Math.max(min, prev - 1))} className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 font-bold text-xs select-none cursor-pointer">-</button>
+                            <span className="text-xs font-bold text-slate-800">{val}</span>
+                            <button type="button" onClick={() => setter((prev: number) => prev + 1)} className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 font-bold text-xs select-none cursor-pointer">+</button>
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <div className="space-y-0">
-                          <span className="text-[9px] font-bold text-slate-700 block">Trẻ em</span>
-                          <span className="text-[7px] text-slate-400 block -mt-0.5">4 - 11 tuổi</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingChildren(prev => Math.max(0, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingChildren}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingChildren(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center space-y-1 shadow-xs">
-                        <div className="space-y-0">
-                          <span className="text-[9px] font-bold text-slate-700 block">Em bé</span>
-                          <span className="text-[7px] text-slate-400 block -mt-0.5">Dưới 4 tuổi</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <button
-                            type="button"
-                            onClick={() => setBookingInfants(prev => Math.max(0, prev - 1))}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <span className="text-xs font-bold text-slate-800">{bookingInfants}</span>
-                          <button
-                            type="button"
-                            onClick={() => setBookingInfants(prev => prev + 1)}
-                            className="w-6 h-6 rounded-full bg-white border border-slate-300 text-slate-700 flex items-center justify-center hover:bg-slate-100 hover:border-slate-400 font-bold text-xs select-none cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </div>
 
                   {/* Contact Info */}
                   <div className="space-y-4 pt-2 border-t border-slate-100">
                     <span className="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Thông tin liên hệ</span>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                          Họ và tên *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="Nguyễn Văn A..."
-                          value={bookingName}
-                          onChange={(e) => setBookingName(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                        />
+                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Họ và tên *</label>
+                        <input type="text" required placeholder="Nguyễn Văn A..." value={bookingName} onChange={(e) => setBookingName(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                       </div>
-                      
                       <div className="space-y-1">
-                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                          Số điện thoại *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="0912345xxx..."
-                          value={bookingPhone}
-                          onChange={(e) => setBookingPhone(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                        />
+                        <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Số điện thoại *</label>
+                        <input type="tel" required placeholder="0912345xxx..." value={bookingPhone} onChange={(e) => setBookingPhone(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                       </div>
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Địa chỉ Email
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="email@example.com..."
-                        value={bookingEmail}
-                        onChange={(e) => setBookingEmail(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                      />
+                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Địa chỉ Email</label>
+                      <input type="email" placeholder="email@example.com..." value={bookingEmail} onChange={(e) => setBookingEmail(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Yêu cầu thêm
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..."
-                        value={bookingNotes}
-                        onChange={(e) => setBookingNotes(e.target.value)}
-                        className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs"
-                      />
+                      <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Yêu cầu thêm</label>
+                      <textarea rows={2} placeholder="Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..." value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                     </div>
                   </div>
 
                   <div className="block md:hidden pt-4 border-t border-slate-100">
-                    <button
-                      type="submit"
-                      disabled={!bookingRoomsQty.some(q => q > 0)}
-                      className={`w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
-                        bookingRoomsQty.some(q => q > 0)
-                          ? "bg-[#001226] hover:bg-accent text-white hover:text-[#001226] cursor-pointer"
-                          : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                      }`}
-                    >
+                    <button type="submit" disabled={!bookingRoomsQty.some(q => q > 0)} className={`w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${bookingRoomsQty.some(q => q > 0) ? "bg-[#001226] hover:bg-accent text-white hover:text-[#001226] cursor-pointer" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}>
                       Gửi yêu cầu đặt phòng
                     </button>
                   </div>
@@ -1404,17 +1237,12 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     Báo giá tạm tính
                   </h4>
 
-                  {/* Room Preview Image */}
                   {(() => {
                     const firstSelectedIdx = bookingRoomsQty.findIndex(q => q > 0);
                     const activeRoomForImage = firstSelectedIdx !== -1 ? mockRooms[firstSelectedIdx] : mockRooms[0];
                     return (
                       <div className="aspect-[16/10] rounded-lg overflow-hidden bg-slate-200 shadow-inner relative">
-                        <img
-                          src={activeRoomForImage?.image || hotel.imageGallery[0]}
-                          alt="Room Preview"
-                          className="w-full h-full object-cover"
-                        />
+                        <img src={activeRoomForImage?.image || hotel.imageGallery[0]} alt="Room Preview" className="w-full h-full object-cover" />
                         <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[8px] font-bold text-slate-900 shadow-xs uppercase tracking-wider">
                           Thời gian lưu trú: {bookingNights} đêm
                         </div>
@@ -1422,40 +1250,25 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     );
                   })()}
 
-                  {/* Details summary */}
                   <div className="space-y-4 text-xs text-slate-650">
                     <div className="flex justify-between border-b border-slate-150 pb-2">
                       <span className="font-medium text-slate-500">Khách sạn:</span>
                       <span className="font-bold text-slate-800 text-right">{hotel.name}</span>
                     </div>
-
                     <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Nhận phòng (Check-in):</span>
-                      <span className="font-bold text-slate-800 text-right">
-                        {bookingCheckIn ? new Date(bookingCheckIn).toLocaleDateString("vi-VN") : "Chưa chọn"}
-                      </span>
+                      <span className="font-medium text-slate-500">Nhận phòng:</span>
+                      <span className="font-bold text-slate-800 text-right">{bookingCheckIn ? new Date(bookingCheckIn).toLocaleDateString("vi-VN") : "Chưa chọn"}</span>
                     </div>
-
                     <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Trả phòng (Check-out):</span>
-                      <span className="font-bold text-slate-800 text-right">
-                        {bookingCheckOut ? new Date(bookingCheckOut).toLocaleDateString("vi-VN") : "Chưa chọn"}
-                      </span>
+                      <span className="font-medium text-slate-500">Trả phòng:</span>
+                      <span className="font-bold text-slate-800 text-right">{bookingCheckOut ? new Date(bookingCheckOut).toLocaleDateString("vi-VN") : "Chưa chọn"}</span>
                     </div>
-
                     <div className="flex justify-between border-b border-slate-150 pb-2">
                       <span className="font-medium text-slate-500">Khách nghỉ:</span>
-                      <span className="font-bold text-slate-800 text-right">
-                        {bookingAdults} NL
-                        {bookingChildren > 0 && `, ${bookingChildren} TE`}
-                        {bookingInfants > 0 && `, ${bookingInfants} EB`}
-                      </span>
+                      <span className="font-bold text-slate-800 text-right">{bookingAdults} NL{bookingChildren > 0 && `, ${bookingChildren} TE`}{bookingInfants > 0 && `, ${bookingInfants} EB`}</span>
                     </div>
-
-                    {/* Rooms List */}
                     <div className="space-y-2 border-b border-slate-150 pb-3">
                       <span className="font-medium text-slate-500 block">Danh sách phòng:</span>
-                      
                       {!bookingRoomsQty.some(q => q > 0) ? (
                         <span className="text-red-500 font-semibold block text-[11px] italic">Chưa chọn phòng nghỉ nào</span>
                       ) : (
@@ -1477,7 +1290,6 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
 
                 <div className="space-y-5 pt-6 border-t border-slate-200 mt-6">
-                  {/* Dynamic Total Price */}
                   <div className="space-y-1">
                     <span className="text-[9px] uppercase tracking-widest text-slate-500 block font-bold">Tổng chi phí dự kiến</span>
                     <div className="flex items-baseline justify-between">
@@ -1493,12 +1305,10 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                   </div>
 
-                  {/* Informational Warning Banner */}
                   <div className="bg-amber-50 border border-amber-250 p-3 rounded-lg text-[10px] text-amber-800 leading-relaxed font-medium">
                     * Giá ước tính trên tính theo số đêm lưu trú, chưa bao gồm phụ thu trẻ em, cuối tuần, ngày lễ hoặc dịch vụ xe đưa đón. Tư vấn viên TRAVEL sẽ liên hệ sớm nhất.
                   </div>
 
-                  {/* Submission button on Desktop */}
                   <button
                     type="button"
                     onClick={handleBookingSubmit}
@@ -1518,6 +1328,11 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
       </AnimatePresence>
+
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

@@ -265,7 +265,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3 text-white/40" />
-            <Link href="/blogs" className="hover:text-accent">Bản tin</Link>
+            <Link href="/blogs" className="hover:text-accent">Blog</Link>
             <ChevronRight className="w-3 h-3 text-white/40" />
             <span className="text-white/95 truncate max-w-[200px] md:max-w-xs">{blog.title}</span>
           </div>
@@ -276,7 +276,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
           <div className="max-w-4xl mx-auto px-6 space-y-4">
             
             {/* Category badge */}
-            <span className="inline-block px-3 py-1 bg-accent/20 border border-accent/30 text-accent text-[9px] uppercase tracking-[0.15em] font-semibold rounded-sm">
+            <span className="inline-block px-3 py-1.5 bg-white text-accent text-[9.5px] uppercase tracking-[0.15em] font-bold rounded-full shadow-md">
               {blog.category}
             </span>
 
@@ -379,7 +379,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <span className="absolute top-4 left-4 z-10 px-2.5 py-1 text-[9px] uppercase tracking-[0.1em] font-semibold bg-[#001226] text-accent rounded-sm">
+                  <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-white text-accent rounded-full shadow-md">
                     {item.category}
                   </span>
                 </div>

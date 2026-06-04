@@ -5,12 +5,19 @@
   --color-navy-dark: #000c18;
   --color-navy-medium: #001e3d;
   --color-navy-light: #0d2847;
-  --color-accent: #c5a880;
-  --color-accent-light: #dfcfb9;
-  --color-accent-dark: #b09166;
+  
+  /* Sea Teal accents - for friendly/approachable vibes */
+  --color-accent: #0d9488;
+  --color-accent-light: #2dd4bf;
+  --color-accent-dark: #0f766e;
+  
+  /* Sunset Gold - to keep our unique luxury/premium signature */
+  --color-accent-gold: #c5a880;
+  --color-accent-gold-light: #dfcfb9;
+  --color-accent-gold-dark: #b09166;
   
   --font-sans: var(--font-mulish), sans-serif;
-  --font-serif: var(--font-playfair), serif;
+  --font-serif: var(--font-montserrat), sans-serif;
   
   --animate-fade-in-up: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-scale-up: scale-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -95,4 +102,9 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(197, 168, 128, 0.15);
+}
+
+.bg-wave-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath d='M10 80 C 40 40, 60 40, 100 80 C 120 100, 140 100, 160 80 M0 120 C 30 80, 50 80, 80 120 C 110 160, 130 160, 160 120 M10 40 C 40 10, 60 10, 100 40 C 120 60, 140 60, 160 40' fill='none' stroke='%230d9488' stroke-width='0.6' stroke-opacity='0.045'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
 }

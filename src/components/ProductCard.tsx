@@ -23,6 +23,7 @@ interface ProductCardProps {
   cabinCount?: number;
   roomCount?: number;
   variant?: "compact" | "detailed";
+  viewMode?: "grid" | "list";
 }
 
 export default function ProductCard({
@@ -42,6 +43,7 @@ export default function ProductCard({
   cabinCount,
   roomCount,
   variant = "compact",
+  viewMode = "grid",
 }: ProductCardProps) {
   
   // Định dạng tiền tệ VNĐ
@@ -71,7 +73,7 @@ export default function ProductCard({
   const cardContent = (
     <>
       {/* Image Section */}
-      <div className="relative aspect-[16/10] overflow-hidden w-full bg-slate-900">
+      <div className={`relative ${viewMode === "list" ? "aspect-[16/10] md:aspect-[4/3] w-full md:w-80" : "aspect-[16/10] w-full"} overflow-hidden bg-slate-900 flex-shrink-0`}>
         <img
           src={image}
           alt={name}
@@ -83,14 +85,14 @@ export default function ProductCard({
 
         {/* Badge */}
         {badge && (
-          <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[9px] uppercase tracking-[0.15em] font-semibold bg-accent text-primary rounded-sm shadow-md">
+          <span className="absolute top-4 left-4 z-10 px-3 py-0.5 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-amber-400 text-slate-900 rounded-full shadow-md">
             {badge}
           </span>
         )}
 
         {/* Product Type Tag */}
         {type !== "combo" && (
-          <span className="absolute top-4 right-4 z-10 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.1em] font-semibold bg-[#001226] text-accent border border-accent/15 rounded-sm">
+          <span className="absolute top-4 right-4 z-10 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.1em] font-semibold bg-slate-900/60 text-white border border-white/20 backdrop-blur-md rounded-full">
             {type === "cruise" ? "Du Thuyền" : "Khách Sạn"}
           </span>
         )}
@@ -101,19 +103,19 @@ export default function ProductCard({
         {/* Star Rating & Location */}
         <div className="flex items-center justify-between text-xs text-slate-500">
           {type !== "combo" ? (
-            <div className="flex items-center gap-0.5 text-accent">
+            <div className="flex items-center gap-0.5 text-accent-gold">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Star
                   key={index}
                   className={`w-3.5 h-3.5 ${
-                    index < stars ? "fill-accent text-accent" : "text-slate-200"
+                    index < stars ? "fill-accent-gold text-accent-gold" : "text-slate-200"
                   }`}
                 />
               ))}
               <span className="ml-1 text-[11px] text-slate-500 font-semibold">({stars}.0)</span>
             </div>
           ) : (
-            <span className="text-[10px] uppercase tracking-[0.1em] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-sm">
+            <span className="text-[10px] uppercase tracking-[0.1em] font-semibold text-accent-gold bg-accent-gold/10 px-2.5 py-0.5 rounded-full">
               Gói Trải Nghiệm Trọn Gói
             </span>
           )}
@@ -141,7 +143,7 @@ export default function ProductCard({
 
         {/* Technical Specifications Grid (Detailed view for Cruises & Hotels) */}
         {isDetailed && type !== "combo" && (
-          <div className="grid grid-cols-3 gap-2 py-3 border-t border-b border-slate-100 text-[11px] text-slate-500 font-medium bg-slate-50/50 rounded-sm">
+          <div className="grid grid-cols-3 gap-2 py-3 border-t border-b border-slate-100 text-[11px] text-slate-500 font-medium bg-slate-50/50 rounded-xl">
             <div className="text-center border-r border-slate-100 last:border-0 px-1">
               <span className="block text-[8px] uppercase tracking-wider text-slate-400 font-normal">
                 {type === "cruise" ? "Hạ thủy" : "Hạng sao"}
@@ -175,7 +177,7 @@ export default function ProductCard({
             {amenities.slice(0, isDetailed ? 4 : 2).map((amenity, i) => (
               <span
                 key={i}
-                className="text-[10.5px] bg-slate-50 border border-slate-100/80 text-slate-600 px-2 py-0.5 rounded-sm"
+                className="text-[10.5px] bg-slate-50 border border-slate-100/80 text-slate-650 px-2.5 py-0.5 rounded-full"
               >
                 {amenity}
               </span>
@@ -194,8 +196,8 @@ export default function ProductCard({
             <span className="text-xs font-semibold text-accent-dark">
               {price ? (
                 <>
-                  <span className="text-[10px] text-slate-445 font-normal block">Giá combo từ</span>
-                  <span className="text-sm font-bold">{formatPrice(price)} / khách</span>
+                  <span className="text-[10px] text-slate-400 font-normal block">Giá từ</span>
+                  <span className="text-sm font-bold text-accent-dark">{formatPrice(price)} / khách</span>
                 </>
               ) : (
                 "Giá theo yêu cầu"
@@ -205,7 +207,7 @@ export default function ProductCard({
 
           {type === "cruise" || type === "hotel" || type === "combo" ? (
             <div
-              className="flex items-center gap-1 px-4 py-2 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] border border-[#001226] hover:border-accent text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 shadow-sm"
+              className="flex-shrink-0 flex items-center gap-1 px-4 py-2 bg-accent text-white hover:bg-accent-dark border border-transparent text-[10px] uppercase tracking-[0.1em] font-bold rounded-full transition-all duration-300 shadow-sm whitespace-nowrap"
             >
               Khám phá
               <ArrowRight className="w-3.5 h-3.5" />
@@ -213,7 +215,7 @@ export default function ProductCard({
           ) : (
             <button
               onClick={handleEnquire}
-              className="flex items-center gap-1 px-4 py-2 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] border border-[#001226] hover:border-accent text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+              className="flex-shrink-0 flex items-center gap-1 px-4 py-2 bg-accent text-white hover:bg-accent-dark border border-transparent text-[10px] uppercase tracking-[0.1em] font-bold rounded-full transition-all duration-300 shadow-sm cursor-pointer whitespace-nowrap"
             >
               Khám phá
               <ArrowRight className="w-3.5 h-3.5" />
@@ -224,12 +226,14 @@ export default function ProductCard({
     </>
   );
 
+  const isList = viewMode === "list";
+
   if (type === "cruise" || type === "hotel" || type === "combo") {
     const routePrefix = type === "cruise" ? "cruises" : type === "hotel" ? "hotels" : "combos";
     return (
       <Link
         href={`/${routePrefix}/${id}`}
-        className="group relative flex flex-col bg-white border border-slate-100 rounded-sm overflow-hidden hover:border-accent/40 hover:shadow-lg transition-all duration-500 shadow-md h-full cursor-pointer text-inherit hover:text-inherit no-underline"
+        className={`group relative flex ${isList ? "flex-col md:flex-row" : "flex-col"} bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-accent/30 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-500 shadow-[0_4px_12px_rgba(0,0,0,0.03)] h-full cursor-pointer text-inherit hover:text-inherit no-underline`}
       >
         {cardContent}
       </Link>
@@ -238,7 +242,7 @@ export default function ProductCard({
 
   return (
     <div
-      className="group relative flex flex-col bg-white border border-slate-100 rounded-sm overflow-hidden hover:border-accent/40 hover:shadow-lg transition-all duration-500 shadow-md h-full"
+      className={`group relative flex ${isList ? "flex-col md:flex-row" : "flex-col"} bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-accent/30 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all duration-500 shadow-[0_4px_12px_rgba(0,0,0,0.03)] h-full`}
     >
       {cardContent}
     </div>

@@ -2,23 +2,27 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { X, Phone, Compass, ChevronRight, Menu, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navbar() {
-  const router = useRouter();
+interface NavbarProps {
+  solid?: boolean;
+}
+
+export default function Navbar({ solid = false }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // States cho Sidebar 2 Lớp (Nested Sidebars)
-  // activeMenu: Menu chính được chọn ("cruise" | "hotel" | "combo" | "blog" hoặc null)
-  const [activeMenu, setActiveMenu] = useState<"cruise" | "hotel" | "combo" | "blog" | null>(null);
-  // activeOption: Option của lớp 1 được chọn (ví dụ: "Điểm đến", "Hạng sao" hoặc null)
-  const [activeOption, setActiveOption] = useState<string | null>(null);
+  // States cho Dropdown hover trên desktop
+  const [hoveredMenu, setHoveredMenu] = useState<"cruise" | "hotel" | "blog" | null>(null);
+
+  // State cho mobile menu
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   // States cho Dropdown ngôn ngữ
   const [currentLang, setCurrentLang] = useState<"vi" | "en">("vi");
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+
+  const isHeaderSolid = solid || isScrolled || isMobileOpen;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,8 +36,9 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Khóa cuộn trang khi mở menu di động
   useEffect(() => {
-    if (activeMenu !== null) {
+    if (isMobileOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -41,153 +46,123 @@ export default function Navbar() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [activeMenu]);
+  }, [isMobileOpen]);
 
-  // Đóng toàn bộ Sidebars
-  const closeSidebars = () => {
-    setActiveMenu(null);
-    setActiveOption(null);
-  };
-
-  // Định nghĩa nội dung cấu trúc Lọc lớp 1 và lớp 2
-  const menuStructures = {
-    cruise: {
-      title: "Du Thuyền Hạ Long",
-      options: [
-        {
-          name: "Tuyến điểm du ngoạn",
-          subValues: [
-            { label: "Vịnh Hạ Long", query: "/cruises?destination=Vịnh Hạ Long" },
-            { label: "Vịnh Lan Hạ", query: "/cruises?destination=Vịnh Lan Hạ" },
-            { label: "Đảo Cát Bà", query: "/cruises?destination=Đảo Cát Bà" }
-          ]
-        },
-        {
-          name: "Hạng sao",
-          subValues: [
-            { label: "Siêu du thuyền 6 sao", query: "/cruises?stars=5" },
-            { label: "Du thuyền hạng sang 5 sao", query: "/cruises?stars=5" }
-          ]
-        }
-      ]
-    },
-    hotel: {
-      title: "Khách Sạn & Resort Hạ Long",
-      options: [
-        {
-          name: "Khu vực địa lý",
-          subValues: [
-            { label: "Bãi Cháy (Trung tâm)", query: "/hotels?location=Bãi Cháy" },
-            { label: "Đảo Rều (Biệt lập)", query: "/hotels?location=Đảo Rều" },
-            { label: "Quang Hanh (Khoáng nóng)", query: "/hotels?location=Quang Hanh" }
-          ]
-        },
-        {
-          name: "Hạng sao",
-          subValues: [
-            { label: "Resort 5 sao cao cấp", query: "/hotels?stars=5" },
-            { label: "Villa & Khách sạn Boutique", query: "/hotels?stars=5" }
-          ]
-        }
-      ]
-    },
-    combo: {
-      title: "Combo Nghỉ Dưỡng Đặc Quyền",
-      options: [
-        {
-          name: "Hạng sao",
-          subValues: [
-            { label: "Combo 5 sao cao cấp", query: "/combos?stars=5" }
-          ]
-        },
-        {
-          name: "Hạn mức ngân sách",
-          subValues: [
-            { label: "Dưới 8 Triệu VNĐ", query: "/combos?price=low" },
-            { label: "Trên 8 Triệu VNĐ", query: "/combos?price=high" }
-          ]
-        }
-      ]
-    },
-    blog: {
-      title: "Tạp Chí Du Lịch TRAVEL Hạ Long",
-      options: [
-        {
-          name: "Danh mục tạp chí",
-          subValues: [
-            { label: "Cẩm nang du lịch", query: "/blogs?category=du-lich" },
-            { label: "Trải nghiệm du thuyền", query: "/blogs?category=du-thuyen" },
-            { label: "Khách sạn nghỉ dưỡng", query: "/blogs?category=khach-san" },
-            { label: "Kinh nghiệm du hành", query: "/blogs?category=kinh-nghiem" },
-            { label: "Thông tin ưu đãi đặc quyền", query: "/blogs?category=uu-dai" }
-          ]
-        }
-      ]
-    }
-  };
-
-  const handleSubValueClick = (query: string) => {
-    closeSidebars();
-    router.push(query);
+  // Cấu trúc dữ liệu cho Dropdown dọc đơn giản (OTA Style) - combo đã bỏ dropdown
+  const menuDropdowns = {
+    cruise: [
+      { label: "Vịnh Hạ Long", href: "/cruises?destination=Vịnh Hạ Long" },
+      { label: "Vịnh Lan Hạ", href: "/cruises?destination=Vịnh Lan Hạ" },
+      { label: "Đảo Cát Bà", href: "/cruises?destination=Đảo Cát Bà" },
+      { label: "Xem tất cả du thuyền", href: "/cruises", isBold: true }
+    ],
+    hotel: [
+      { label: "Bãi Cháy (Trung tâm)", href: "/hotels?location=Bãi Cháy" },
+      { label: "Đảo Rều (Biệt lập)", href: "/hotels?location=Đảo Rều" },
+      { label: "Quang Hanh (Khoáng nóng)", href: "/hotels?location=Quang Hanh" },
+      { label: "Xem tất cả khách sạn", href: "/hotels", isBold: true }
+    ],
+    blog: [
+      { label: "Cẩm nang du lịch", href: "/blogs?category=du-lich" },
+      { label: "Trải nghiệm du thuyền", href: "/blogs?category=du-thuyen" },
+      { label: "Khách sạn nghỉ dưỡng", href: "/blogs?category=khach-san" },
+      { label: "Kinh nghiệm du hành", href: "/blogs?category=kinh-nghiem" },
+      { label: "Xem tất cả bài viết", href: "/blogs", isBold: true }
+    ]
   };
 
   const navMenus = [
-    { key: "cruise" as const, label: "Du thuyền" },
-    { key: "hotel" as const, label: "Khách sạn" },
-    { key: "combo" as const, label: "Combo du lịch" },
-    { key: "blog" as const, label: "Blog" }
+    { key: "cruise" as const, label: "Du thuyền", path: "/cruises" },
+    { key: "hotel" as const, label: "Khách sạn", path: "/hotels" },
+    { key: "combo" as const, label: "Combo du lịch", path: "/combos" },
+    { key: "blog" as const, label: "Blog", path: "/blogs" }
   ];
-
-  const allLinks = {
-    cruise: { label: "Xem tất cả du thuyền", path: "/cruises" },
-    hotel: { label: "Xem tất cả khách sạn", path: "/hotels" },
-    combo: { label: "Xem tất cả combo", path: "/combos" },
-    blog: { label: "Xem tất cả bài viết", path: "/blogs" }
-  };
 
   return (
     <>
       {/* HEADER NAVBAR */}
       <header
         className={`fixed top-0 left-0 right-0 z-[50] transition-all duration-500 ${
-          isScrolled || activeMenu !== null
+          isHeaderSolid
             ? "bg-white py-4 shadow-md text-slate-800"
             : "bg-transparent py-6 text-white"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative">
           
-          {/* Menu chính bên trái (Du thuyền, Khách sạn...) */}
+          {/* Menu chính bên trái (Desktop hover dropdowns) */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navMenus.map((menu) => (
-              <button
+              <div
                 key={menu.key}
-                onClick={() => {
-                  setActiveMenu(activeMenu === menu.key ? null : menu.key);
-                  setActiveOption(null);
+                className="relative"
+                onMouseEnter={() => {
+                  if (menu.key !== "combo") {
+                    setHoveredMenu(menu.key);
+                  }
                 }}
-                className={`text-xs uppercase tracking-[0.15em] font-semibold py-1 transition-colors duration-300 relative group flex items-center gap-1 cursor-pointer ${
-                  activeMenu === menu.key
-                    ? "text-accent-dark"
-                    : isScrolled || activeMenu !== null
-                    ? "text-slate-800 hover:text-accent-dark"
-                    : "text-white hover:text-accent"
-                }`}
+                onMouseLeave={() => setHoveredMenu(null)}
               >
-                {menu.label}
-                <span className={`absolute bottom-0 left-0 h-[1.5px] bg-accent transition-all duration-300 ${
-                  activeMenu === menu.key ? "w-full" : "w-0 group-hover:w-full"
-                }`} />
-              </button>
+                {/* Click navigates directly */}
+                <Link
+                  href={menu.path}
+                  className={`text-xs uppercase tracking-[0.15em] font-semibold py-3 transition-colors duration-300 relative group flex items-center gap-1 cursor-pointer ${
+                    hoveredMenu === menu.key
+                      ? "text-accent"
+                      : isHeaderSolid
+                      ? "text-slate-800 hover:text-accent"
+                      : "text-white hover:text-accent"
+                  }`}
+                >
+                  {menu.label}
+                  <span className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-300 ${
+                    hoveredMenu === menu.key ? "w-full" : "w-0 group-hover:w-full"
+                  }`} />
+                </Link>
+
+                {/* Dropdown panel on Hover (Vertical Single Column style) */}
+                <AnimatePresence>
+                  {hoveredMenu === menu.key && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-0 top-full pt-2 z-50 text-slate-800 text-left"
+                    >
+                      <div className="w-60 bg-white border border-slate-100 shadow-2xl rounded-xl p-2 flex flex-col gap-0.5">
+                        {menuDropdowns[menu.key as keyof typeof menuDropdowns].map((lnk, lIdx) => (
+                          <React.Fragment key={lIdx}>
+                            {lnk.isBold && <div className="h-[1px] bg-slate-100 my-1.5" />}
+                            <Link
+                              href={lnk.href}
+                              className={`px-3 py-2 text-xs rounded-lg transition-all duration-200 flex items-center justify-between group/link ${
+                                lnk.isBold
+                                  ? "font-bold text-accent hover:bg-slate-50 hover:text-accent"
+                                  : "font-medium text-slate-650 hover:bg-slate-50 hover:text-accent"
+                              }`}
+                            >
+                              <span>{lnk.label}</span>
+                              {lnk.isBold && (
+                                <ChevronRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform text-accent" />
+                              )}
+                            </Link>
+                          </React.Fragment>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </nav>
 
           {/* Logo TRAVEL ở trung tâm */}
-          <Link href="/" onClick={closeSidebars} className="flex items-center gap-2 group absolute left-1/2 -translate-x-1/2">
+          <Link href="/" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2 group absolute left-1/2 -translate-x-1/2">
             <Compass className="w-7 h-7 text-accent group-hover:rotate-45 transition-transform duration-500" />
             <div className="flex flex-col text-center">
               <span className={`font-serif text-lg tracking-[0.25em] font-bold ${
-                isScrolled || activeMenu !== null ? "text-slate-900" : "text-white"
+                isHeaderSolid ? "text-slate-900" : "text-white"
               }`}>
                 TRAVEL
               </span>
@@ -201,7 +176,7 @@ export default function Navbar() {
               <button
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className={`flex items-center gap-1.5 text-xs font-semibold py-1 transition-colors duration-300 cursor-pointer ${
-                  isScrolled || activeMenu !== null ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
+                  isHeaderSolid ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
                 }`}
                 aria-label="Chọn ngôn ngữ"
               >
@@ -253,7 +228,7 @@ export default function Navbar() {
             <a
               href="tel:19001234"
               className={`hidden md:flex items-center gap-2 text-xs uppercase tracking-[0.12em] font-semibold ${
-                isScrolled || activeMenu !== null ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
+                isHeaderSolid ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
               }`}
             >
               <Phone className="w-4 h-4 text-accent" />
@@ -263,9 +238,8 @@ export default function Navbar() {
             {/* Nút Liên hệ trên desktop */}
             <Link
               href="/contact"
-              onClick={closeSidebars}
               className={`hidden lg:block px-6 py-2.5 text-[11px] uppercase tracking-[0.2em] font-semibold rounded-full border transition-all duration-300 ${
-                isScrolled || activeMenu !== null
+                isHeaderSolid
                   ? "bg-[#001226] text-white hover:bg-accent hover:text-[#001226] border-[#001226] hover:border-accent"
                   : "bg-white text-slate-800 hover:bg-accent hover:text-[#001226] border-white hover:border-accent"
               }`}
@@ -275,206 +249,66 @@ export default function Navbar() {
 
             {/* Mobile Hamburger Icon */}
             <button
-              onClick={() => {
-                if (activeMenu) {
-                  closeSidebars();
-                } else {
-                  setActiveMenu("cruise");
-                }
-              }}
-              className="lg:hidden p-1.5 rounded-full border border-slate-200 text-slate-800 bg-white shadow-sm hover:bg-slate-50 cursor-pointer"
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="lg:hidden p-1.5 rounded-full border border-slate-200 text-slate-800 bg-white shadow-sm hover:bg-slate-50 cursor-pointer z-50"
               aria-label="Mở menu di động"
             >
-              {activeMenu !== null ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* NESTED SIDEBARS FLAT STRUCTURE */}
+      {/* MOBILE DRAWER MENU - DROPS DOWN FROM THE NAVBAR */}
       <AnimatePresence>
-        {/* 1. Backdrop */}
-        {activeMenu !== null && (
-          <motion.div
-            key="navbar-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
-            exit={{ opacity: 0 }}
-            onClick={closeSidebars}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-md"
-          />
-        )}
-
-        {/* 2. Sidebar Lớp 1 (Trượt từ trái) */}
-        {activeMenu !== null && (
-          <motion.div
-            key="navbar-sidebar-1"
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 220 }}
-            className="fixed top-0 left-0 bottom-0 z-50 w-full lg:w-80 bg-white border-r border-slate-200 pt-24 lg:pt-28 px-6 pb-6 shadow-2xl flex flex-col justify-between overflow-y-auto"
-          >
-            {/* Nút X đóng nhanh trên di động */}
-            <button
-              onClick={closeSidebars}
-              className="absolute top-6 right-6 p-2 rounded-full border border-slate-200 text-slate-800 bg-white shadow-sm hover:bg-slate-50 lg:hidden cursor-pointer"
-              aria-label="Đóng menu"
+        {isMobileOpen && (
+          <>
+            {/* Backdrop for mobile */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.4 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileOpen(false)}
+              className="fixed inset-0 z-35 bg-black/50 backdrop-blur-sm lg:hidden"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "tween", duration: 0.25 }}
+              className="fixed inset-x-0 top-0 z-40 bg-white shadow-2xl border-b border-slate-100 pt-20 px-6 pb-8 lg:hidden flex flex-col gap-6"
             >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="space-y-6">
-              {/* Tabs chuyển nhanh danh mục trên di động */}
-              <div className="flex border-b border-slate-100 lg:hidden overflow-x-auto gap-4 pb-2 -mx-2 scrollbar-none">
+              <div className="flex flex-col gap-2 mt-4">
                 {navMenus.map((menu) => (
-                  <button
+                  <Link
                     key={menu.key}
-                    onClick={() => {
-                      setActiveMenu(menu.key);
-                      setActiveOption(null);
-                    }}
-                    className={`whitespace-nowrap px-3 py-2 text-[11px] uppercase tracking-[0.12em] font-semibold border-b-2 transition-all duration-300 cursor-pointer ${
-                      activeMenu === menu.key
-                        ? "border-accent text-accent-dark"
-                        : "border-transparent text-slate-500 hover:text-slate-800"
-                    }`}
+                    href={menu.path}
+                    onClick={() => setIsMobileOpen(false)}
+                    className="text-sm font-bold uppercase tracking-wider text-slate-800 hover:text-accent transition-colors py-3 border-b border-slate-100 flex items-center justify-between"
                   >
-                    {menu.label}
-                  </button>
+                    <span>{menu.label}</span>
+                    <ChevronRight className="w-4 h-4 text-slate-400" />
+                  </Link>
                 ))}
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="text-sm font-bold uppercase tracking-wider text-slate-800 hover:text-accent transition-colors py-3 border-b border-slate-100 flex items-center justify-between"
+                >
+                  <span>Liên hệ tư vấn</span>
+                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                </Link>
               </div>
 
-              {/* Tiêu đề Menu chính */}
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-accent font-semibold">
-                  Danh mục tìm kiếm
-                </span>
-                <h3 className="font-serif text-2xl font-bold text-slate-900 leading-tight">
-                  {menuStructures[activeMenu].title}
-                </h3>
-              </div>
-
-              {/* Các tùy chọn lọc chính */}
-              <div className="space-y-4">
-                {activeMenu && (
-                  <button
-                    onClick={() => handleSubValueClick(allLinks[activeMenu].path)}
-                    className="w-full flex items-center justify-between py-4 border-b border-accent-dark/20 text-left text-sm uppercase tracking-wider font-bold text-accent-dark hover:text-slate-900 transition-colors duration-300 cursor-pointer"
-                  >
-                    <span>{allLinks[activeMenu].label}</span>
-                    <ChevronRight className="w-4 h-4 text-accent-dark" />
-                  </button>
-                )}
-
-                {activeMenu === "blog" ? (
-                  menuStructures.blog.options[0].subValues.map((val) => (
-                    <button
-                      key={val.label}
-                      onClick={() => handleSubValueClick(val.query)}
-                      className="w-full flex items-center justify-between py-4 border-b border-slate-100 text-left text-sm uppercase tracking-wider font-semibold text-slate-700 hover:text-accent-dark transition-colors duration-300 cursor-pointer"
-                    >
-                      <span>{val.label}</span>
-                      <ChevronRight className="w-4 h-4 text-slate-400" />
-                    </button>
-                  ))
-                ) : (
-                  menuStructures[activeMenu].options.map((opt) => (
-                    <button
-                      key={opt.name}
-                      onClick={() => setActiveOption(activeOption === opt.name ? null : opt.name)}
-                      className={`w-full flex items-center justify-between py-4 border-b border-slate-100 text-left text-sm uppercase tracking-wider font-semibold transition-colors duration-300 cursor-pointer ${
-                        activeOption === opt.name
-                          ? "text-accent-dark border-accent-dark/30"
-                          : "text-slate-700 hover:text-accent-dark"
-                      }`}
-                    >
-                      <span>{opt.name}</span>
-                      <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${
-                        activeOption === opt.name ? "rotate-90 text-accent-dark" : "text-slate-400"
-                      }`} />
-                    </button>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Hỗ trợ & Liên hệ dưới cùng */}
-            <div className="border-t border-slate-100 pt-6 space-y-4 text-xs text-slate-500">
-              <p>Cần hỗ trợ đặt vé du thuyền hoặc phòng?</p>
-              <div className="flex items-center gap-4">
-                <a href="tel:19001234" className="flex items-center gap-2 font-semibold text-slate-800 hover:text-accent">
-                  <Phone className="w-4 h-4 text-accent" />
+              <div className="flex flex-col gap-3 pt-2">
+                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Hotline hỗ trợ 24/7</span>
+                <a href="tel:19001234" className="flex items-center gap-2 font-bold text-slate-800 hover:text-accent">
+                  <Phone className="w-4.5 h-4.5 text-accent" />
                   1900 1234
                 </a>
               </div>
-
-              {/* Nút Liên hệ tư vấn dưới cùng trên di động/sidebar */}
-              <Link
-                href="/contact"
-                onClick={closeSidebars}
-                className="mt-2 block w-full text-center py-3 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] border border-[#001226] hover:border-accent rounded-full text-xs uppercase tracking-[0.15em] font-bold transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                Liên hệ tư vấn
-              </Link>
-            </div>
-          </motion.div>
-        )}
-
-        {/* 3. Sidebar Lớp 2 (Đồng cấp phẳng) */}
-        {activeMenu !== null && activeOption !== null && (
-          <motion.div
-            key="navbar-sidebar-2"
-            initial={{ x: "-100%", opacity: 0 }}
-            animate={{ 
-              x: 0, 
-              opacity: 1 
-            }}
-            exit={{ x: "-100%", opacity: 0 }}
-            transition={{ type: "spring", damping: 30, stiffness: 220 }}
-            className="fixed top-0 left-0 lg:left-80 bottom-0 bg-slate-50 border-r border-slate-200 pt-24 lg:pt-28 px-6 pb-6 shadow-xl flex flex-col justify-between w-full lg:w-80 z-[55] lg:z-[45] overflow-y-auto"
-          >
-            <div className="space-y-6">
-              {/* Nút Quay lại trên di động / máy tính */}
-              <button
-                onClick={() => setActiveOption(null)}
-                className="flex items-center gap-2 text-xs uppercase tracking-wider font-bold text-slate-650 hover:text-accent-dark cursor-pointer pb-2 border-b border-slate-200/60"
-              >
-                <ChevronRight className="w-4 h-4 rotate-180 text-accent" />
-                Quay lại
-              </button>
-
-              {/* Tiêu đề tùy chọn phụ */}
-              <div className="space-y-1">
-                <span className="text-[10px] uppercase tracking-[0.2em] text-slate-450 font-semibold">
-                  Lọc cụ thể
-                </span>
-                <h4 className="font-serif text-lg font-bold text-slate-800 leading-tight">
-                  {activeOption}
-                </h4>
-              </div>
-
-              {/* Danh sách các giá trị lọc cụ thể */}
-              <div className="space-y-1.5">
-                {menuStructures[activeMenu].options
-                  .find((opt) => opt.name === activeOption)
-                  ?.subValues.map((val) => (
-                    <button
-                      key={val.label}
-                      onClick={() => handleSubValueClick(val.query)}
-                      className="w-full flex items-center justify-between py-3 bg-transparent text-left text-xs font-semibold text-slate-700 hover:text-accent-dark transition-colors duration-300 cursor-pointer group"
-                    >
-                      <span>{val.label}</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-accent-dark transition-colors" />
-                    </button>
-                  ))}
-              </div>
-            </div>
-
-            <div className="py-6 text-[11px] text-slate-400 italic">
-              Nhấp chọn để chuyển trang danh sách dịch vụ đã lọc.
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
