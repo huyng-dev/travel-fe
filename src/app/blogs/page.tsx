@@ -143,7 +143,7 @@ function BlogListContent() {
               <Link
                 key={blog.id}
                 href={`/blogs/${blog.id}`}
-                className="group bg-white border border-slate-200 hover:border-accent/40 rounded shadow-sm hover:shadow-lg flex flex-col h-full transition-all duration-300 overflow-hidden text-inherit hover:text-inherit no-underline cursor-pointer"
+                className="group bg-white border border-slate-200 hover:border-accent/40 rounded-2xl shadow-sm hover:shadow-lg flex flex-col h-full transition-all duration-300 overflow-hidden text-inherit hover:text-inherit no-underline cursor-pointer"
               >
                 <div className="relative aspect-[16/10] overflow-hidden w-full bg-slate-100">
                   <img

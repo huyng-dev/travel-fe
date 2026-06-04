@@ -854,7 +854,7 @@ export default function Home() {
                       onClick={() => router.push(`/blogs?category=${encodeURIComponent(blog.category)}`)}
                     >
                       {/* Image */}
-                      <div className="aspect-[16/10] overflow-hidden rounded-lg bg-slate-100 relative shadow-sm border border-slate-100">
+                      <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-slate-100 relative shadow-sm border border-slate-100">
                         <img
                           src={blog.image}
                           alt={blog.title}
