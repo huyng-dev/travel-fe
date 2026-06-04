@@ -486,6 +486,26 @@ export default function Home() {
                 />
               ))}
             </div>
+
+            {/* View All Button */}
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => {
+                  const path = filter === "cruise" ? "/cruises" : filter === "hotel" ? "/hotels" : "/combos";
+                  router.push(path);
+                }}
+                className="px-8 py-3.5 bg-transparent hover:bg-slate-900 border border-slate-350 hover:border-slate-900 text-slate-700 hover:text-white font-bold text-[11px] uppercase tracking-[0.15em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-xs hover:shadow hover:scale-[1.01] cursor-pointer"
+              >
+                <span>
+                  {filter === "cruise"
+                    ? "Xem tất cả du thuyền"
+                    : filter === "hotel"
+                    ? "Xem tất cả khách sạn"
+                    : "Xem tất cả combo"}
+                </span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </section>
 

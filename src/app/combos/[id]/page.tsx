@@ -382,7 +382,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               setLightboxIdx(0);
               setLightboxOpen(true);
             }}
-            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-sm shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-full shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <span>Xem tất cả ảnh</span>
             <span className="text-slate-400">({imageGallery.length})</span>
@@ -549,7 +549,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
               {/* Booking CTA Button */}
               <button
                 onClick={handleBookingClick}
-                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-md cursor-pointer"
+                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 shadow-md cursor-pointer"
               >
                 Đặt Combo Ngay
               </button>
@@ -939,7 +939,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
 
                   <div className="block md:hidden pt-4 border-t border-slate-100">
-                    <button type="submit" className="w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer">
+                    <button type="submit" className="w-full py-4 text-xs uppercase tracking-widest font-bold rounded-full bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer">
                       Gửi yêu cầu đặt combo
                     </button>
                   </div>
@@ -1031,7 +1031,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                   <button
                     type="button"
                     onClick={handleBookingSubmit}
-                    className="hidden md:flex w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 items-center justify-center gap-2 shadow-md cursor-pointer"
+                    className="hidden md:flex w-full py-4 text-xs uppercase tracking-widest font-bold rounded-full bg-[#001226] hover:bg-accent text-white hover:text-[#001226] transition-all duration-300 items-center justify-center gap-2 shadow-md cursor-pointer"
                   >
                     Gửi yêu cầu đặt combo
                   </button>

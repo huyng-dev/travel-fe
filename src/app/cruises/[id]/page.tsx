@@ -607,7 +607,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
               setLightboxIdx(0);
               setLightboxOpen(true);
             }}
-            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-sm shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
+            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-semibold py-2 px-4 rounded-full shadow-md transition-colors flex items-center gap-1.5 cursor-pointer border border-slate-200"
           >
             <span>Xem tất cả ảnh</span>
             <span className="text-slate-400">({cruise.imageGallery.length})</span>
@@ -723,7 +723,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
               {/* Booking CTA Button */}
               <button
                 onClick={handleBookingClick}
-                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-sm transition-all duration-300 shadow-md cursor-pointer"
+                className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 shadow-md cursor-pointer"
               >
                 Đặt Lịch Ngay
               </button>
@@ -825,7 +825,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
                         setSelectedCabinIdx(index);
                         setCabinPhotoIdx(0);
                       }}
-                      className="px-5 py-2 bg-slate-900 hover:bg-accent text-white hover:text-slate-900 text-xs font-bold uppercase tracking-wider rounded-sm transition-all duration-300 cursor-pointer"
+                      className="px-5 py-2 bg-slate-900 hover:bg-accent text-white hover:text-slate-900 text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 cursor-pointer"
                     >
                       Xem chi tiết
                     </button>
@@ -1285,7 +1285,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
                     {activeCabin.amenities.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-sm border border-slate-100"
+                        className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-full border border-slate-100"
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
                         <span className="text-xs text-slate-700 font-medium">{item}</span>
@@ -1618,7 +1618,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
                     <button
                       type="submit"
                       disabled={!bookingCabinsQty.some((q) => q > 0)}
-                      className={`w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
+                      className={`w-full py-4 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
                         bookingCabinsQty.some((q) => q > 0)
                           ? "bg-[#001226] hover:bg-accent text-white hover:text-[#001226] cursor-pointer"
                           : "bg-slate-200 text-slate-400 cursor-not-allowed"
@@ -1748,7 +1748,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
                     type="button"
                     onClick={handleBookingSubmit}
                     disabled={!bookingCabinsQty.some((q) => q > 0)}
-                    className={`hidden md:flex w-full py-4 text-xs uppercase tracking-widest font-bold rounded-lg transition-all duration-300 items-center justify-center gap-2 shadow-md ${
+                    className={`hidden md:flex w-full py-4 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 items-center justify-center gap-2 shadow-md ${
                       bookingCabinsQty.some((q) => q > 0)
                         ? "bg-[#001226] hover:bg-accent text-white hover:text-[#001226] cursor-pointer"
                         : "bg-slate-200 text-slate-400 cursor-not-allowed"
