@@ -240,6 +240,53 @@ export const mockCruises: Cruise[] = [
         activities: ["Tập võ Vovinam buổi sáng", "Lớp dạy gói nem rán Việt Nam", "Ăn trưa sớm rời tàu", "Về cảng Tuần Châu"]
       }
     ]
+  },
+  {
+    id: "cruise-capella",
+    name: "Capella Cruise Hạ Long",
+    tagline: "Du thuyền nghỉ dưỡng sang trọng bậc nhất với máng trượt nước ngoài trời độc đáo",
+    description: "Du thuyền Capella mang đến định nghĩa mới về sự sang trọng và giải trí năng động trên biển. Với phong cách kiến trúc Đông Dương đương đại kết hợp cùng các tiện ích giải trí đẳng cấp như máng trượt nước từ boong tắm nắng xuống biển, hồ bơi Oasis Jacuzzi, sân golf mini và phòng karaoke chất lượng cao, Capella là điểm đến lý tưởng cho những du khách tìm kiếm kỳ nghỉ vui tươi và đẳng cấp.",
+    imageGallery: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200",
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200",
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200"
+    ],
+    stars: 5,
+    amenities: [
+      "Máng trượt nước",
+      "Hồ bơi Oasis Jacuzzi",
+      "Sân golf mini",
+      "Phòng Karaoke",
+      "Cigar & Poker Club",
+      "Chèo thuyền Kayak"
+    ],
+    destinations: ["Vịnh Hạ Long", "Vịnh Lan Hạ", "Ao Ếch", "Hang Sáng Tối"],
+    durationDays: 2,
+    startDates: ["2026-06-11", "2026-06-14", "2026-06-17", "2026-06-20", "2026-06-23"],
+    launchYear: "2020",
+    material: "Thép bọc thép kết cấu hiện đại",
+    cabinCount: 30,
+    priceFrom: 6500000,
+    originalPrice: 7500000,
+    category: "cruise",
+    isHotDeal: true,
+    itinerary: [
+      {
+        day: 1,
+        title: "Khởi hành từ cảng Tuần Châu & Vui chơi máng trượt nước tại Ao Ếch",
+        location: "Vịnh Lan Hạ - Ao Ếch",
+        description: "Lên du thuyền Capella đón chào bằng nước mát và khăn lạnh. Tàu hành trình qua những đảo đá vôi kỳ vĩ hướng về vùng vịnh Lan Hạ hoang sơ. Buổi chiều, du khách tham gia các hoạt động giải trí độc đáo: trượt nước từ máng trượt khổng lồ xuống biển, bơi lội tại hồ bơi Oasis ngoài trời hoặc chèo thuyền kayak khám phá khu vực Ao Ếch.",
+        activities: ["Thưởng thức đồ uống chào mừng", "Ăn trưa buffet tại nhà hàng Harmony of the Sea", "Trải nghiệm máng trượt nước & Kayak", "Tiệc hoàng hôn Sunset Party"]
+      },
+      {
+        day: 2,
+        title: "Khám phá Hang Sáng Tối bằng đò nan & Trở về cảng",
+        location: "Hang Sáng Tối - Vịnh Hạ Long",
+        description: "Bắt đầu ngày mới với lớp học Taichi thanh lọc cơ thể đón bình minh. Quý khách di chuyển bằng đò nan do người dân địa phương chèo qua Hang Sáng Tối, chiêm ngưỡng thung lũng nước trong xanh phẳng lặng bao bọc bởi vách đá cao sừng sững. Trở về tàu dùng bữa trưa sớm trước khi cập cảng Tuần Châu.",
+        activities: ["Tập Taichi đón bình minh", "Khám phá Hang Sáng Tối bằng đò nan", "Dùng bữa trưa buffet sớm rời tàu", "Cập cảng Tuần Châu"]
+      }
+    ]
   }
 ];
 
@@ -399,6 +446,38 @@ export const mockHotels: Hotel[] = [
     originalPrice: 1050000,
     category: "restaurant",
     isHotDeal: true
+  },
+  {
+    id: "restaurant-1958",
+    name: "Nhà hàng 1958 Tuần Châu",
+    description: "Tọa lạc tại khu biệt thự cảng Tuần Châu sang trọng, Nhà hàng 1958 nổi tiếng với phong cách ẩm thực Bắc Bộ tinh tế kết hợp hiện đại. Không gian nhà hàng được thiết kế theo lối kiến trúc biệt thự Pháp cổ sang trọng, ấm cúng. Nơi đây là điểm hẹn lý tưởng cho những ai muốn thưởng thức các món ăn đặc sản Hạ Long được nâng tầm nghệ thuật chế biến.",
+    imageGallery: [
+      "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200",
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200"
+    ],
+    stars: 5,
+    amenities: [
+      "Kiến trúc biệt thự Pháp",
+      "Ẩm thực Bắc Bộ tinh tế",
+      "Không gian VIP riêng tư",
+      "Sân vườn ngoài trời",
+      "Gần cảng du thuyền"
+    ],
+    location: "Khu biệt thự cảng Ngọc Châu, Tuần Châu, Hạ Long",
+    roomCount: 0,
+    roomTypes: [
+      {
+        name: "Set Menu Tinh Hoa Ẩm Thực Việt",
+        description: "Set menu đặc biệt tôn vinh hương vị truyền thống gồm: gỏi cuốn tôm thịt, chả cá Lã Vọng thơm nồng, cua gạch hấp lá lốt, canh cá nấu chua kiểu Bắc và chè hạt sen long nhãn.",
+        pricePerNight: 950000,
+        capacity: "2-8 Người",
+        image: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600"
+      }
+    ],
+    priceFrom: 950000,
+    originalPrice: 1200000,
+    category: "restaurant",
+    isHotDeal: true
   }
 ];
 
@@ -428,6 +507,22 @@ export const mockCombos: Combo[] = [
     hotelId: "hotel-yoko-onsen-quang-hanh",
     salePrice: 8850000, // 8.85 triệu VNĐ / khách
     netPrice: 11000000,
+    patternOptions: {
+      hotelStayBeforeDays: 0,
+      hotelStayAfterDays: 1
+    },
+    category: "combo",
+    isHotDeal: true
+  },
+  {
+    id: "combo-capella-1958",
+    name: "Combo Kỳ Nghỉ Trọn Vẹn: Du Thuyền Capella & Ẩm Thực Tinh Hoa Nhà Hàng 1958",
+    tagline: "Trải nghiệm máng trượt nước độc đáo trên biển và thưởng thức set menu ẩm thực Việt tinh tế tại Tuần Châu",
+    description: "Sự kết hợp hoàn hảo giữa hoạt động giải trí sôi động ngoài khơi cùng hành trình ẩm thực truyền thống lắng đọng tại đất liền: Hành trình 2 ngày 1 đêm trên du thuyền 5 sao Capella vui chơi cực đã với máng trượt nước, sau đó kết thúc bằng tiệc tối set menu thượng hạng tại biệt thự cổ của nhà hàng 1958 Tuần Châu trước khi rời vịnh.",
+    cruiseId: "cruise-capella",
+    hotelId: "restaurant-1958",
+    salePrice: 6990000,
+    netPrice: 8500000,
     patternOptions: {
       hotelStayBeforeDays: 0,
       hotelStayAfterDays: 1
