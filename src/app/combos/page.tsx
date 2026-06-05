@@ -44,7 +44,7 @@ function ComboListContent() {
       {/* 1. HERO BANNER */}
       <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
-          src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1920"
+          src="https://cly.1cdn.vn/2024/12/26/hlong.jpg"
           alt="Combos Banner"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
@@ -155,9 +155,9 @@ function ComboListContent() {
                   Tận Hưởng Kỳ Nghỉ <br /> Trọn Gói & Tiết Kiệm
                 </h2>
                 <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
-                  Gói Combo du lịch của Halong Travel Desk là sự kết hợp hoàn hảo giữa du thuyền sang trọng và resort đẳng cấp. 
-                  Chúng tôi thiết kế những trải nghiệm xuyên suốt, giúp bạn tiết kiệm thời gian lập kế hoạch và tối ưu hóa chi phí lên đến 30% so với đặt lẻ từng dịch vụ. 
-                  Tất cả những gì bạn cần làm là xách vali lên và đi.
+                  Gói Combo du lịch của Halong Travel Desk là sự kết hợp tuyệt vời giữa du thuyền chất lượng và khách sạn nghỉ dưỡng tiện nghi. 
+                  Chúng tôi thiết kế những trải nghiệm xuyên suốt, giúp bạn tiết kiệm thời gian lên lịch trình và tối ưu hóa chi phí lên đến 30% so với đặt riêng lẻ. 
+                  Tất cả những gì bạn cần làm là xách vali lên và tận hưởng kỳ nghỉ của mình.
                 </p>
               </div>
 

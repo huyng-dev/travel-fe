@@ -74,7 +74,7 @@ function StaysDiningContent() {
       {/* 1. HERO BANNER */}
       <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
-          src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920"
+          src="https://cdn3.ivivu.com/2023/06/Kh%C3%A1ch-s%E1%BA%A1n-Sol-H%E1%BA%A1-Long-ivivu.jpg"
           alt="Hotels Banner"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
@@ -226,9 +226,9 @@ function StaysDiningContent() {
                   Nâng Tầm Trải Nghiệm <br /> Nghỉ Dưỡng Tại Hạ Long
                 </h2>
                 <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
-                  Halong Travel Desk tự hào mang đến bộ sưu tập những không gian lưu trú và ẩm thực đẳng cấp nhất bên bờ kỳ quan. 
-                  Từ những khách sạn cung điện lộng lẫy, biệt thự biệt lập sang trọng đến những nhà hàng fine-dining tinh tế, 
-                  mỗi lựa chọn đều được chúng tôi tuyển chọn khắt khe để đảm bảo sự hài lòng tuyệt đối cho quý khách.
+                  Halong Travel Desk tự hào mang đến bộ sưu tập những không gian lưu trú và ẩm thực chất lượng hàng đầu bên bờ kỳ quan. 
+                  Từ những khách sạn đầy đủ tiện nghi, biệt thự nghỉ dưỡng ấm cúng đến những nhà hàng hải sản đặc sắc, 
+                  mỗi lựa chọn đều được chúng tôi chuẩn bị kỹ lưỡng để đảm bảo sự hài lòng và thoải mái nhất cho quý khách.
                 </p>
               </div>
 

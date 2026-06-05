@@ -44,7 +44,7 @@ function CruiseListContent() {
       {/* 1. HERO BANNER */}
       <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
-          src="https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1920"
+          src="https://owa.bestprice.vn/images/cruises/uploads/du-thuyen-paradise-elegance-646b47ebe2a17.jpg"
           alt="Cruises Banner"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
@@ -156,9 +156,9 @@ function CruiseListContent() {
                   Khám Phá Vịnh Di Sản <br /> Trên Những &quot;Cung Điện&quot; Nổi
                 </h2>
                 <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
-                  Halong Travel Desk mang đến cho bạn những hải trình xa hoa nhất trên Vịnh Hạ Long kỳ vĩ. 
-                  Hạm đội du thuyền đối tác của chúng tôi đều đạt tiêu chuẩn 5 sao quốc tế, sở hữu thiết kế tinh xảo, 
-                  phòng nghỉ ban công riêng biệt và những tiện ích giải trí hàng đầu. Hãy để chúng tôi kể cho bạn nghe câu chuyện của biển cả theo cách sang trọng nhất.
+                  Halong Travel Desk mang đến cho bạn những hải trình trọn vẹn và đáng nhớ nhất trên Vịnh Hạ Long kỳ vĩ. 
+                  Hạm đội du thuyền đối tác của chúng tôi đều đạt tiêu chuẩn 5 sao quốc tế, sở hữu thiết kế sang trọng, 
+                  phòng nghỉ ban công riêng biệt và những tiện ích giải trí tiện nghi. Hãy để chúng tôi đồng hành cùng bạn trong hành trình khám phá biển cả tuyệt vời này.
                 </p>
               </div>
 

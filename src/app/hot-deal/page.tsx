@@ -51,7 +51,7 @@ function HotDealListContent() {
       type: "combo" as const,
       name: cb.name,
       tagline: cb.tagline,
-      image: cb.id === "combo-essence-vinpearl" ? mockCruises[0].imageGallery[0] : mockCruises[1].imageGallery[0],
+      image: mockCruises.find(c => c.id === cb.cruiseId)?.imageGallery[0] || mockCruises[0].imageGallery[0],
       stars: 5,
       price: cb.salePrice,
       originalPrice: cb.netPrice,

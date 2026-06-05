@@ -310,8 +310,8 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     switch (hotel?.id) {
       case "hotel-vinpearl-halong":
         return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.7533887413697!2d107.0381665759557!3d20.96245869005391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a59af5b8ab55f%3A0xe54e60bc21df0c94!2zVmlucGVhcmwgUmVzb3J0ICYgU3BhIEjhuqEgTG9uZw!5e0!3m2!1svi!2svn!4v1716912345680!5m2!1svi!2svn";
-      case "hotel-yoko-onsen-quang-hanh":
-        return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3726.6575306560946!2d107.19972237595462!3d20.92615699128038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a43b2f5619379%3A0x6bba84ec6be5f356!2zWW9rbyBPbnNlbiBRdWFuZyBIYW5o!5e0!3m2!1svi!2svn!4v1716912345681!5m2!1svi!2svn";
+      case "hotel-halios-halong":
+        return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.6806742512686!2d107.0819195759558!3d20.9634757900445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a59cd9086118b%3A0x7d6a57f6a27e7fca!2sHalios%20Hotel%20Halong!5e0!3m2!1svi!2svn!4v1716912345681!5m2!1svi!2svn";
       case "hotel-premier-village-halong":
         return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.7675127599026!2d107.02636257595568!3d20.961889490073284!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x314a5840d5555555%3A0x286377e8a9cf733e!2sPremier%20Village%20Ha%20Long%20Bay%20Resort!5e0!3m2!1svi!2svn!4v1716912345682!5m2!1svi!2svn";
       default:

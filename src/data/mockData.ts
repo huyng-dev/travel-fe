@@ -95,13 +95,13 @@ export const mockCruises: Cruise[] = [
   {
     id: "cruise-essence-grand",
     name: "Essence Grand Hạ Long Superyacht",
-    tagline: "Siêu du thuyền xanh 6 sao lớn và sang trọng bậc nhất Vịnh Hạ Long",
-    description: "Trải nghiệm đỉnh cao của sự xa hoa và phong cách sống thượng lưu tại Vịnh Hạ Long. Essence Grand Superyacht sở hữu hồ bơi vô cực nước mặn lớn nhất vịnh, sân đỗ trực thăng, phòng tập golf 3D hiện đại, hầm rượu vang và xì-gà sang trọng cùng dịch vụ quản gia cá nhân phục vụ 24/7.",
+    tagline: "Du thuyền xanh 5 sao sang trọng và hiện đại bậc nhất Vịnh Hạ Long",
+    description: "Trải nghiệm kỳ nghỉ dưỡng trọn vẹn và thoải mái chuẩn 5 sao quốc tế tại Vịnh Hạ Long. Essence Grand Superyacht sở hữu hồ bơi vô cực nước mặn lớn nhất vịnh, phòng tập golf 3D hiện đại cùng dịch vụ chăm sóc chu đáo phục vụ 24/7.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1200", // Hạ Long Bay view
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200", // Cruise Pool
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", // Modern deck
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200"  // Luxury dining
+      "https://store.duthuyenhalonglanha.com/data/2023/12/EGC-Flycam_-3.jpg", // Warm Hạ Long Bay cruise
+      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=1200", // Friends traveling
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=1200", // Beach activity
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200"  // Cozy dining
     ],
     stars: 5, // Hiển thị 5 sao trong UI
     amenities: [
@@ -143,13 +143,12 @@ export const mockCruises: Cruise[] = [
   {
     id: "cruise-ambassador",
     name: "Ambassador Cruise Hạ Long",
-    tagline: "Tuyệt tác nghỉ dưỡng nổi với ẩm thực tôm hùm thượng hạng không giới hạn",
-    description: "Ambassador Cruise là một trong những siêu du thuyền lớn nhất trên Vịnh Hạ Long, nổi tiếng với thiết kế hiện đại sang trọng bậc nhất, boong tắm nắng 2 tầng khổng lồ rộng tới 600m² và bể sục Jacuzzi ngoài trời cao cấp. Nơi đây mang đến dịch vụ ẩm thực tôm hùm chuẩn 5 sao cùng các chương trình giải trí ca nhạc sống chất lượng cao mỗi tối.",
+    tagline: "Hành trình nghỉ dưỡng đáng nhớ với tiệc tôm hùm không giới hạn",
+    description: "Ambassador Cruise là một trong những du thuyền lớn và hiện đại nhất trên Vịnh Hạ Long, nổi tiếng với thiết kế sang trọng, boong tắm nắng 2 tầng khổng lồ rộng tới 600m² và bể sục Jacuzzi ngoài trời. Nơi đây mang đến dịch vụ ẩm thực chuẩn 5 sao cùng các chương trình giải trí ca nhạc sống chất lượng cao mỗi tối.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200", // Sunny beach/water view
-      "https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?q=80&w=1200", // Cruise deck view
-      "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?q=80&w=1200", // Limestone islets
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200"  // Dining with views
+      "https://azgotravel.com/storage/tour/7/ambassador-cruise-ha-long-1.jpg", // Real Ambassador Cruise image
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=1200", // Kayak activity on turquoise water
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200"  // Warm seafood dining
     ],
     stars: 5,
     amenities: [
@@ -193,7 +192,7 @@ export const mockCruises: Cruise[] = [
     tagline: "Du thuyền di sản mang đậm phong cách kiến trúc Đông Dương cổ điển giữa kỳ quan",
     description: "Được thiết kế lấy cảm hứng từ con tàu lịch sử của vua tàu thủy Bạch Thái Bưởi thế kỷ 20, Heritage Bình Chuẩn mang đến một không gian đậm chất mỹ thuật, văn hóa và lịch sử Đông Dương (Indochine). Hành trình đưa quý khách khám phá những vùng biển hoang sơ nhất của quần thể di sản Hạ Long, nơi có bộ sưu tập hơn 100 tác phẩm tranh di sản vô giá.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1200", 
+      "https://owa.bestprice.vn/images/cruises/uploads/du-thuyen-heritage-binh-chuan-6475c847b78c2.jpg", 
       "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1200", 
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200", 
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200"
@@ -244,13 +243,13 @@ export const mockCruises: Cruise[] = [
   {
     id: "cruise-capella",
     name: "Capella Cruise Hạ Long",
-    tagline: "Du thuyền nghỉ dưỡng sang trọng bậc nhất với máng trượt nước ngoài trời độc đáo",
-    description: "Du thuyền Capella mang đến định nghĩa mới về sự sang trọng và giải trí năng động trên biển. Với phong cách kiến trúc Đông Dương đương đại kết hợp cùng các tiện ích giải trí đẳng cấp như máng trượt nước từ boong tắm nắng xuống biển, hồ bơi Oasis Jacuzzi, sân golf mini và phòng karaoke chất lượng cao, Capella là điểm đến lý tưởng cho những du khách tìm kiếm kỳ nghỉ vui tươi và đẳng cấp.",
+    tagline: "Du thuyền nghỉ dưỡng hiện đại với máng trượt nước ngoài trời độc đáo",
+    description: "Du thuyền Capella mang đến kỳ nghỉ dưỡng vui tươi và thoải mái cho cả gia đình. Với phong cách kiến trúc Đông Dương kết hợp cùng các tiện ích giải trí sôi động như máng trượt nước từ boong tắm nắng xuống biển, hồ bơi Oasis Jacuzzi, sân golf mini và phòng karaoke chất lượng, Capella là điểm đến lý tưởng cho những du khách tìm kiếm trải nghiệm năng động.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200",
-      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200",
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200",
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200"
+      "https://www.halonghub.com/wp-content/uploads/2025/07/1-20.jpg",
+      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=1200",
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=1200",
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200"
     ],
     stars: 5,
     amenities: [
@@ -296,10 +295,10 @@ export const mockHotels: Hotel[] = [
     name: "Vinpearl Resort & Spa Hạ Long",
     description: "Nằm trọn vẹn trên hòn đảo Rều biệt lập thơ mộng, Vinpearl Resort & Spa Hạ Long được thiết kế mô phỏng theo hình dáng kiến trúc tân cổ điển hoàng gia của Nhà hát lớn Rennes (Pháp). Đây là khu nghỉ dưỡng 4 mặt hướng biển 360 độ độc nhất vô nhị mang đến trải nghiệm yên bình tách biệt hẳn với sự náo nhiệt của đất liền.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200", // Resort exterior castle
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200", // Luxury hotel room
-      "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=1200", // Inside indoor pool
-      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1200"  // Premium room view
+      "https://statics.vinpearl.com/Vinpearl-Resort-va-Spa-Ha-Long-%E2%80%93-Diem-den-hoan-hao-cho-ky-nghi-duong-cuoi-tuan-ben-gia-dinh-hinh-anh-1.png", // Sunny pool
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200", // Comfortable room
+      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200", // Zen garden
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1200"
     ],
     stars: 5,
     amenities: [
@@ -334,52 +333,51 @@ export const mockHotels: Hotel[] = [
     isHotDeal: true
   },
   {
-    id: "hotel-yoko-onsen-quang-hanh",
-    name: "Yoko Onsen Hạ Long Resort",
-    description: "Nằm yên bình giữa những thung lũng đá vôi trùng điệp của vùng Hạ Long, Yoko Onsen là khu nghỉ dưỡng suối khoáng nóng chuẩn Nhật Bản đầu tiên tại Việt Nam. Nguồn khoáng chất tự nhiên chứa hàm lượng Brom cao và các chất vi lượng quý giúp phục hồi sức khỏe, cân bằng Thân - Tâm - Trí giữa không gian thiền định yên ả.",
+    id: "hotel-halios-halong",
+    name: "Khách sạn Halios Hotel Hạ Long",
+    description: "Tọa lạc tại khu vực Hòn Gai sôi động, Halios Hotel Hạ Long mang đến không gian lưu trú hiện đại, ấm cúng và vô cùng thuận tiện cho du khách. Từ khách sạn, bạn có thể dễ dàng di chuyển tham quan bảo tàng Quảng Ninh, chợ Hạ Long và thưởng thức ẩm thực đường phố đặc sắc tại Hòn Gai với mức chi phí vô cùng hợp lý.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200", // Zen water garden view
-      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200", // Japanese room tatami
-      "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1200"  // Spa massage treat
+      "https://owa.bestprice.vn/images/hotels/uploads/halios-hotel-halong-64746aedea146.jpg",
+      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200",
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200"
     ],
     stars: 5,
     amenities: [
-      "Tắm khoáng Onsen",
-      "Xông hơi đá muối",
-      "Phòng Washitsu",
-      "Vườn Nhật Bản",
-      "Nhà hàng Ryu-an",
-      "Trà đạo & Thiền"
+      "Gần trung tâm Hòn Gai",
+      "Wifi miễn phí",
+      "Ăn sáng buffet",
+      "Dịch vụ dọn phòng",
+      "Lễ tân 24h"
     ],
-    location: "Bãi Cháy, Hạ Long, Quảng Ninh",
-    roomCount: 68,
+    location: "Hòn Gai, Hạ Long, Quảng Ninh",
+    roomCount: 50,
     roomTypes: [
       {
-        name: "Phòng nghỉ Washitsu Omotenashi",
-        description: "Phòng nghỉ phong cách Nhật Bản truyền thống với chiếu Tatami, nệm nằm kiểu Nhật và lối đi dẫn ra bể tắm khoáng riêng ngoài trời.",
-        pricePerNight: 5500000, // 5.5 triệu VNĐ
+        name: "Phòng Superior Double/Twin",
+        description: "Diện tích 22m² ấm cúng, thiết kế hiện đại, đầy đủ trang thiết bị tiện nghi cơ bản.",
+        pricePerNight: 950000,
         capacity: "2 Người lớn",
         image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=600"
       },
       {
-        name: "Biệt thự Washitsu Yama (Hướng Núi)",
-        description: "Biệt thự khoáng nóng cao cấp riêng biệt rộng 90m² ẩn mình sát vách đá vôi tĩnh lặng, trang bị 2 bể tắm Onsen nóng và lạnh riêng tư.",
-        pricePerNight: 12000000, // 12 triệu VNĐ
-        capacity: "4 Người lớn",
-        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600"
+        name: "Phòng Deluxe City View",
+        description: "Diện tích 28m² với cửa sổ rộng hướng nhìn toàn cảnh thành phố Hòn Gai nhộn nhịp.",
+        pricePerNight: 1200000,
+        capacity: "2 Người lớn, 1 Trẻ em",
+        image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600"
       }
     ],
-    priceFrom: 5500000,
-    originalPrice: 6500000,
+    priceFrom: 950000,
+    originalPrice: 1200000,
     category: "hotel",
     isHotDeal: true
   },
   {
     id: "hotel-premier-village-halong",
     name: "Premier Village Ha Long Bay Resort",
-    description: "Tọa lạc tại vị trí đắc địa dọc theo bãi biển Bãi Cháy thơ mộng, Premier Village cung cấp các căn biệt thự nghỉ dưỡng sang trọng bậc nhất với hồ bơi riêng độc lập. Được quản lý bởi tập đoàn Accor danh tiếng thế giới, đây là nơi hội tụ trọn vẹn của những kỳ nghỉ đẳng cấp thượng lưu cho đại gia đình hoặc nhóm bạn thân.",
+    description: "Tọa lạc tại vị trí đắc địa dọc theo bãi biển Bãi Cháy thơ mộng, Premier Village cung cấp các căn biệt thự nghỉ dưỡng đầy đủ tiện nghi với hồ bơi riêng độc lập. Được quản lý bởi tập đoàn Accor danh tiếng thế giới, đây là nơi hội tụ trọn vẹn của những kỳ nghỉ ấm cúng, thư giãn cho đại gia đình hoặc nhóm bạn thân.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200", // Beachfront villa pools
+      "https://cdn3.ivivu.com/2022/08/Premier-Village-H%E1%BA%A1-Long-ivivu-1.jpg", // Cozy garden villa
       "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200", // Villa interior
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200"  // Outdoor lounge
     ],
@@ -420,7 +418,7 @@ export const mockHotels: Hotel[] = [
     name: "Nhà hàng Hải sản Hồng Hạnh 3",
     description: "Nhà hàng ẩm thực hải sản nổi tiếng nhất Hạ Long với tầm nhìn trực diện bờ biển Bãi Cháy. Nơi đây phục vụ các món ăn chế biến từ hải sản tươi sống được đánh bắt trực tiếp từ vịnh trong ngày, không gian hiện đại, sang trọng phù hợp cho đại gia đình và tiếp khách.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200", // Seafood dining
+      "https://exotrails.com/explore/wp-content/uploads/2025/01/Nha-hang-Hong-Hanh-3-4.webp", // Cozy dining
       "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200"
     ],
     stars: 5,
@@ -452,7 +450,7 @@ export const mockHotels: Hotel[] = [
     name: "Nhà hàng 1958 Tuần Châu",
     description: "Tọa lạc tại khu biệt thự cảng Tuần Châu sang trọng, Nhà hàng 1958 nổi tiếng với phong cách ẩm thực Bắc Bộ tinh tế kết hợp hiện đại. Không gian nhà hàng được thiết kế theo lối kiến trúc biệt thự Pháp cổ sang trọng, ấm cúng. Nơi đây là điểm hẹn lý tưởng cho những ai muốn thưởng thức các món ăn đặc sản Hạ Long được nâng tầm nghệ thuật chế biến.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200",
+      "https://down-vn.img.susercontent.com/vn-11134259-7r98o-lwwo1z1ppkuxc3", // Cozy dining
       "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200"
     ],
     stars: 5,
@@ -484,9 +482,9 @@ export const mockHotels: Hotel[] = [
 export const mockCombos: Combo[] = [
   {
     id: "combo-essence-vinpearl",
-    name: "Combo Tinh Hoa Đất Trời: Siêu Du Thuyền Essence Grand & Vinpearl Đảo Rều",
-    tagline: "Trải nghiệm trọn gói 2 ngày 1 đêm siêu du thuyền 6 sao và 1 đêm nghỉ dưỡng lâu đài đảo biệt lập",
-    description: "Kỳ nghỉ đẳng cấp tối thượng kết hợp hoàn mỹ giữa dịch vụ hàng không nghỉ dưỡng cao cấp: Nghỉ dưỡng 1 đêm sang trọng tại Executive Suite Vinpearl Đảo Rều thơ mộng, thưởng thức trà chiều lãng mạn, sau đó di chuyển lên siêu du thuyền Essence Grand Hạ Long Superyacht khám phá kỳ quan thế giới trong hành trình 2 ngày 1 đêm.",
+    name: "Combo Trải Nghiệm Kỳ Quan: Du Thuyền Essence Grand & Vinpearl Đảo Rều",
+    tagline: "Hành trình trọn gói 2 ngày 1 đêm trên du thuyền 5 sao và 1 đêm nghỉ dưỡng resort đảo thơ mộng",
+    description: "Kỳ nghỉ trọn vẹn kết hợp hoàn hảo giữa đất liền và biển khơi: Nghỉ dưỡng 1 đêm thoải mái tại Vinpearl Đảo Rều thơ mộng, thưởng thức trà chiều lãng mạn, sau đó di chuyển lên du thuyền Essence Grand Hạ Long khám phá kỳ quan thiên nhiên trong hành trình 2 ngày 1 đêm.",
     cruiseId: "cruise-essence-grand",
     hotelId: "hotel-vinpearl-halong",
     salePrice: 7990000, // 7.99 triệu VNĐ / khách
@@ -499,14 +497,14 @@ export const mockCombos: Combo[] = [
     isHotDeal: true
   },
   {
-    id: "combo-ambassador-yoko",
-    name: "Combo Thư Giãn Tuyệt Đối: Du Thuyền Ambassador & Trị Liệu Khoáng Nóng Yoko Onsen",
-    tagline: "Sự kết hợp hoàn hảo giữa du ngoạn ngắm vịnh ăn tối tôm hùm và ngâm khoáng nóng trị liệu chuẩn Nhật",
-    description: "Gói đặc quyền hồi phục năng lượng cho Thân - Tâm - Trí: Trải nghiệm hải trình ẩm thực tôm hùm không giới hạn cùng show diễn âm nhạc đỉnh cao trên du thuyền 5 sao Ambassador Hạ Long, tiếp nối bằng 1 đêm nghỉ dưỡng phòng Washitsu thiền định và tắm khoáng Onsen tự nhiên tại Yoko Onsen Hạ Long.",
+    id: "combo-ambassador-halios",
+    name: "Combo Tiết Kiệm: Du Thuyền Ambassador & Khách Sạn Halios Hạ Long",
+    tagline: "Sự kết hợp hoàn hảo giữa du thuyền 5 sao sang trọng và khách sạn hiện đại tại trung tâm Hòn Gai",
+    description: "Gói combo nghỉ dưỡng giá tốt: Trải nghiệm hải trình ẩm thực tôm hùm không giới hạn trên du thuyền Ambassador Hạ Long, kết hợp với 1 đêm lưu trú thoải mái tại Halios Hotel Hạ Long tiện nghi ngay trung tâm Hòn Gai.",
     cruiseId: "cruise-ambassador",
-    hotelId: "hotel-yoko-onsen-quang-hanh",
-    salePrice: 8850000, // 8.85 triệu VNĐ / khách
-    netPrice: 11000000,
+    hotelId: "hotel-halios-halong",
+    salePrice: 4500000, // 4.5 triệu VNĐ / khách
+    netPrice: 5500000,
     patternOptions: {
       hotelStayBeforeDays: 0,
       hotelStayAfterDays: 1
@@ -516,9 +514,9 @@ export const mockCombos: Combo[] = [
   },
   {
     id: "combo-capella-1958",
-    name: "Combo Kỳ Nghỉ Trọn Vẹn: Du Thuyền Capella & Ẩm Thực Tinh Hoa Nhà Hàng 1958",
-    tagline: "Trải nghiệm máng trượt nước độc đáo trên biển và thưởng thức set menu ẩm thực Việt tinh tế tại Tuần Châu",
-    description: "Sự kết hợp hoàn hảo giữa hoạt động giải trí sôi động ngoài khơi cùng hành trình ẩm thực truyền thống lắng đọng tại đất liền: Hành trình 2 ngày 1 đêm trên du thuyền 5 sao Capella vui chơi cực đã với máng trượt nước, sau đó kết thúc bằng tiệc tối set menu thượng hạng tại biệt thự cổ của nhà hàng 1958 Tuần Châu trước khi rời vịnh.",
+    name: "Combo Kỳ Nghỉ Vui Vẻ: Du Thuyền Capella & Trải Nghiệm Nhà Hàng 1958",
+    tagline: "Vui chơi máng trượt nước độc đáo trên biển và thưởng thức set menu hương vị Việt ấm cúng tại Tuần Châu",
+    description: "Sự kết hợp tuyệt vời giữa các hoạt động giải trí ngoài khơi và ẩm thực truyền thống ấm cúng: Hành trình 2 ngày 1 đêm trên du thuyền Capella vui chơi cực đã với máng trượt nước, sau đó thưởng thức bữa tối set menu hấp dẫn tại nhà hàng 1958 Tuần Châu.",
     cruiseId: "cruise-capella",
     hotelId: "restaurant-1958",
     salePrice: 6990000,
@@ -540,17 +538,17 @@ export const mockBlogs: Blog[] = [
     content: "Vịnh Hạ Long, một trong bảy kỳ quan thiên nhiên mới của thế giới, luôn sở hữu vẻ đẹp say lòng du khách suốt bốn mùa. Bài viết này sẽ cung cấp cho bạn cẩm nang chi tiết nhất về cách lựa chọn phương tiện di chuyển bằng limousine cao cấp, cự ly đi từ Hà Nội chỉ mất 2 giờ qua đường cao tốc, gợi ý danh sách các hang động hùng vĩ nhất như Hang Sửng Sốt, Hang Đầu Gỗ và hành trình trekking ngắm hoàng hôn đỉnh núi đảo Ti Tốp...",
     category: "Cẩm nang du lịch",
     publishedAt: "2026-05-28",
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=600",
+    image: "https://cdn3.ivivu.com/2023/11/du-lich-ha-long-ivivu.jpg",
     readTime: "5 phút đọc"
   },
   {
     id: "blog-luxury-cruising-halong",
-    title: "Xu Hướng Trải Nghiệm Siêu Du Thuyền Sang Trọng 5-6 Sao Tại Vịnh Hạ Long",
-    excerpt: "Tìm hiểu lý do tại sao dòng siêu du thuyền thế hệ mới lại trở thành lựa chọn nghỉ dưỡng đẳng cấp thu hút giới thượng lưu trong nước và quốc tế.",
-    content: "Những năm gần đây, Vịnh Hạ Long chứng kiến sự bùng nổ của thế hệ siêu du thuyền cao cấp như Essence Grand hay Ambassador. Với hồ bơi vô cực nước mặn rộng lớn, các căn phòng tổng thống xa hoa rộng hơn 100m² tích hợp dịch vụ quản gia riêng, chuyến nghỉ dưỡng không còn đơn thuần là ngắm cảnh qua ô kính mà trở thành cuộc tận hưởng phong cách sống đẳng cấp hàng đầu thế giới ngay giữa biển khơi...",
+    title: "Xu Hướng Nghỉ Dưỡng Trên Các Du Thuyền Cao Cấp 5 Sao Tại Vịnh Hạ Long",
+    excerpt: "Tìm hiểu lý do tại sao du lịch nghỉ đêm trên du thuyền lại trở thành lựa chọn yêu thích thu hút nhiều du khách trong và ngoài nước.",
+    content: "Những năm gần đây, Vịnh Hạ Long chứng kiến sự bùng nổ của dịch vụ nghỉ dưỡng trên du thuyền cao cấp như Essence Grand hay Ambassador. Với hồ bơi vô cực rộng lớn, phòng ngủ tiện nghi có ban công riêng hướng vịnh, chuyến đi của bạn sẽ là hành trình thư giãn trọn vẹn và đáng nhớ giữa lòng kỳ quan...",
     category: "Trải nghiệm du thuyền",
     publishedAt: "2026-05-22",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=600",
+    image: "https://store.duthuyenhalonglanha.com/data/2023/12/EGC-Flycam_-3.jpg",
     readTime: "4 phút đọc"
   },
   {
@@ -560,7 +558,7 @@ export const mockBlogs: Blog[] = [
     content: "Tắm khoáng nóng trị liệu (Onsen) là nét văn hóa truyền thống của Nhật Bản giúp loại bỏ độc tố, lưu thông khí huyết và tái tạo năng lượng hiệu quả. Tại Yoko Onsen Hạ Long, nguồn khoáng nóng brom tự nhiên được khai thác từ độ sâu hàng trăm mét dưới lòng đất vôi cổ xưa, mang hàm lượng khoáng chất quý hiếm đứng đầu thế giới. Bài viết sẽ hướng dẫn bạn quy trình tắm khoáng ngâm nóng, lạnh và xông hơi muối đá Himalaya đúng chuẩn thiền định...",
     category: "Kinh nghiệm du hành",
     publishedAt: "2026-05-10",
-    image: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600",
+    image: "https://onlinebooking.vn/wp-content/uploads/khoang-nong-onsen-yoko-quang-hanh-quang-ninh-1.jpg",
     readTime: "6 phút đọc"
   },
   {
@@ -570,17 +568,17 @@ export const mockBlogs: Blog[] = [
     content: "Vùng biển phía Nam Vịnh Hạ Long mang vẻ đẹp hoang sơ, biệt lập với các bãi tắm tự nhiên cát trắng mịn trải dài bên vách núi đá vôi. Với hành trình 3 ngày 2 đêm trên du thuyền Heritage Bình Chuẩn, du khách sẽ được chèo thuyền kayak khám phá Hang Sáng Tối thơ mộng, tắm biển giữa vịnh cát Ba Trái Đào lộng gió và khám phá những cung đường thung lũng xanh mướt dẫn vào ngôi làng chài cổ...",
     category: "Cẩm nang du lịch",
     publishedAt: "2026-05-05",
-    image: "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=600",
+    image: "https://owa.bestprice.vn/images/cruises/uploads/du-thuyen-heritage-binh-chuan-6475c847b78c2.jpg",
     readTime: "5 phút đọc"
   },
   {
     id: "blog-essence-experiences",
-    title: "Top 5 Trải Nghiệm Thượng Lưu Trên Siêu Du Thuyền Essence Grand",
-    excerpt: "Khám phá phòng mô phỏng sân golf 3D, tắm hồ bơi vô cực nước mặn trực diện kỳ quan thế giới, và thưởng thức xì-gà tại hầm rượu vang.",
-    content: "Essence Grand Hạ Long Superyacht được xem là định nghĩa mới của phong cách nghỉ dưỡng xa xỉ tại Việt Nam. Không chỉ là phương tiện di chuyển ngắm cảnh, siêu du thuyền này sở hữu một hệ sinh thái giải trí đỉnh cao: phòng mô phỏng chơi golf 3D hiện đại chuẩn PGA quốc tế, hầm rượu vang nhập khẩu phong phú kết hợp phòng Cigar cách âm tuyệt đối, hồ bơi vô cực nước mặn rộng hơn 150m² lộng gió...",
+    title: "Top 5 Trải Nghiệm Thú Vị Trên Du Thuyền Essence Grand",
+    excerpt: "Khám phá phòng mô phỏng sân golf 3D, tắm hồ bơi vô cực nước mặn trực diện kỳ quan thế giới, và thưởng thức ẩm thực phong phú.",
+    content: "Essence Grand Hạ Long được xem là biểu tượng nghỉ dưỡng hiện đại tại Vịnh Hạ Long. Không chỉ là phương tiện ngắm vịnh, du thuyền này sở hữu nhiều tiện ích giải trí thú vị: phòng mô phỏng chơi golf 3D hiện đại, khu vực ẩm thực phong phú, hồ bơi vô cực nước mặn rộng hơn 150m² lộng gió...",
     category: "Trải nghiệm du thuyền",
     publishedAt: "2026-04-28",
-    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=600",
+    image: "https://www.halonghub.com/wp-content/uploads/2025/07/1-20.jpg",
     readTime: "4 phút đọc"
   },
   {
@@ -590,7 +588,7 @@ export const mockBlogs: Blog[] = [
     content: "Sự kết hợp giữa du thuyền thám hiểm vịnh và khách sạn nghỉ dưỡng biệt lập luôn là xu hướng hot nhất mỗi dịp hè về. Bài viết chia sẻ các mẹo đặt dịch vụ sớm trước 45 ngày để nhận mức chiết khấu Early Bird cực tốt, tận dụng các chính sách khuyến mại ngày thường trong tuần và phương án đăng ký nâng hạng phòng Suite miễn phí tại Vinpearl Resort & Spa Hạ Long...",
     category: "Kinh nghiệm du hành",
     publishedAt: "2026-04-15",
-    image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=600",
+    image: "https://statics.vinpearl.com/Vinpearl-Resort-va-Spa-Ha-Long-%E2%80%93-Diem-den-hoan-hao-cho-ky-nghi-duong-cuoi-tuan-ben-gia-dinh-hinh-anh-1.png",
     readTime: "6 phút đọc"
   }
 ];
@@ -601,7 +599,7 @@ export const mockReviews: Review[] = [
     userName: "Nguyễn Hoàng Nam",
     userAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150",
     rating: 5,
-    comment: "Chuyến nghỉ dưỡng 2 ngày 1 đêm trên siêu du thuyền Essence Grand vượt ngoài mong đợi của tôi. Bể bơi vô cực nước mặn quá đẹp, phòng ốc hiện đại đẳng cấp không khác gì resort 6 sao trên đất liền. Dịch vụ quản gia rất tinh tế, chăm sóc chu đáo từng bữa ăn.",
+    comment: "Chuyến nghỉ dưỡng 2 ngày 1 đêm trên du thuyền Essence Grand vượt ngoài mong đợi của tôi. Bể bơi vô cực nước mặn quá đẹp, phòng ốc hiện đại và đầy đủ tiện nghi như resort trên đất liền. Đội ngũ nhân viên rất chu đáo, chăm sóc nhiệt tình từng bữa ăn.",
     date: "2026-05-12",
     stayType: "Essence Grand Hạ Long Superyacht"
   },
@@ -637,8 +635,8 @@ export const mockReviews: Review[] = [
     userName: "Hoàng Kim Chi",
     userAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150",
     rating: 5,
-    comment: "Gói combo Tinh Hoa Đất Trời thực sự là một trải nghiệm hoàn mỹ. Việc kết hợp 1 đêm trên siêu du thuyền Essence Grand và 1 đêm nghỉ dưỡng biệt lập tại lâu đài Đảo Rều Vinpearl giúp chúng tôi trải nghiệm trọn vẹn cả biển cả và đất liền Hạ Long mà không phải tự lên lịch trình phức tạp.",
+    comment: "Gói combo Trải Nghiệm Kỳ Quan thực sự rất tuyệt vời. Việc kết hợp 1 đêm trên du thuyền Essence Grand và 1 đêm nghỉ dưỡng tại Vinpearl Đảo Rều giúp chúng tôi trải nghiệm trọn vẹn cả biển cả và đất liền Hạ Long mà không phải tự lên lịch trình phức tạp.",
     date: "2026-06-02",
-    stayType: "Combo Tinh Hoa Đất Trời"
+    stayType: "Combo Trải Nghiệm Kỳ Quan"
   }
 ];

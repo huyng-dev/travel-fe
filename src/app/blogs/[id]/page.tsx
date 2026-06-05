@@ -97,16 +97,16 @@ const getRichBlogContent = (id: string, blog: Blog) => {
       return (
         <>
           <p className={paragraphClass}>
-            Trong những năm gần đây, Vịnh Hạ Long đang chứng kiến một cuộc cách mạng lớn trong phân khúc nghỉ dưỡng cao cấp với sự bùng nổ của dòng siêu du thuyền thế hệ mới đạt tiêu chuẩn 5-6 sao quốc tế. Nghỉ đêm trên vịnh giờ đây không chỉ đơn thuần là ngắm cảnh biển mà đã nâng tầm thành một lối sống thượng lưu đích thực giữa trùng khơi kỳ quan.
+            Trong những năm gần đây, Vịnh Hạ Long đang chứng kiến một cuộc cách mạng lớn trong phân khúc nghỉ dưỡng trên biển với sự bùng nổ của dòng du thuyền thế hệ mới đạt tiêu chuẩn 5 sao quốc tế. Nghỉ đêm trên vịnh giờ đây không chỉ đơn thuần là ngắm cảnh biển mà đã nâng tầm thành một kỳ nghỉ chất lượng và thư giãn đích thực giữa lòng kỳ quan thiên nhiên.
           </p>
 
           <div className={highlightClass}>
-            &ldquo;Siêu du thuyền thế hệ mới chính là những &lsquo;resort nổi đẳng cấp&rsquo;, tái định nghĩa hoàn toàn khái niệm nghỉ dưỡng xa xỉ tại Việt Nam.&rdquo;
+            &ldquo;Du thuyền thế hệ mới chính là những &lsquo;resort nổi tiện nghi&rsquo;, mang lại trải nghiệm nghỉ dưỡng chất lượng tại Việt Nam.&rdquo;
           </div>
 
           <h2 className={subHeadingClass}>Trang Bị Vượt Trội Khác Biệt Hoàn Toàn</h2>
           <p className={paragraphClass}>
-            Nếu như trước đây các con tàu gỗ nhỏ chiếm ưu thế, thì nay các siêu du thuyền kết cấu thép bọc tàu biển chuyên dụng với chiều dài lên tới hơn 100m đã chiếm lĩnh vịnh xanh. Các tên tuổi lớn như <strong>Essence Grand Superyacht</strong> hay <strong>Ambassador Cruise</strong> sở hữu những trang bị vượt trội khiến du khách phải trầm trồ:
+            Nếu như trước đây các con tàu gỗ nhỏ chiếm ưu thế, thì nay các siêu du thuyền kết cấu thép bọc tàu biển chuyên dụng với chiều dài lên tới hơn 100m đã chiếm lĩnh vịnh xanh. Các tên tuổi lớn như <strong>Essence Grand</strong> hay <strong>Ambassador Cruise</strong> sở hữu những trang bị vượt trội khiến du khách phải trầm trồ:
           </p>
           <ul className={listContainerClass}>
             <li className={listItemClass}>
@@ -115,17 +115,13 @@ const getRichBlogContent = (id: string, blog: Blog) => {
             </li>
             <li className={listItemClass}>
               <Check className={checkIconClass} />
-              <span><strong>Sân đỗ trực thăng:</strong> Tiện ích đặc quyền phục vụ giới siêu giàu di chuyển nhanh chóng từ Hà Nội.</span>
-            </li>
-            <li className={listItemClass}>
-              <Check className={checkIconClass} />
-              <span><strong>Phòng Golf 3D & Mini Cinema:</strong> Không gian giải trí công nghệ cao hiện đại ngay giữa lòng đại dương.</span>
+              <span><strong>Không gian giải trí công nghệ cao:</strong> Phòng Golf 3D & Mini Cinema hiện đại ngay giữa lòng đại dương.</span>
             </li>
           </ul>
 
-          <h2 className={subHeadingClass}>Trải Nghiệm Ẩm Thực Tinh Tế & Ca Nhạc Độc Quyền</h2>
+          <h2 className={subHeadingClass}>Trải Nghiệm Ẩm Thực Phong Phú & Ca Nhạc Sống Đầy Cảm Xúc</h2>
           <p className={paragraphClass}>
-            Ẩm thực chính là linh hồn của hải trình thượng lưu. Khách hàng sẽ được thưởng thức tiệc buffet tôm hùm không giới hạn chuẩn khách sạn 5 sao, kết hợp rượu vang nhập khẩu cao cấp. Khi màn đêm buông xuống, boong tàu khổng lồ (sundeck) biến thành một sân khấu ca nhạc ngoài trời lộng lẫy, nơi diễn ra các show nhạc sống acoustic đầy lãng mạn dưới ánh sao đêm vịnh biển.
+            Ẩm thực chính là linh hồn của mỗi chuyến đi. Khách hàng sẽ được thưởng thức tiệc buffet tôm hùm không giới hạn chuẩn 5 sao, kết hợp cùng các món ăn hải sản phong phú. Khi màn đêm buông xuống, boong tàu khổng lồ (sundeck) biến thành một sân khấu ngoài trời lộng lẫy, nơi diễn ra các show nhạc sống acoustic đầy lãng mạn dưới ánh sao đêm vịnh biển.
           </p>
         </>
       );

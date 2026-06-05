@@ -275,7 +275,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       size: "48 m²",
       capacity: "3 Khách",
       description:
-        "Tọa lạc tại tầng 2 của du thuyền với góc nhìn toàn cảnh 180 độ tuyệt mỹ ra vịnh. Hạng phòng được thiết kế theo phong cách Indochine thượng lưu, bồn tắm nằm cao cấp sát cửa kính ngắm cảnh.",
+        "Tọa lạc tại tầng 2 của du thuyền với góc nhìn toàn cảnh 180 độ tuyệt mỹ ra vịnh. Hạng phòng được thiết kế theo phong cách Indochine tinh tế, bồn tắm nằm sát cửa kính ngắm cảnh thư giãn.",
       price: (cruise.priceFrom / 2) * 1.5,
       image: cruise.imageGallery[2] || "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600",
       images: [
@@ -288,7 +288,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
         "Ban công panorama kính cường lực tràn viền góc nhìn cực rộng.",
         "Bồn tắm Jacuzzi nằm sát cửa kính hướng vịnh ngắm hoàng hôn cực lãng mạn.",
         "1 giường đôi Super King-size (200 x 220 cm) bọc da cao cấp.",
-        "Dịch vụ phục vụ trà chiều và trái cây tươi thượng hạng tại phòng mỗi ngày.",
+        "Dịch vụ phục vụ trà chiều và trái cây tươi thơm ngon tại phòng mỗi ngày.",
         "Mini bar miễn phí hoàn toàn (được làm đầy lại mỗi ngày).",
       ],
       amenities: [
@@ -304,7 +304,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       size: "95 m²",
       capacity: "4 Khách",
       description:
-        "Căn phòng rộng lớn và vương giả bậc nhất trên tàu, sở hữu phòng khách, bàn ăn và boong tắm nắng sundeck riêng tư hoàn toàn. Đi kèm dịch vụ quản gia cá nhân 24/7 phục vụ mọi bữa ăn tại phòng.",
+        "Căn phòng rộng lớn và tiện nghi bậc nhất trên tàu, sở hữu phòng khách, bàn ăn và boong tắm nắng sundeck riêng tư hoàn toàn. Đi kèm dịch vụ hỗ trợ chu đáo 24/7 phục vụ mọi bữa ăn tại phòng.",
       price: (cruise.priceFrom / 2) * 3.0,
       image: cruise.imageGallery[3] || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600",
       images: [
@@ -315,17 +315,17 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       planImage: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?q=80&w=600",
       details: [
         "Sở hữu boong tắm nắng sundeck riêng tư biệt lập rộng 20m² có ghế nằm tắm nắng.",
-        "Không gian phòng bao gồm phòng ngủ hoàng gia, phòng khách lớn và bàn ăn riêng.",
-        "Dịch vụ quản gia cá nhân 24/7 hỗ trợ sắp xếp và phục vụ bữa ăn tại phòng.",
-        "Đặc quyền đón tiễn bằng xe VIP Limousine riêng từ Hà Nội.",
-        "Tặng chai rượu Champagne thượng hạng chào mừng khi nhận phòng.",
+        "Không gian phòng bao gồm phòng ngủ ấm cúng, phòng khách lớn và bàn ăn riêng.",
+        "Dịch vụ hỗ trợ cá nhân 24/7 sắp xếp và phục vụ bữa ăn tại phòng.",
+        "Đưa đón bằng xe Limousine từ Hà Nội.",
+        "Tặng thức uống chào mừng mát lạnh khi nhận phòng.",
       ],
       amenities: [
         "Sundeck riêng biệt lập",
         "Phòng khách sang trọng",
-        "Quản gia phục vụ 24/7",
-        "Đón tiễn VIP limousine",
-        "Rượu champagne chào mừng",
+        "Hỗ trợ phục vụ 24/7",
+        "Đón tiễn limousine",
+        "Thức uống chào mừng",
       ],
     },
     {
@@ -345,14 +345,14 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       details: [
         "Hồ bơi jacuzzi vô cực ngoài trời biệt lập ở boong trước mũi tàu.",
         "Phòng xông hơi khô sauna và xông hơi ướt hammam khép kín.",
-        "Quản gia trưởng phục vụ riêng chuẩn quý tộc Pháp 24/7.",
-        "Miễn phí không giới hạn tất cả các loại đồ uống cao cấp, rượu ngoại thượng hạng.",
+        "Nhân viên chăm sóc riêng phục vụ chu đáo 24/7.",
+        "Miễn phí các loại nước uống mát lạnh chất lượng cao giải nhiệt ngày hè.",
         "Dịch vụ massage trị liệu 60 phút mỗi ngày dành cho mỗi khách tại phòng.",
       ],
       amenities: [
         "Bể bơi vô cực mũi tàu",
         "Phòng xông hơi riêng",
-        "Quản gia trưởng 24/7",
+        "Nhân viên phục vụ 24/7",
         "Đồ uống cao cấp free",
         "Massage trị liệu miễn phí",
       ],
@@ -389,9 +389,9 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
     {
       key: "gastronomy",
       label: "Gastronomy",
-      title: "Ẩm thực thượng hạng",
+      title: "Ẩm thực phong phú",
       description:
-        "Trải nghiệm tinh hoa ẩm thực 5 sao với tiệc tối buffet tôm hùm, Fine Dining phong cách Á-Âu được chế biến bởi các bếp trưởng hàng đầu, kết hợp cùng bộ sưu tập rượu vang thượng hạng.",
+        "Trải nghiệm ẩm thực 5 sao với tiệc tối buffet tôm hùm, các món Á-Ưu phong phú được chế biến bởi các bếp trưởng lành nghề, kết hợp cùng đồ uống hấp dẫn.",
       image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800",
     },
     {
@@ -399,7 +399,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       label: "Lounges & Bars",
       title: "Quầy bar & Lounge",
       description:
-        "Thư giãn cùng những ly cocktail độc bản tại Sky Lounge lộng gió hay hầm rượu cigar sang trọng dưới tầng hầm, lắng nghe tiếng sóng vỗ rì rào hòa cùng bản nhạc jazz êm dịu.",
+        "Thư giãn cùng những ly nước mát lạnh tại Sky Lounge lộng gió hay không gian chung ấm cúng, lắng nghe tiếng sóng vỗ rì rào hòa cùng bản nhạc nhẹ nhàng.",
       image: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=800",
     },
     {
@@ -407,7 +407,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
       label: "Well-being & Spa",
       title: "Spa & Trị liệu",
       description:
-        "Hồi phục sức khỏe Thân - Tâm - Trí với các liệu trình massage đá nóng, xông hơi đá muối Himalaya tại khu vực spa biệt lập, được phục vụ bởi các kỹ thuật viên chuyên nghiệp.",
+        "Hồi phục sức khỏe với các liệu trình massage đá nóng, xông hơi đá muối Himalaya tại khu vực spa biệt lập, được phục vụ bởi các nhân viên chuyên nghiệp.",
       image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800",
     },
     {

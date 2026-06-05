@@ -32,43 +32,43 @@ interface DisplayProduct {
 
 const heroSlides = [
   {
-    image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1920",
-    title: "Nghỉ Dưỡng Thượng Lưu\nTại Vịnh Kỳ Quan",
-    description: "Trải nghiệm những hải trình độc bản trên các siêu du thuyền 6 sao và kỳ nghỉ dưỡng riêng tư tại các khu resort, khách sạn sang trọng hướng vịnh.",
+    image: "https://bizweb.dktcdn.net/100/512/250/files/z5612772745864-db8d77ba6a138198d44a9b4698430268-optimized.jpg?v=1720420645713",
+    title: "Combo Trải Nghiệm\n& Tour Trọn Gói Tiết Kiệm",
+    description: "Sự kết hợp tuyệt vời giữa hành trình du ngoạn du thuyền và nghỉ dưỡng tiện nghi tại vịnh biển Hạ Long với mức giá ưu đãi nhất.",
   },
   {
-    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1920",
-    title: "Combo Trải Nghiệm\n& Tour Trọn Gói Đẳng Cấp",
-    description: "Sự kết hợp hoàn hảo giữa hành trình du ngoạn siêu du thuyền 5 sao và nghỉ dưỡng cao cấp tại vịnh biển Hạ Long với mức giá đặc quyền.",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1920",
+    image: "https://cdn3.ivivu.com/2023/11/du-lich-ha-long-ivivu.jpg",
     title: "Tinh Hoa Di Sản\n& Nghệ Thuật Đông Dương",
-    description: "Khám phá Vịnh Hạ Long kỳ vĩ cùng các siêu phẩm du thuyền di sản mang phong cách kiến trúc hoài niệm tinh tế.",
+    description: "Khám phá Vịnh Hạ Long kỳ vĩ cùng các du thuyền di sản mang phong cách kiến trúc hoài niệm thân thuộc.",
+  },
+  {
+    image: "https://tourdulichvinhhalong.com.vn/wp-content/uploads/2025/05/anh-1-4-16279776696801576903300.jpg",
+    title: "Trải Nghiệm Kỳ Quan\nNghỉ Dưỡng Trọn Vẹn",
+    description: "Trải nghiệm những hải trình đáng nhớ trên các du thuyền cao cấp và kỳ nghỉ dưỡng thoải mái tại các resort, khách sạn tiện nghi hướng vịnh.",
   },
 ];
 
 const serviceCategories = [
   {
-    thumbnail: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800",
-    title: "Du Thuyền Thượng Lưu",
-    subtitle: "Trải nghiệm kỳ quan Hạ Long trên những siêu du thuyền 5-6 sao hiện đại bậc nhất.",
+    thumbnail: "https://dulichviet.com.vn/images/bandidau/nen-chon-du-thuyen-nao-khi-di-du-lich-ha-long.jpg",
+    title: "Du Thuyền Cao Cấp",
+    subtitle: "Trải nghiệm kỳ quan Hạ Long trên những du thuyền hiện đại và sang trọng.",
     path: "/cruises",
   },
   {
-    thumbnail: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800",
+    thumbnail: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800",
     title: "Khách Sạn & Resort",
     subtitle: "Khu nghỉ dưỡng sang trọng bên vịnh biển biệt lập, tiện ích chuẩn quốc tế.",
     path: "/stays-dining?category=hotel",
   },
   {
-    thumbnail: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=800",
+    thumbnail: "https://digiticket.vn/blog/wp-content/uploads/2022/02/villa-ha-long-1.jpg",
     title: "Biệt Thự & Villa",
-    subtitle: "Không gian nghỉ ngơi riêng tư đẳng cấp dành riêng cho gia đình và nhóm bạn.",
+    subtitle: "Không gian nghỉ ngơi riêng tư, tiện nghi dành riêng cho gia đình và nhóm bạn.",
     path: "/stays-dining?category=villa",
   },
   {
-    thumbnail: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800",
+    thumbnail: "https://static.vinwonders.com/production/nha-hang-ha-long-2.jpg",
     title: "Nhà Hàng & Ẩm Thực",
     subtitle: "Thưởng thức hải sản tươi ngon độc bản và ẩm thực tinh tế mang hương vị biển khơi.",
     path: "/stays-dining?category=restaurant",
@@ -77,24 +77,24 @@ const serviceCategories = [
 
 const serviceSlides = [
   {
-    title: "Du Thuyền Thượng Lưu",
-    description: "Đội tàu siêu du thuyền 5-6 sao hiện đại bậc nhất, mang đến những hải trình độc bản ngắm nhìn toàn cảnh vịnh kỳ quan từ ban công riêng tư.",
-    image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1200",
+    title: "Du Thuyền Cao Cấp",
+    description: "Đội tàu du thuyền hiện đại, mang đến những hải trình đáng nhớ ngắm nhìn toàn cảnh vịnh kỳ quan từ ban công riêng tư.",
+    image: "https://dulichviet.com.vn/images/bandidau/nen-chon-du-thuyen-nao-khi-di-du-lich-ha-long.jpg",
   },
   {
     title: "Khách Sạn & Resort Biệt Lập",
-    description: "Hệ thống biệt thự sát biển và lâu đài nghỉ dưỡng mang phong cách kiến trúc tân cổ điển sang trọng, mang lại kỳ nghỉ riêng tư tuyệt đối cho gia đình.",
-    image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200",
+    description: "Hệ thống khách sạn và resort sát biển đầy đủ tiện nghi, mang lại kỳ nghỉ thoải mái và ấm cúng cho cả gia đình.",
+    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=1200",
   },
   {
-    title: "Tinh Hoa Ẩm Thực 5 Sao",
-    description: "Thưởng thức tiệc tối buffet tôm hùm không giới hạn, tiệc Fine Dining chuẩn Âu cùng những ly rượu vang hảo hạng lộng gió biển khơi.",
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200",
+    title: "Trải Nghiệm Ẩm Thực Hấp Dẫn",
+    description: "Thưởng thức tiệc buffet tôm hùm hấp dẫn cùng các món ăn hải sản đa dạng, mang đến hương vị tươi ngon đặc sắc bên bờ vịnh.",
+    image: "https://static.vinwonders.com/production/nha-hang-ha-long-2.jpg",
   },
   {
     title: "Villa & Biệt Thự Sát Biển",
-    description: "Sở hữu tầm nhìn ôm trọn vịnh kỳ quan, các căn biệt thự 3-4 phòng ngủ có bể bơi riêng mang đến không gian nghỉ dưỡng tự do tuyệt đối.",
-    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200",
+    description: "Không gian rộng rãi với tầm nhìn hướng vịnh, các biệt thự 3-4 phòng ngủ có hồ bơi riêng là lựa chọn lý tưởng cho các gia đình và nhóm bạn.",
+    image: "https://digiticket.vn/blog/wp-content/uploads/2022/02/villa-ha-long-1.jpg",
   },
 ];
 
@@ -126,7 +126,7 @@ export default function Home() {
       type: "combo" as const,
       name: cb.name,
       tagline: cb.tagline,
-      image: cb.id === "combo-essence-vinpearl" ? mockCruises[0].imageGallery[0] : mockCruises[1].imageGallery[0],
+      image: mockCruises.find(c => c.id === cb.cruiseId)?.imageGallery[0] || mockCruises[0].imageGallery[0],
       stars: 5,
       price: cb.salePrice,
       originalPrice: cb.netPrice,
@@ -226,7 +226,7 @@ export default function Home() {
                 <span className="text-[10px] uppercase tracking-widest text-accent font-extrabold">Gợi ý tìm kiếm:</span>
                 <Link href="/cruises" className="hover:text-accent text-white transition-colors duration-300">#Du thuyền 5 sao</Link>
                 <span className="text-white/20">|</span>
-                <Link href="/stays-dining?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Resort sang trọng</Link>
+                <Link href="/stays-dining?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Khách sạn sang trọng</Link>
                 <span className="text-white/20">|</span>
                 <Link href="/stays-dining?category=villa" className="hover:text-accent text-white transition-colors duration-300">#Villa sát biển</Link>
                 <span className="text-white/20">|</span>

@@ -343,7 +343,7 @@ export default function LeadBookingWidget() {
             YÊU CẦU BÁO GIÁ
           </h3>
           <p className="text-xs text-slate-500">
-            Hải trình đẳng cấp đang đợi quý khách. Hãy để lại thông tin tư vấn.
+            Hành trình khám phá đang đợi quý khách. Hãy để lại thông tin tư vấn.
           </p>
         </div>
 

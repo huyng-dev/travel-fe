@@ -54,8 +54,8 @@ export default function Footer() {
             </div>
           </Link>
           <p className="text-slate-400 leading-relaxed text-xs">
-            Hệ thống đặt phòng khách sạn và siêu du thuyền nghỉ dưỡng cao cấp hàng đầu tại Vịnh Hạ Long.
-            Chúng tôi mang đến những hành trình độc bản, kết hợp tinh tế giữa vẻ đẹp kỳ quan thiên nhiên và dịch vụ tiện nghi thượng lưu bậc nhất.
+            Hệ thống đặt phòng du thuyền và khách sạn nghỉ dưỡng chất lượng tại Vịnh Hạ Long.
+            Chúng tôi mang đến những hành trình trọn vẹn, kết hợp tinh tế giữa vẻ đẹp kỳ quan thiên nhiên và dịch vụ tiện nghi, chu đáo.
           </p>
         </div>
 

@@ -140,9 +140,8 @@ function SearchListContent() {
         name: cb.name,
         tagline: cb.tagline,
         image:
-          cb.id === "combo-essence-vinpearl"
-            ? mockCruises[0].imageGallery[0]
-            : mockCruises[1].imageGallery[0],
+          mockCruises.find((c) => c.id === cb.cruiseId)?.imageGallery[0] ||
+          mockCruises[0].imageGallery[0],
         stars: 5,
         price: cb.salePrice,
         originalPrice: cb.netPrice,
@@ -308,7 +307,7 @@ function SearchListContent() {
       {/* 1. HERO SEARCH BANNER */}
       <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920"
+          src="https://baithojunks.com/wp-content/uploads/2023/10/9008halongbay-1.jpg"
           alt="Search Results Banner"
           className="absolute inset-0 w-full h-full object-cover opacity-40"
         />

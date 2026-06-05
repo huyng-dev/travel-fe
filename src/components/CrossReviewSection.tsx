@@ -121,7 +121,7 @@ export default function CrossReviewSection() {
               Đánh Giá Của Khách Hàng
             </h3>
             <p className="text-xs text-slate-500">
-              Những vị khách thượng lưu đánh giá cao về trải nghiệm nghỉ dưỡng tại Hạ Long.
+              Những chia sẻ thực tế từ các du khách sau chuyến nghỉ dưỡng tại Hạ Long.
             </p>
             <div className="flex items-center gap-0.5 text-accent-dark">
               {Array.from({ length: 5 }).map((_, index) => (
