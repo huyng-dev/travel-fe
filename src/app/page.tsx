@@ -4,13 +4,15 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
 import CrossReviewSection from "@/components/CrossReviewSection";
-import CustomDropdown from "@/components/CustomDropdown";
-import { mockCruises, mockHotels, mockCombos, mockBlogs } from "@/data/mockData";
-import { Search, MapPin, ChevronRight, ChevronLeft, ArrowUpRight, Ship } from "lucide-react";
-import { motion, AnimatePresence, PanInfo } from "framer-motion";
+import SearchWidget from "@/components/SearchWidget";
+import { mockCruises, mockHotels, mockCombos } from "@/data/mockData";
+import { ChevronRight, ChevronLeft, ArrowUpRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import LatestBlogs from "@/components/LatestBlogs";
 
 interface DisplayProduct {
   id: string;
@@ -25,47 +27,51 @@ interface DisplayProduct {
   durationDays?: number;
   location?: string;
   amenities?: string[];
+  category?: string;
 }
 
 const heroSlides = [
   {
     image: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1920",
     title: "Nghỉ Dưỡng Thượng Lưu\nTại Vịnh Kỳ Quan",
-    description: "Trải nghiệm những hải trình độc bản trên các siêu du thuyền 6 sao và kỳ nghỉ dưỡng riêng tư tại lâu đài Đảo Rều biệt lập.",
+    description: "Trải nghiệm những hải trình độc bản trên các siêu du thuyền 6 sao và kỳ nghỉ dưỡng riêng tư tại các khu resort, khách sạn sang trọng hướng vịnh.",
   },
   {
     image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1920",
-    title: "Thiên Đường Khoáng Nóng\nGiữa Lòng Thung Lũng",
-    description: "Đắm chìm trong dòng khoáng nóng tự nhiên chuẩn Nhật Bản tại Yoko Onsen Quang Hanh, cân bằng Thân - Tâm - Trí giữa vách đá mờ sương.",
+    title: "Combo Trải Nghiệm\n& Tour Trọn Gói Đẳng Cấp",
+    description: "Sự kết hợp hoàn hảo giữa hành trình du ngoạn siêu du thuyền 5 sao và nghỉ dưỡng cao cấp tại vịnh biển Hạ Long với mức giá đặc quyền.",
   },
   {
     image: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?q=80&w=1920",
     title: "Tinh Hoa Di Sản\n& Nghệ Thuật Đông Dương",
-    description: "Khám phá vịnh Lan Hạ thơ mộng cùng siêu phẩm du thuyền di sản Heritage Bình Chuẩn mang phong cách Indochine hoài niệm.",
+    description: "Khám phá Vịnh Hạ Long kỳ vĩ cùng các siêu phẩm du thuyền di sản mang phong cách kiến trúc hoài niệm tinh tế.",
   },
 ];
 
-const discoverSlides = [
+const serviceCategories = [
   {
-    bgImage: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1920",
     thumbnail: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800",
-    title: "Vịnh Hạ Long",
-    subtitle: "Du ngoạn giữa những hòn đảo đá vôi huyền thoại, chiêm ngưỡng hang động lung linh và đảo đá kỳ vĩ.",
-    destination: "Vịnh Hạ Long",
+    title: "Du Thuyền Thượng Lưu",
+    subtitle: "Trải nghiệm kỳ quan Hạ Long trên những siêu du thuyền 5-6 sao hiện đại bậc nhất.",
+    path: "/cruises",
   },
   {
-    bgImage: "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1920",
-    thumbnail: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800",
-    title: "Vịnh Lan Hạ",
-    subtitle: "Len lỏi qua các hang sáng tối yên bình, chèo thuyền kayak và hòa mình vào bãi tắm hoang sơ tĩnh lặng.",
-    destination: "Vịnh Lan Hạ",
+    thumbnail: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800",
+    title: "Khách Sạn & Resort",
+    subtitle: "Khu nghỉ dưỡng sang trọng bên vịnh biển biệt lập, tiện ích chuẩn quốc tế.",
+    path: "/stays-dining?category=hotel",
   },
   {
-    bgImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920",
-    thumbnail: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800",
-    title: "Đảo Cát Bà",
-    subtitle: "Khám phá rừng quốc gia kì vĩ, đạp xe xuyên thung lũng ghé thăm ngôi làng cổ Việt Hải hoang sơ bên sườn núi.",
-    destination: "Đảo Cát Bà",
+    thumbnail: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=800",
+    title: "Biệt Thự & Villa",
+    subtitle: "Không gian nghỉ ngơi riêng tư đẳng cấp dành riêng cho gia đình và nhóm bạn.",
+    path: "/stays-dining?category=villa",
+  },
+  {
+    thumbnail: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800",
+    title: "Nhà Hàng & Ẩm Thực",
+    subtitle: "Thưởng thức hải sản tươi ngon độc bản và ẩm thực tinh tế mang hương vị biển khơi.",
+    path: "/stays-dining?category=restaurant",
   },
 ];
 
@@ -77,7 +83,7 @@ const serviceSlides = [
   },
   {
     title: "Khách Sạn & Resort Biệt Lập",
-    description: "Hệ thống biệt thự sát biển và lâu đài đảo Rều mang phong cách hoàng gia Pháp cổ điển, mang lại những kỳ nghỉ riêng tư tuyệt đối cho gia đình.",
+    description: "Hệ thống biệt thự sát biển và lâu đài nghỉ dưỡng mang phong cách kiến trúc tân cổ điển sang trọng, mang lại kỳ nghỉ riêng tư tuyệt đối cho gia đình.",
     image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200",
   },
   {
@@ -86,90 +92,18 @@ const serviceSlides = [
     image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200",
   },
   {
-    title: "Suối Khoáng Nóng Trị Liệu",
-    description: "Đắm chìm trong nguồn khoáng nóng brom tự nhiên chuẩn Nhật Bản tại thung lũng đá vôi, hồi phục sức khỏe Thân - Tâm - Trí trọn vẹn.",
-    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200",
+    title: "Villa & Biệt Thự Sát Biển",
+    description: "Sở hữu tầm nhìn ôm trọn vịnh kỳ quan, các căn biệt thự 3-4 phòng ngủ có bể bơi riêng mang đến không gian nghỉ dưỡng tự do tuyệt đối.",
+    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=1200",
   },
 ];
 
 export default function Home() {
   const router = useRouter();
-  const [filter, setFilter] = useState<"cruise" | "hotel" | "combo">("cruise");
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentServiceSlide, setCurrentServiceSlide] = useState(0);
 
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  const [activeDot, setActiveDot] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(3);
-  const [cardWidth, setCardWidth] = useState(380);
 
-  const productScrollRef = React.useRef<HTMLDivElement>(null);
-  const [activeProductDot, setActiveProductDot] = useState(0);
-  const [productCardWidth, setProductCardWidth] = useState(380);
-
-  const handleProductDragEnd = (event: unknown, info: PanInfo) => {
-    const threshold = 50;
-    const productsToDisplay = filteredProducts().slice(0, 6);
-    const maxIndex = Math.max(0, productsToDisplay.length - visibleCount);
-    if (info.offset.x < -threshold) {
-      setActiveProductDot((prev) => Math.min(maxIndex, prev + 1));
-    } else if (info.offset.x > threshold) {
-      setActiveProductDot((prev) => Math.max(0, prev - 1));
-    }
-  };
-
-  React.useEffect(() => {
-    const updateWidth = () => {
-      if (productScrollRef.current && productScrollRef.current.firstElementChild) {
-        setProductCardWidth(productScrollRef.current.firstElementChild.clientWidth);
-      }
-    };
-    const timer = setTimeout(updateWidth, 100);
-    window.addEventListener("resize", updateWidth);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, [visibleCount, filter]);
-
-  React.useEffect(() => {
-    const updateVisibleCount = () => {
-      if (window.innerWidth >= 1024) {
-        setVisibleCount(3);
-      } else if (window.innerWidth >= 768) {
-        setVisibleCount(2);
-      } else {
-        setVisibleCount(1);
-      }
-    };
-    updateVisibleCount();
-    window.addEventListener("resize", updateVisibleCount);
-    return () => window.removeEventListener("resize", updateVisibleCount);
-  }, []);
-
-  React.useEffect(() => {
-    const updateWidth = () => {
-      if (scrollRef.current && scrollRef.current.firstElementChild) {
-        setCardWidth(scrollRef.current.firstElementChild.clientWidth);
-      }
-    };
-    const timer = setTimeout(updateWidth, 100);
-    window.addEventListener("resize", updateWidth);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", updateWidth);
-    };
-  }, [visibleCount]);
-
-  const handleDragEnd = (event: unknown, info: PanInfo) => {
-    const threshold = 50;
-    const maxIndex = Math.max(0, mockBlogs.length - visibleCount);
-    if (info.offset.x < -threshold) {
-      setActiveDot((prev) => Math.min(maxIndex, prev + 1));
-    } else if (info.offset.x > threshold) {
-      setActiveDot((prev) => Math.max(0, prev - 1));
-    }
-  };
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -178,8 +112,6 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-
-
   React.useEffect(() => {
     const timer = setInterval(() => {
       setCurrentServiceSlide((prev: number) => (prev + 1) % serviceSlides.length);
@@ -187,69 +119,51 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  // Form tìm kiếm du thuyền ở Hero
-  const [searchName, setSearchName] = useState("");
-  const [searchDestination, setSearchDestination] = useState("");
-
-  const handleHeroSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    let query = "/cruises";
-    const params = [];
-    if (searchName) params.push(`name=${encodeURIComponent(searchName)}`);
-    if (searchDestination) params.push(`destination=${encodeURIComponent(searchDestination)}`);
-    if (params.length > 0) {
-      query += `?${params.join("&")}`;
-    }
-    router.push(query);
-  };
-
-  const filteredProducts = (): DisplayProduct[] => {
-    switch (filter) {
-      case "cruise":
-        return mockCruises.map((c) => ({
-          id: c.id,
-          type: "cruise" as const,
-          name: c.name,
-          tagline: c.tagline,
-          image: c.imageGallery[0],
-          stars: c.stars,
-          price: c.id === "cruise-essence-grand" ? 7900000 : c.id === "cruise-ambassador" ? 6200000 : 6800000,
-          durationDays: c.durationDays,
-          location: c.destinations[0],
-          amenities: c.amenities,
-        }));
-      case "hotel":
-        return mockHotels.map((h) => ({
-          id: h.id,
-          type: "hotel" as const,
-          name: h.name,
-          tagline: h.location,
-          image: h.imageGallery[0],
-          stars: h.stars,
-          price: h.roomTypes[0].pricePerNight,
-          location: h.location,
-          amenities: h.amenities,
-        }));
-      case "combo":
-        return mockCombos.map((cb) => {
-          const originalPrice = cb.netPrice;
-          return {
-            id: cb.id,
-            type: "combo" as const,
-            name: cb.name,
-            tagline: cb.tagline,
-            image: cb.id === "combo-essence-vinpearl" ? mockCruises[0].imageGallery[0] : mockCruises[1].imageGallery[0],
-            stars: 5,
-            price: cb.salePrice,
-            originalPrice,
-            badge: "Ưu Đãi Đặc Biệt",
-            amenities: ["Bao gồm du thuyền & resort 5 sao", "Cano đưa đón riêng", "Liệu trình Spa kèm theo"],
-          };
-        });
-      default:
-        return [];
-    }
-  };
+  const hotDeals: DisplayProduct[] = [
+    // Combos
+    ...mockCombos.filter(cb => cb.isHotDeal).map(cb => ({
+      id: cb.id,
+      type: "combo" as const,
+      name: cb.name,
+      tagline: cb.tagline,
+      image: cb.id === "combo-essence-vinpearl" ? mockCruises[0].imageGallery[0] : mockCruises[1].imageGallery[0],
+      stars: 5,
+      price: cb.salePrice,
+      originalPrice: cb.netPrice,
+      location: "Hạ Long, Quảng Ninh",
+      amenities: ["Bao gồm du thuyền & resort 5 sao", "Cano đưa đón riêng", "Liệu trình Spa"],
+      category: cb.category,
+    })),
+    // Cruises
+    ...mockCruises.filter(c => c.isHotDeal).map(c => ({
+      id: c.id,
+      type: "cruise" as const,
+      name: c.name,
+      tagline: c.tagline,
+      image: c.imageGallery[0],
+      stars: c.stars,
+      price: c.priceFrom,
+      originalPrice: c.originalPrice,
+      durationDays: c.durationDays,
+      location: c.destinations[0],
+      amenities: c.amenities,
+      category: c.category,
+    })),
+    // Hotels, Villas, Restaurants
+    ...mockHotels.filter(h => h.isHotDeal).map(h => ({
+      id: h.id,
+      type: "hotel" as const,
+      name: h.name,
+      tagline: h.description, // Dùng description làm tagline ngắn gọn
+      image: h.imageGallery[0],
+      stars: h.stars,
+      price: h.priceFrom || h.roomTypes[0]?.pricePerNight,
+      originalPrice: h.originalPrice,
+      location: h.location,
+      amenities: h.amenities,
+      category: h.category,
+    }))
+  ];
 
   return (
     <>
@@ -300,211 +214,77 @@ export default function Home() {
               </AnimatePresence>
             </div>
 
-            {/* FLOATING QUICK CRUISE SEARCH BAR (Absolute positioned overlapping bottom edge) */}
+            {/* FLOATING QUICK SEARCH BAR (Absolute positioned overlapping bottom edge) */}
             <motion.div
               initial={{ opacity: 0, y: 25, x: "-50%" }}
               animate={{ opacity: 1, y: 0, x: "-50%" }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="absolute bottom-0 left-1/2 translate-y-1/2 w-full max-w-4xl z-20 px-6 md:px-0"
+              className="absolute bottom-0 left-1/2 w-full max-w-6xl z-20 px-6 md:px-0 flex flex-col items-center"
             >
-              <form
-                onSubmit={handleHeroSearch}
-                className="bg-white border border-slate-100 shadow-xl md:rounded-full rounded-3xl p-3 md:pl-8 md:pr-3 md:py-3 flex flex-col md:flex-row items-center gap-4 md:gap-0 text-left"
-              >
-                {/* Search Input: Name */}
-                <div className="w-full md:flex-1 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 text-accent flex items-center justify-center flex-shrink-0 transition-all duration-300 hover:bg-slate-200/60">
-                    <Ship className="w-4 h-4 text-accent" />
-                  </div>
-                  <div className="flex-1 min-w-0 pr-2">
-                    <label className="text-[10px] uppercase tracking-[0.12em] text-slate-500 font-semibold block">
-                      Tên du thuyền
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Nhập tên du thuyền..."
-                      value={searchName}
-                      onChange={(e) => setSearchName(e.target.value)}
-                      className="w-full bg-transparent text-slate-800 text-sm font-semibold border-none focus:outline-none placeholder-slate-400 mt-0.5 focus:ring-0 p-0"
-                    />
-                  </div>
-                </div>
-
-                {/* Vertical Divider (Desktop only) */}
-                <div className="hidden md:block w-[1px] h-8 bg-slate-200/80 mx-6" />
-
-                {/* Dropdown: Destination */}
-                <div className="w-full md:flex-1 md:mr-8">
-                  <CustomDropdown
-                    label="Tuyến điểm du ngoạn"
-                    value={searchDestination}
-                    onChange={setSearchDestination}
-                    options={[
-                      { value: "", label: "Tất cả tuyến điểm" },
-                      { value: "Vịnh Hạ Long", label: "Vịnh Hạ Long" },
-                      { value: "Vịnh Lan Hạ", label: "Vịnh Lan Hạ" },
-                      { value: "Đảo Cát Bà", label: "Đảo Cát Bà" },
-                    ]}
-                    icon={<MapPin className="w-4 h-4 text-accent" />}
-                    variant="light"
-                  />
-                </div>
-
-                {/* Action button */}
-                <div className="w-full md:w-auto flex-shrink-0">
-                  <button
-                    type="submit"
-                    className="w-full md:w-auto px-8 py-3.5 bg-accent hover:bg-accent-dark text-white font-bold text-xs uppercase tracking-[0.1em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02] cursor-pointer border-none"
-                  >
-                    <Search className="w-4 h-4" />
-                    TÌM KIẾM
-                  </button>
-                </div>
-              </form>
+              {/* Quick suggestion tags to make search area stand out */}
+              <div className="md:flex hidden flex-wrap items-center justify-center gap-3 text-xs text-white/95 font-semibold backdrop-blur-md bg-slate-900/40 px-5 py-2 translate-y-1/2 rounded-full border border-white/15 shadow-xl select-none">
+                <span className="text-[10px] uppercase tracking-widest text-accent font-extrabold">Gợi ý tìm kiếm:</span>
+                <Link href="/cruises" className="hover:text-accent text-white transition-colors duration-300">#Du thuyền 5 sao</Link>
+                <span className="text-white/20">|</span>
+                <Link href="/stays-dining?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Resort sang trọng</Link>
+                <span className="text-white/20">|</span>
+                <Link href="/stays-dining?category=villa" className="hover:text-accent text-white transition-colors duration-300">#Villa sát biển</Link>
+                <span className="text-white/20">|</span>
+                <Link href="/stays-dining?category=restaurant" className="hover:text-accent text-white transition-colors duration-300">#Nhà hàng hải sản</Link>
+              </div>
+              <div className="w-full translate-y-1/2">
+                <SearchWidget />
+              </div>
             </motion.div>
           </div>
         </section>
 
-
-
-        {/* DYNAMIC PRODUCT CATALOG SECTION (Light Theme Slate background) */}
-        <section id="catalog" className="pt-36 pb-24 bg-slate-50 border-t border-b border-slate-100">
+        {/* CURATED HOT DEALS SECTION */}
+        <section id="hot-deal" className="pt-36 pb-24 bg-slate-50 border-t border-b border-slate-100">
           <div className="max-w-7xl mx-auto px-6 space-y-12">
-            <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-6 text-center md:text-left">
-              <div className="space-y-2 text-center md:text-left w-full md:w-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
+              <div className="text-center md:text-left space-y-2">
                 <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
-                  DỊCH VỤ ĐẲNG CẤP
+                  KHUYẾN MÃI ĐỘC QUYỀN
                 </span>
                 <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
-                  HÀNH TRÌNH MỚI NHẤT
+                  SIÊU ƯU ĐÃI HẠ LONG
                 </h2>
+                <p className="text-xs text-slate-500 font-medium">
+                  Khám phá các combo nghỉ dưỡng và dịch vụ cao cấp với mức giá ưu đãi tốt nhất trong ngày
+                </p>
               </div>
-
-              {/* Controls and Tabs Container */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 w-full md:w-auto justify-center">
-                {/* Filter Tabs */}
-                <div className="flex flex-nowrap overflow-x-auto no-scrollbar gap-1.5 bg-white p-1 border border-slate-200/80 rounded-full shadow-sm max-w-full justify-start sm:justify-center scroll-smooth">
-                  <button
-                    onClick={() => { setFilter("cruise"); setActiveProductDot(0); }}
-                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
-                      filter === "cruise" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
-                    }`}
-                  >
-                    Du thuyền
-                  </button>
-                  <button
-                    onClick={() => { setFilter("hotel"); setActiveProductDot(0); }}
-                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
-                      filter === "hotel" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
-                    }`}
-                  >
-                    Khách sạn
-                  </button>
-                  <button
-                    onClick={() => { setFilter("combo"); setActiveProductDot(0); }}
-                    className={`flex-shrink-0 px-5 py-2 text-[10px] uppercase tracking-[0.15em] font-bold rounded-full transition-all duration-300 cursor-pointer ${
-                      filter === "combo" ? "bg-accent text-white" : "text-slate-500 hover:text-slate-850"
-                    }`}
-                  >
-                    Combo du lịch
-                  </button>
-                </div>
-
-                {/* Circular Navigation Arrows */}
-                <div className="hidden sm:flex gap-2.5">
-                  <button
-                    onClick={() => setActiveProductDot((prev) => Math.max(0, prev - 1))}
-                    className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer bg-white"
-                    aria-label="Previous products"
-                  >
-                    <ChevronLeft className="w-4.5 h-4.5" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      const productsToDisplay = filteredProducts().slice(0, 6);
-                      const maxIndex = Math.max(0, productsToDisplay.length - visibleCount);
-                      setActiveProductDot((prev) => Math.min(maxIndex, prev + 1));
-                    }}
-                    className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer bg-white"
-                    aria-label="Next products"
-                  >
-                    <ChevronRight className="w-4.5 h-4.5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Slider carousel */}
-            <div className="relative w-full overflow-hidden pb-4">
-              <motion.div
-                ref={productScrollRef}
-                drag="x"
-                dragConstraints={{
-                  left: -Math.max(0, filteredProducts().slice(0, 6).length - visibleCount) * (productCardWidth + 24),
-                  right: 0,
-                }}
-                dragElastic={0.15}
-                onDragEnd={handleProductDragEnd}
-                animate={{ x: -activeProductDot * (productCardWidth + 24) }}
-                transition={{ type: "spring", stiffness: 180, damping: 24 }}
-                className="flex gap-6 cursor-grab active:cursor-grabbing w-full"
-              >
-                {filteredProducts().slice(0, 6).map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none"
-                  >
-                    <ProductCard
-                      id={product.id}
-                      type={product.type}
-                      name={product.name}
-                      tagline={product.tagline}
-                      image={product.image}
-                      stars={product.stars}
-                      badge={product.badge}
-                      price={product.price}
-                      originalPrice={product.originalPrice}
-                      durationDays={product.durationDays}
-                      location={product.location}
-                      amenities={product.amenities}
-                    />
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-
-            {/* Dots pagination */}
-            <div className="flex justify-center items-center gap-1.5 mt-4">
-              {Array.from({ length: Math.max(1, filteredProducts().slice(0, 6).length - visibleCount + 1) }).map((_, index) => (
+              <div className="flex justify-center md:justify-end shrink-0">
                 <button
-                  key={index}
-                  onClick={() => setActiveProductDot(index)}
-                  className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${
-                    index === activeProductDot ? "w-6 bg-slate-800" : "w-1.5 bg-slate-200 hover:bg-slate-400"
-                  }`}
-                  aria-label={`Go to slide ${index + 1}`}
-                />
-              ))}
+                  onClick={() => router.push("/hot-deal")}
+                  className="px-6 py-2.5 bg-white hover:bg-slate-900 border border-slate-300 hover:border-slate-900 text-slate-700 hover:text-white font-bold text-[11px] uppercase tracking-[0.15em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-xs hover:shadow hover:scale-[1.01] cursor-pointer"
+                >
+                  <span>Xem tất cả</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* View All Button */}
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={() => {
-                  const path = filter === "cruise" ? "/cruises" : filter === "hotel" ? "/hotels" : "/combos";
-                  router.push(path);
-                }}
-                className="px-8 py-3.5 bg-transparent hover:bg-slate-900 border border-slate-350 hover:border-slate-900 text-slate-700 hover:text-white font-bold text-[11px] uppercase tracking-[0.15em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-xs hover:shadow hover:scale-[1.01] cursor-pointer"
-              >
-                <span>
-                  {filter === "cruise"
-                    ? "Xem tất cả du thuyền"
-                    : filter === "hotel"
-                    ? "Xem tất cả khách sạn"
-                    : "Xem tất cả combo"}
-                </span>
-                <ArrowUpRight className="w-4 h-4" />
-              </button>
+            {/* 3-Column Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {hotDeals.slice(0, 30).map((product) => (
+                <div key={product.id} className="h-full">
+                  <ProductCard
+                    id={product.id}
+                    type={product.type}
+                    name={product.name}
+                    tagline={product.tagline}
+                    image={product.image}
+                    stars={product.stars}
+                    price={product.price}
+                    originalPrice={product.originalPrice}
+                    durationDays={product.durationDays}
+                    location={product.location}
+                    amenities={product.amenities}
+                    category={product.category}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -617,38 +397,44 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SIMPLIFIED DESTINATIONS SECTION (Moved below reviews) */}
+        {/* EXPLORE BY SERVICE CATEGORY SECTION */}
         <section className="py-24 bg-white text-slate-850">
           <div className="max-w-7xl mx-auto px-6 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-2">
               <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
-                ĐIỂM ĐẾN NỔI BẬT
+                DỊCH VỤ CỦA CHÚNG TÔI
               </span>
               <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
-                CÁC ĐIỂM ĐẾN
+                KHÁM PHÁ THEO LOẠI HÌNH
               </h2>
             </div>
 
-            {/* 3-card simple grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {discoverSlides.map((slide, index) => (
+            {/* 4-card grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {serviceCategories.map((category, index) => (
                 <div
                   key={index}
-                  onClick={() => router.push(`/cruises?destination=${encodeURIComponent(slide.destination)}`)}
+                  onClick={() => router.push(category.path)}
                   className="group cursor-pointer text-center space-y-4"
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-md border border-slate-100/80">
+                  <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-md border border-slate-100/80 bg-slate-900 relative">
                     <img
-                      src={slide.thumbnail}
-                      alt={slide.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      src={category.thumbnail}
+                      alt={category.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
                   </div>
-                  <div>
-                    <h3 className="font-serif text-lg text-slate-850 font-semibold group-hover:text-accent transition-colors">
-                      {slide.title}
+                  <div className="space-y-1.5 px-2">
+                    <h3 className="font-serif text-base text-slate-950 font-semibold group-hover:text-accent transition-colors">
+                      {category.title}
                     </h3>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Khám phá ngay</p>
+                    <p className="text-xs text-slate-500 font-light leading-relaxed line-clamp-2">
+                      {category.subtitle}
+                    </p>
+                    <span className="text-[10px] text-accent uppercase tracking-widest font-bold block pt-1 group-hover:underline">
+                      Khám phá ngay &rarr;
+                    </span>
                   </div>
                 </div>
               ))}
@@ -791,123 +577,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BLOGS & MAGAZINE SECTION */}
-        <section id="blogs" className="py-24 bg-white">
-          <div className="max-w-7xl mx-auto px-6 space-y-8">
-            <style dangerouslySetInnerHTML={{__html: `
-              .no-scrollbar::-webkit-scrollbar {
-                display: none;
-              }
-            `}} />
-            
-            <div className="text-center max-w-3xl mx-auto space-y-2">
-              <span className="text-xs uppercase tracking-[0.2em] text-accent font-semibold block">
-                TIN TỨC MỚI NHẤT
-              </span>
-              <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl text-slate-900 font-bold uppercase tracking-wide">
-                BẢN TIN DU HÀNH
-              </h2>
-            </div>
-
-            {/* Slider container with controls */}
-            <div className="relative w-full">
-              {/* Controls at upper right */}
-              <div className="hidden sm:flex justify-end gap-2.5 mb-6">
-                <button
-                  onClick={() => setActiveDot((prev) => Math.max(0, prev - 1))}
-                  className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer"
-                  aria-label="Previous articles"
-                >
-                  <ChevronLeft className="w-4.5 h-4.5" />
-                </button>
-                <button
-                  onClick={() => {
-                    const maxIndex = Math.max(0, mockBlogs.length - visibleCount);
-                    setActiveDot((prev) => Math.min(maxIndex, prev + 1));
-                  }}
-                  className="w-10 h-10 rounded-full border border-slate-200 hover:border-slate-800 hover:bg-slate-50 text-slate-650 hover:text-slate-900 flex items-center justify-center transition-all duration-300 hover:scale-105 cursor-pointer"
-                  aria-label="Next articles"
-                >
-                  <ChevronRight className="w-4.5 h-4.5" />
-                </button>
-              </div>
-
-              {/* Carousel container */}
-              <div className="overflow-hidden w-full relative pb-4">
-                <motion.div
-                  ref={scrollRef}
-                  drag="x"
-                  dragConstraints={{
-                    left: -Math.max(0, mockBlogs.length - visibleCount) * (cardWidth + 24),
-                    right: 0,
-                  }}
-                  dragElastic={0.15}
-                  onDragEnd={handleDragEnd}
-                  animate={{ x: -activeDot * (cardWidth + 24) }}
-                  transition={{ type: "spring", stiffness: 180, damping: 24 }}
-                  className="flex gap-6 cursor-grab active:cursor-grabbing w-full"
-                >
-                  {mockBlogs.map((blog) => (
-                    <article
-                      key={blog.id}
-                      className="flex-shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] select-none group cursor-pointer"
-                      onClick={() => router.push(`/blogs?category=${encodeURIComponent(blog.category)}`)}
-                    >
-                      {/* Image */}
-                      <div className="aspect-[16/10] overflow-hidden rounded-2xl bg-slate-100 relative shadow-sm border border-slate-100">
-                        <img
-                          src={blog.image}
-                          alt={blog.title}
-                          className="object-cover w-full h-full group-hover:scale-[1.03] transition-transform duration-500"
-                          loading="lazy"
-                          draggable="false"
-                        />
-                        <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-white text-accent rounded-full shadow-md">
-                          {blog.category}
-                        </span>
-                      </div>
-                      {/* Content below image */}
-                      <div className="mt-4 space-y-2">
-                        <div className="flex items-center justify-between text-[11px] text-slate-500 uppercase tracking-wider font-sans font-medium">
-                          <span>{blog.publishedAt}</span>
-                          <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-slate-800 transition-colors" />
-                        </div>
-                        <h3 className="font-serif text-base text-slate-900 leading-snug group-hover:text-accent-dark transition-colors line-clamp-2">
-                          {blog.title}
-                        </h3>
-                      </div>
-                    </article>
-                  ))}
-                </motion.div>
-              </div>
-
-              {/* Dots pagination */}
-              <div className="flex justify-center items-center gap-1.5 mt-8">
-                {Array.from({ length: Math.max(1, mockBlogs.length - visibleCount + 1) }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setActiveDot(index)}
-                    className={`h-1.5 transition-all duration-300 rounded-full cursor-pointer ${
-                      index === activeDot ? "w-6 bg-slate-800" : "w-1.5 bg-slate-200 hover:bg-slate-400"
-                    }`}
-                    aria-label={`Go to article ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              {/* View All Button */}
-              <div className="flex justify-center mt-10">
-                <button
-                  onClick={() => router.push("/blogs")}
-                  className="px-8 py-3 border border-slate-800 hover:border-transparent bg-transparent hover:bg-[#001226] text-slate-900 hover:text-white font-semibold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md"
-                >
-                  Xem Tất Cả
-                  <ArrowUpRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <LatestBlogs />
       </main>
 
       <Footer />

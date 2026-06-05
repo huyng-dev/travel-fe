@@ -22,6 +22,9 @@ export interface Cruise {
   material: string;
   cabinCount: number;
   priceFrom: number;
+  originalPrice?: number;
+  category?: string;
+  isHotDeal?: boolean;
 }
 
 export interface RoomType {
@@ -42,6 +45,10 @@ export interface Hotel {
   roomTypes: RoomType[];
   location: string;
   roomCount: number;
+  originalPrice?: number;
+  category?: string;
+  isHotDeal?: boolean;
+  priceFrom?: number;
 }
 
 export interface Combo {
@@ -57,6 +64,8 @@ export interface Combo {
     hotelStayBeforeDays: number; // Số ngày ở khách sạn trước khi đi du thuyền
     hotelStayAfterDays: number;  // Số ngày ở khách sạn sau khi đi du thuyền
   };
+  category?: string;
+  isHotDeal?: boolean;
 }
 
 export interface Blog {
@@ -110,7 +119,10 @@ export const mockCruises: Cruise[] = [
     launchYear: "2023",
     material: "Thép bọc thép đóng tàu chuyên dụng",
     cabinCount: 55,
-    priceFrom: 135000000,
+    priceFrom: 7900000,
+    originalPrice: 8900000,
+    category: "cruise",
+    isHotDeal: true,
     itinerary: [
       {
         day: 1,
@@ -154,7 +166,10 @@ export const mockCruises: Cruise[] = [
     launchYear: "2021",
     material: "Thép kết hợp hợp kim cao cấp",
     cabinCount: 46,
-    priceFrom: 115000000,
+    priceFrom: 6200000,
+    originalPrice: 7500000,
+    category: "cruise",
+    isHotDeal: true,
     itinerary: [
       {
         day: 1,
@@ -174,14 +189,14 @@ export const mockCruises: Cruise[] = [
   },
   {
     id: "cruise-heritage-binh-chuan",
-    name: "Heritage Cruise Bình Chuẩn Cát Bà",
-    tagline: "Du thuyền di sản mang đậm phong cách kiến trúc Đông Dương cổ điển",
-    description: "Được thiết kế lấy cảm hứng từ con tàu lịch sử của vua tàu thủy Bạch Thái Bưởi thế kỷ 20, Heritage Bình Chuẩn mang đến một không gian đậm chất mỹ thuật, văn hóa và lịch sử Đông Dương (Indochine). Nơi đây như một bảo tàng nghệ thuật nổi giữa Vịnh Lan Hạ với bộ sưu tập hơn 100 tác phẩm tranh của họa sĩ huyền thoại Phạm Lực.",
+    name: "Heritage Cruise Bình Chuẩn Hạ Long",
+    tagline: "Du thuyền di sản mang đậm phong cách kiến trúc Đông Dương cổ điển giữa kỳ quan",
+    description: "Được thiết kế lấy cảm hứng từ con tàu lịch sử của vua tàu thủy Bạch Thái Bưởi thế kỷ 20, Heritage Bình Chuẩn mang đến một không gian đậm chất mỹ thuật, văn hóa và lịch sử Đông Dương (Indochine). Hành trình đưa quý khách khám phá những vùng biển hoang sơ nhất của quần thể di sản Hạ Long, nơi có bộ sưu tập hơn 100 tác phẩm tranh di sản vô giá.",
     imageGallery: [
-      "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1200", // Ship in water
-      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1200", // Indy room style
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200", // Heritage deck pool
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200"  // Fine arts dining
+      "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=1200", 
+      "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=1200", 
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200", 
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=1200"
     ],
     stars: 5,
     amenities: [
@@ -192,33 +207,36 @@ export const mockCruises: Cruise[] = [
       "Tiệc trà chiều",
       "Chèo Kayak"
     ],
-    destinations: ["Vịnh Lan Hạ", "Đảo Cát Bà", "Hang Sáng Tối", "Bãi biển Ba Trái Đào"],
+    destinations: ["Vịnh Hạ Long", "Hang Sửng Sốt", "Hang Sáng Tối", "Bãi biển Ba Trái Đào"],
     durationDays: 3,
     startDates: ["2026-06-10", "2026-06-14", "2026-06-18", "2026-06-22"],
     launchYear: "2020",
     material: "Hợp kim thép bọc gỗ Indochine mỹ thuật",
     cabinCount: 20,
-    priceFrom: 95000000,
+    priceFrom: 6800000,
+    originalPrice: 7800000,
+    category: "cruise",
+    isHotDeal: true,
     itinerary: [
       {
         day: 1,
-        title: "Khởi hành từ Tuần Châu sang Vịnh Lan Hạ hoang sơ",
-        location: "Vịnh Lan Hạ",
-        description: "Đón khách từ Tuần Châu bằng xuồng cao tốc ra tàu Heritage giữa làn nước xanh lục bảo của vịnh Lan Hạ. Thưởng thức bữa trưa đậm hương vị Việt cổ điển, chiều tự do tắm biển và chèo thuyền kayak tại vùng vịnh hoang sơ, yên tĩnh ít tàu bè qua lại.",
+        title: "Khởi hành từ Tuần Châu - Hạ Long khám phá vùng vịnh hoang sơ",
+        location: "Vịnh Hạ Long",
+        description: "Đón khách từ cảng Tuần Châu bằng xuồng cao tốc ra tàu Heritage giữa làn nước xanh lục bảo. Thưởng thức bữa trưa đậm hương vị Việt cổ điển, chiều tự do tắm biển và chèo thuyền kayak tại vùng vịnh yên tĩnh, tận hưởng không gian tĩnh lặng của kỳ quan thiên nhiên.",
         activities: ["Xuồng cao tốc ra du thuyền", "Thưởng thức bữa trưa thuần Việt", "Chèo thuyền kayak tắm biển", "Tiệc rượu hoàng hôn trên boong"]
       },
       {
         day: 2,
-        title: "Khám phá Làng cổ Việt Hải & Đảo Cát Bà",
-        location: "Đảo Cát Bà",
-        description: "Dành trọn vẹn ngày thứ hai để tham quan Làng cổ Việt Hải nằm biệt lập giữa rừng quốc gia Cát Bà. Quý khách đạp xe dọc theo con đường thung lũng xanh mướt, ngắm nhìn kiến trúc nhà gỗ tranh cổ xưa và giao lưu với người dân bản địa.",
-        activities: ["Đạp xe khám phá Làng Việt Hải", "Dùng bữa trưa hải sản trên đầm", "Thăm quan Hang Sáng Tối", "Thưởng thức trà chiều di sản"]
+        title: "Hành trình di sản Làng chài cổ Hạ Long",
+        location: "Vịnh Hạ Long",
+        description: "Dành trọn vẹn ngày thứ hai để tham quan Làng chài cổ nằm biệt lập giữa vùng vịnh Hạ Long. Quý khách đạp xe dọc theo con đường thung lũng xanh mướt, ngắm nhìn kiến trúc nhà gỗ tranh cổ xưa và cảm nhận nhịp sống chậm rãi giữa lòng di sản.",
+        activities: ["Đạp xe khám phá làng chài", "Dùng bữa trưa hải sản trên đầm", "Thăm quan Hang Sáng Tối", "Thưởng thức trà chiều di sản"]
       },
       {
         day: 3,
-        title: "Lớp học nấu ăn & Kết thúc hành trình di sản",
-        location: "Vịnh Lan Hạ",
-        description: "Thức giấc đón bình minh huyền ảo trên Vịnh Lan Hạ, tham gia lớp tập Vovinam giải phóng năng lượng. Tìm hiểu nghệ thuật ẩm thực Việt qua lớp gói nem truyền thống trước khi check-out rời tàu về cảng.",
+        title: "Bình minh trên Vịnh & Lớp học ẩm thực",
+        location: "Vịnh Hạ Long",
+        description: "Thức giấc đón bình minh huyền ảo, tham gia lớp tập Vovinam giải phóng năng lượng. Tìm hiểu nghệ thuật ẩm thực Việt qua lớp gói nem truyền thống trước khi tàu quay trở về cảng Tuần Châu kết thúc hành trình.",
         activities: ["Tập võ Vovinam buổi sáng", "Lớp dạy gói nem rán Việt Nam", "Ăn trưa sớm rời tàu", "Về cảng Tuần Châu"]
       }
     ]
@@ -262,12 +280,16 @@ export const mockHotels: Hotel[] = [
         capacity: "2 Người lớn, 2 Trẻ em",
         image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600"
       }
-    ]
+    ],
+    priceFrom: 3200000,
+    originalPrice: 3800000,
+    category: "hotel",
+    isHotDeal: true
   },
   {
     id: "hotel-yoko-onsen-quang-hanh",
-    name: "Yoko Onsen Quang Hanh Resort",
-    description: "Nằm yên bình giữa những thung lũng đá vôi trùng điệp của vùng Quang Hanh, Yoko Onsen là khu nghỉ dưỡng suối khoáng nóng chuẩn Nhật Bản đầu tiên tại Việt Nam. Nguồn khoáng chất tự nhiên chứa hàm lượng Brom cao và các chất vi lượng quý giúp phục hồi sức khỏe, cân bằng Thân - Tâm - Trí giữa không gian thiền định yên ả.",
+    name: "Yoko Onsen Hạ Long Resort",
+    description: "Nằm yên bình giữa những thung lũng đá vôi trùng điệp của vùng Hạ Long, Yoko Onsen là khu nghỉ dưỡng suối khoáng nóng chuẩn Nhật Bản đầu tiên tại Việt Nam. Nguồn khoáng chất tự nhiên chứa hàm lượng Brom cao và các chất vi lượng quý giúp phục hồi sức khỏe, cân bằng Thân - Tâm - Trí giữa không gian thiền định yên ả.",
     imageGallery: [
       "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1200", // Zen water garden view
       "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200", // Japanese room tatami
@@ -282,7 +304,7 @@ export const mockHotels: Hotel[] = [
       "Nhà hàng Ryu-an",
       "Trà đạo & Thiền"
     ],
-    location: "Quang Hanh, Cẩm Phả, Quảng Ninh",
+    location: "Bãi Cháy, Hạ Long, Quảng Ninh",
     roomCount: 68,
     roomTypes: [
       {
@@ -299,7 +321,11 @@ export const mockHotels: Hotel[] = [
         capacity: "4 Người lớn",
         image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=600"
       }
-    ]
+    ],
+    priceFrom: 5500000,
+    originalPrice: 6500000,
+    category: "hotel",
+    isHotDeal: true
   },
   {
     id: "hotel-premier-village-halong",
@@ -336,7 +362,43 @@ export const mockHotels: Hotel[] = [
         capacity: "8 Người lớn, 4 Trẻ em",
         image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600"
       }
-    ]
+    ],
+    priceFrom: 8500000,
+    originalPrice: 9800000,
+    category: "villa",
+    isHotDeal: true
+  },
+  {
+    id: "restaurant-hong-hanh",
+    name: "Nhà hàng Hải sản Hồng Hạnh 3",
+    description: "Nhà hàng ẩm thực hải sản nổi tiếng nhất Hạ Long với tầm nhìn trực diện bờ biển Bãi Cháy. Nơi đây phục vụ các món ăn chế biến từ hải sản tươi sống được đánh bắt trực tiếp từ vịnh trong ngày, không gian hiện đại, sang trọng phù hợp cho đại gia đình và tiếp khách.",
+    imageGallery: [
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200", // Seafood dining
+      "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200"
+    ],
+    stars: 5,
+    amenities: [
+      "View biển Bãi Cháy",
+      "Hải sản tươi sống",
+      "Phòng VIP riêng",
+      "Bãi đỗ xe rộng",
+      "Menu phong phú"
+    ],
+    location: "Đường Hạ Long, Bãi Cháy, Hạ Long",
+    roomCount: 0,
+    roomTypes: [
+      {
+        name: "Set Menu Đặc Sản Vịnh Hạ Long",
+        description: "Set menu dành cho nhóm từ 4-6 người gồm: súp cua hải sản, chả mực Hạ Long rán nóng, tôm hùm tre hấp bia, mực xào cần tỏi và lẩu hải sản.",
+        pricePerNight: 850000, // 850k VNĐ / người
+        capacity: "4-6 Người",
+        image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600"
+      }
+    ],
+    priceFrom: 850000,
+    originalPrice: 1050000,
+    category: "restaurant",
+    isHotDeal: true
   }
 ];
 
@@ -353,13 +415,15 @@ export const mockCombos: Combo[] = [
     patternOptions: {
       hotelStayBeforeDays: 1,
       hotelStayAfterDays: 0
-    }
+    },
+    category: "combo",
+    isHotDeal: true
   },
   {
     id: "combo-ambassador-yoko",
     name: "Combo Thư Giãn Tuyệt Đối: Du Thuyền Ambassador & Trị Liệu Khoáng Nóng Yoko Onsen",
     tagline: "Sự kết hợp hoàn hảo giữa du ngoạn ngắm vịnh ăn tối tôm hùm và ngâm khoáng nóng trị liệu chuẩn Nhật",
-    description: "Gói đặc quyền hồi phục năng lượng cho Thân - Tâm - Trí: Trải nghiệm hải trình ẩm thực tôm hùm không giới hạn cùng show diễn âm nhạc đỉnh cao trên du thuyền 5 sao Ambassador Hạ Long, tiếp nối bằng 1 đêm nghỉ dưỡng phòng Washitsu thiền định và tắm khoáng Onsen tự nhiên tại Yoko Onsen Quang Hanh.",
+    description: "Gói đặc quyền hồi phục năng lượng cho Thân - Tâm - Trí: Trải nghiệm hải trình ẩm thực tôm hùm không giới hạn cùng show diễn âm nhạc đỉnh cao trên du thuyền 5 sao Ambassador Hạ Long, tiếp nối bằng 1 đêm nghỉ dưỡng phòng Washitsu thiền định và tắm khoáng Onsen tự nhiên tại Yoko Onsen Hạ Long.",
     cruiseId: "cruise-ambassador",
     hotelId: "hotel-yoko-onsen-quang-hanh",
     salePrice: 8850000, // 8.85 triệu VNĐ / khách
@@ -367,7 +431,9 @@ export const mockCombos: Combo[] = [
     patternOptions: {
       hotelStayBeforeDays: 0,
       hotelStayAfterDays: 1
-    }
+    },
+    category: "combo",
+    isHotDeal: true
   }
 ];
 
@@ -395,8 +461,8 @@ export const mockBlogs: Blog[] = [
   {
     id: "blog-onsens-quang-hanh-experience",
     title: "Liệu Pháp Tắm Khoáng Nóng Chuẩn Nhật Bản Hồi Phục Thân - Tâm - Trí",
-    excerpt: "Khám phá quy trình tắm Onsen chuẩn 7 bước Nhật Bản và những tác dụng chữa lành tuyệt diệu của nguồn nước khoáng tự nhiên Quang Hanh Quảng Ninh.",
-    content: "Tắm khoáng nóng trị liệu (Onsen) là nét văn hóa truyền thống của Nhật Bản giúp loại bỏ độc tố, lưu thông khí huyết và tái tạo năng lượng hiệu quả. Tại Yoko Onsen Quang Hanh, nguồn khoáng nóng brom tự nhiên được khai thác từ độ sâu hàng trăm mét dưới lòng đất vôi cổ xưa, mang hàm lượng khoáng chất quý hiếm đứng đầu thế giới. Bài viết sẽ hướng dẫn bạn quy trình tắm khoáng ngâm nóng, lạnh và xông hơi muối đá Himalaya đúng chuẩn thiền định...",
+    excerpt: "Khám phá quy trình tắm Onsen chuẩn 7 bước Nhật Bản và những tác dụng chữa lành tuyệt diệu của nguồn nước khoáng tự nhiên tại Hạ Long Quảng Ninh.",
+    content: "Tắm khoáng nóng trị liệu (Onsen) là nét văn hóa truyền thống của Nhật Bản giúp loại bỏ độc tố, lưu thông khí huyết và tái tạo năng lượng hiệu quả. Tại Yoko Onsen Hạ Long, nguồn khoáng nóng brom tự nhiên được khai thác từ độ sâu hàng trăm mét dưới lòng đất vôi cổ xưa, mang hàm lượng khoáng chất quý hiếm đứng đầu thế giới. Bài viết sẽ hướng dẫn bạn quy trình tắm khoáng ngâm nóng, lạnh và xông hơi muối đá Himalaya đúng chuẩn thiền định...",
     category: "Kinh nghiệm du hành",
     publishedAt: "2026-05-10",
     image: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=600",
@@ -404,9 +470,9 @@ export const mockBlogs: Blog[] = [
   },
   {
     id: "blog-lanha-itinerary",
-    title: "Hải Trình Khám Phá Vịnh Lan Hạ 3 Ngày 2 Đêm Độc Bản",
-    excerpt: "Gợi ý lịch trình khám phá vịnh Lan Hạ, chèo thuyền kayak qua Hang Sáng Tối và đạp xe thăm làng cổ Việt Hải yên bình.",
-    content: "Vịnh Lan Hạ nằm liền kề Vịnh Hạ Long mang vẻ đẹp hoang sơ, biệt lập với các bãi tắm tự nhiên cát trắng mịn trải dài bên vách núi đá vôi. Với hành trình 3 ngày 2 đêm trên du thuyền Heritage Bình Chuẩn, du khách sẽ được chèo thuyền kayak khám phá Hang Sáng Tối thơ mộng, tắm biển giữa vịnh cát Ba Trái Đào lộng gió và đạp xe qua các cung đường thung lũng xanh mướt dẫn vào ngôi làng cổ Việt Hải...",
+    title: "Hải Trình Khám Phá Vịnh Hạ Long 3 Ngày 2 Đêm Độc Bản",
+    excerpt: "Gợi ý lịch trình khám phá vùng vịnh phía Nam Hạ Long, chèo thuyền kayak qua Hang Sáng Tối và tham quan làng chài yên bình.",
+    content: "Vùng biển phía Nam Vịnh Hạ Long mang vẻ đẹp hoang sơ, biệt lập với các bãi tắm tự nhiên cát trắng mịn trải dài bên vách núi đá vôi. Với hành trình 3 ngày 2 đêm trên du thuyền Heritage Bình Chuẩn, du khách sẽ được chèo thuyền kayak khám phá Hang Sáng Tối thơ mộng, tắm biển giữa vịnh cát Ba Trái Đào lộng gió và khám phá những cung đường thung lũng xanh mướt dẫn vào ngôi làng chài cổ...",
     category: "Cẩm nang du lịch",
     publishedAt: "2026-05-05",
     image: "https://images.unsplash.com/photo-1548574505-5e239809ee19?q=80&w=600",
@@ -455,20 +521,29 @@ export const mockReviews: Review[] = [
   },
   {
     id: "rev-3",
-    userName: "Lâm Minh Triết",
-    userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150",
+    userName: "Lê Hoài Nam",
+    userAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150",
     rating: 5,
-    comment: "Ambassador Cruise có boong tắm nắng sundeck siêu lớn, tối đến lên đây nghe nhạc sống acoustic uống ly cocktail và tận hưởng tiệc tôm hùm không giới hạn quả là trải nghiệm thượng lưu đáng tiền. Rất đáng giới thiệu cho bạn bè.",
-    date: "2026-05-18",
-    stayType: "Ambassador Cruise Hạ Long"
+    comment: "Gia đình tôi 8 người đã có kỳ nghỉ tuyệt vời tại biệt thự sát biển của Premier Village Ha Long. Căn biệt thự vô cùng rộng rãi, hồ bơi riêng tư tuyệt đối cho các bé vui chơi. Dịch vụ Accor chuyên nghiệp, xe điện phục vụ nội khu rất nhanh chóng.",
+    date: "2026-05-28",
+    stayType: "Premier Village Ha Long Bay Resort"
   },
   {
     id: "rev-4",
-    userName: "Phạm Minh Thư",
-    userAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150",
-    rating: 4.8,
-    comment: "Yoko Onsen Quang Hanh mang lại cảm giác tĩnh lặng tuyệt đối chuẩn thiền Nhật Bản. Ngâm mình trong bể khoáng nóng giữa thung lũng đá vôi mờ sương vào sáng sớm giúp cơ thể thư giãn vô cùng. Dịch vụ chăm sóc khách hàng cực kỳ chu đáo lịch thiệp.",
-    date: "2026-05-24",
-    stayType: "Yoko Onsen Quang Hanh Resort"
+    userName: "Ngô Quốc Khánh",
+    userAvatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=150",
+    rating: 5,
+    comment: "Nhà hàng Hồng Hạnh 3 có đồ hải sản cực kỳ tươi ngon, chế biến vừa miệng. Chúng tôi đi nhóm 6 người đặt set menu đặc sản rất đầy đặn. View nhìn trực diện biển Bãi Cháy buổi tối lộng gió và lãng mạn. Giá cả vô cùng xứng đáng với chất lượng phục vụ.",
+    date: "2026-05-30",
+    stayType: "Nhà hàng Hải sản Hồng Hạnh 3"
+  },
+  {
+    id: "rev-5",
+    userName: "Hoàng Kim Chi",
+    userAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150",
+    rating: 5,
+    comment: "Gói combo Tinh Hoa Đất Trời thực sự là một trải nghiệm hoàn mỹ. Việc kết hợp 1 đêm trên siêu du thuyền Essence Grand và 1 đêm nghỉ dưỡng biệt lập tại lâu đài Đảo Rều Vinpearl giúp chúng tôi trải nghiệm trọn vẹn cả biển cả và đất liền Hạ Long mà không phải tự lên lịch trình phức tạp.",
+    date: "2026-06-02",
+    stayType: "Combo Tinh Hoa Đất Trời"
   }
 ];

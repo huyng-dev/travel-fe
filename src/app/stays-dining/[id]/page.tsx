@@ -56,6 +56,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [activeTab, setActiveTab] = useState<"policy" | "child" | "cancel">("policy");
+  const [bookingTimeSlot, setBookingTimeSlot] = useState("18:30");
 
   // Lightbox Modal States
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -140,26 +141,43 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     if (!hotel) return [];
     return hotel.roomTypes.map((room, idx) => {
       const sizes = ["38 m²", "76 m²", "90 m²", "120 m²"];
-      const defaultAmenities = [
-        "Wifi tốc độ cao miễn phí",
-        "Điều hòa nhiệt độ độc lập",
-        "Mini bar đầy đủ đồ uống",
-        "Tivi thông minh màn hình phẳng",
-        "Trà & Cà phê miễn phí hàng ngày",
-        "Két sắt an toàn trong phòng"
-      ];
+      const defaultAmenities = hotel.category === "restaurant"
+        ? [
+            "Nguyên liệu tươi sống loại 1",
+            "Nước lọc & đá lạnh miễn phí",
+            "Không gian điều hòa mát mẻ",
+            "Khăn lạnh phục vụ tại bàn",
+            "Phục vụ riêng biệt chu đáo",
+            "Trang trí tiệc sinh nhật (nếu yêu cầu)"
+          ]
+        : [
+            "Wifi tốc độ cao miễn phí",
+            "Điều hòa nhiệt độ độc lập",
+            "Mini bar đầy đủ đồ uống",
+            "Tivi thông minh màn hình phẳng",
+            "Trà & Cà phê miễn phí hàng ngày",
+            "Két sắt an toàn trong phòng"
+          ];
 
-      const defaultDetails = [
-        "Ban công riêng biệt với tầm nhìn thoáng đãng và ghế ngồi ngắm cảnh.",
-        "1 Giường đôi cỡ lớn (King-size) hoặc 2 giường đơn tùy chọn khi nhận phòng.",
-        "Phòng tắm lát đá sang trọng có bồn tắm nằm hoặc vòi tắm hoa sen nhiệt độ.",
-        "Trang bị đầy đủ đồ dùng vệ sinh cá nhân, máy sấy tóc và áo choàng tắm.",
-        "Dọn phòng mỗi ngày và miễn phí 2 chai nước khoáng sạch mỗi đêm nghỉ."
-      ];
+      const defaultDetails = hotel.category === "restaurant"
+        ? [
+            "Set ăn đặc sắc thiết kế riêng bởi bếp trưởng giàu kinh nghiệm.",
+            "Sử dụng hải sản tươi sống đánh bắt tự nhiên từ vùng Vịnh.",
+            "Hỗ trợ thay đổi món ăn linh hoạt theo nhu cầu dinh dưỡng/dị ứng.",
+            "Phục vụ tại phòng VIP riêng tư hoặc không gian chung view biển.",
+            "Thời gian chuẩn bị nhanh chóng, món ăn luôn được phục vụ nóng sốt."
+          ]
+        : [
+            "Ban công riêng biệt với tầm nhìn thoáng đãng và ghế ngồi ngắm cảnh.",
+            "1 Giường đôi cỡ lớn (King-size) hoặc 2 giường đơn tùy chọn khi nhận phòng.",
+            "Phòng tắm lát đá sang trọng có bồn tắm nằm hoặc vòi tắm hoa sen nhiệt độ.",
+            "Trang bị đầy đủ đồ dùng vệ sinh cá nhân, máy sấy tóc và áo choàng tắm.",
+            "Dọn phòng mỗi ngày và miễn phí 2 chai nước khoáng sạch mỗi đêm nghỉ."
+          ];
 
       return {
         name: room.name,
-        size: sizes[idx % sizes.length],
+        size: hotel.category === "restaurant" ? "" : sizes[idx % sizes.length],
         capacity: room.capacity,
         description: room.description,
         price: room.pricePerNight,
@@ -179,6 +197,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   // Calculate stay duration (nights)
   const bookingNights = useMemo(() => {
+    if (hotel?.category === "restaurant") return 1;
     if (!bookingCheckIn || !bookingCheckOut) return 1;
     const checkIn = new Date(bookingCheckIn);
     const checkOut = new Date(bookingCheckOut);
@@ -186,17 +205,19 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     if (diffTime <= 0) return 1;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-  }, [bookingCheckIn, bookingCheckOut]);
+  }, [bookingCheckIn, bookingCheckOut, hotel?.category]);
 
   // Handle Check-in date adjustment to push Check-out date if needed
   const handleCheckInChange = (val: string) => {
     setBookingCheckIn(val);
-    const checkInDate = new Date(val);
-    const checkOutDate = new Date(bookingCheckOut);
-    if (checkOutDate <= checkInDate) {
-      const nextDate = new Date(checkInDate);
-      nextDate.setDate(nextDate.getDate() + 1);
-      setBookingCheckOut(nextDate.toISOString().split("T")[0]);
+    if (hotel?.category !== "restaurant") {
+      const checkInDate = new Date(val);
+      const checkOutDate = new Date(bookingCheckOut);
+      if (checkOutDate <= checkInDate) {
+        const nextDate = new Date(checkInDate);
+        nextDate.setDate(nextDate.getDate() + 1);
+        setBookingCheckOut(nextDate.toISOString().split("T")[0]);
+      }
     }
   };
 
@@ -208,21 +229,29 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const isRestaurant = hotel?.category === "restaurant";
     if (!bookingName || !bookingPhone) {
       toast.error("Vui lòng nhập họ tên và số điện thoại liên hệ.");
       return;
     }
-    if (!bookingCheckIn || !bookingCheckOut) {
-      toast.error("Vui lòng chọn đầy đủ ngày nhận và trả phòng.");
-      return;
+    if (isRestaurant) {
+      if (!bookingCheckIn) {
+        toast.error("Vui lòng chọn ngày dùng bữa.");
+        return;
+      }
+    } else {
+      if (!bookingCheckIn || !bookingCheckOut) {
+        toast.error("Vui lòng chọn đầy đủ ngày nhận và trả phòng.");
+        return;
+      }
     }
     const hasRoomSelected = bookingRoomsQty.some(qty => qty > 0);
     if (!hasRoomSelected) {
-      toast.error("Vui lòng chọn ít nhất 1 phòng nghỉ.");
+      toast.error(isRestaurant ? "Vui lòng chọn ít nhất 1 thực đơn." : "Vui lòng chọn ít nhất 1 phòng nghỉ.");
       return;
     }
 
-    toast.success("Gửi yêu cầu đặt phòng thành công! TRAVEL sẽ liên hệ lại trong ít phút.");
+    toast.success(isRestaurant ? "Gửi yêu cầu đặt bàn thành công! TRAVEL sẽ liên hệ lại trong ít phút." : "Gửi yêu cầu đặt phòng thành công! TRAVEL sẽ liên hệ lại trong ít phút.");
     setIsBookingModalOpen(false);
 
     setBookingName("");
@@ -290,6 +319,74 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     }
   }, [hotel?.id]);
 
+  // Dynamic regulations based on category
+  const regulations = useMemo(() => {
+    if (!hotel) return { policy: [], child: [], cancel: [] };
+    if (hotel.category === "restaurant") {
+      return {
+        policy: [
+          "Giờ phục vụ nhà hàng: Từ 10:00 đến 22:00 hàng ngày.",
+          "Thời gian nhận khách gọi món cuối cùng (Last Order): 21:00.",
+          "Bàn đặt được giữ tối đa 15 phút so với giờ hẹn trước khi tự động hủy.",
+          "Quý khách vui lòng thông báo sớm nếu có thay đổi về giờ đến hoặc số lượng khách để chuẩn bị chu đáo."
+        ],
+        child: [
+          "Trẻ em dưới 4 tuổi: Miễn phí dùng chung suất ăn cùng bố mẹ.",
+          "Trẻ em từ 4 đến 11 tuổi: Áp dụng phụ thu 50% giá set menu tiêu chuẩn hoặc gọi món riêng theo thực đơn trẻ em.",
+          "Trẻ em từ 12 tuổi trở lên: Tính chi phí suất ăn như người lớn."
+        ],
+        cancel: [
+          "Hủy bàn trước 4 giờ dùng bữa: Hoàn trả 100% tiền đặt cọc (nếu có).",
+          "Hủy bàn trong vòng 4 giờ hoặc không đến dùng bữa: Phí hủy là 100% tiền đặt cọc.",
+          "Đối với đoàn khách trên 10 người hoặc đặt phòng VIP, nhà hàng yêu cầu đặt cọc trước 30% giá trị set dự kiến.",
+          "Chính sách cọc/hủy có thể thay đổi vào các ngày Lễ, Tết hoặc mùa cao điểm du lịch."
+        ]
+      };
+    }
+    if (hotel.category === "villa") {
+      return {
+        policy: [
+          "Thời gian nhận biệt thự (Check-in): Từ 14:00.",
+          "Thời gian trả biệt thự (Check-out): Trước 12:00 trưa.",
+          "Nhận biệt thự sớm hoặc trả biệt thự trễ tùy thuộc vào tình trạng trống và có phụ thu quy định.",
+          "Quý khách vui lòng xuất trình Căn cước công dân hoặc Hộ chiếu của tất cả các thành viên đoàn khi nhận biệt thự."
+        ],
+        child: [
+          "Biệt thự thiết kế phù hợp cho nhóm gia đình, có sức chứa tối đa theo quy định từng căn.",
+          "Miễn phí cho trẻ em dưới 4 tuổi ngủ chung giường với bố mẹ (tối đa 1 trẻ/phòng ngủ).",
+          "Trẻ em từ 4 đến dưới 12 tuổi: Phụ thu ăn sáng theo quy định (không bao gồm giường phụ).",
+          "Trẻ em từ 12 tuổi trở lên: Tính chi phí như người lớn. Không kê giường phụ vượt quá sức chứa tối đa của biệt thự."
+        ],
+        cancel: [
+          "Hủy đặt biệt thự trước 14 ngày khởi hành: Miễn phí hủy.",
+          "Hủy đặt biệt thự từ 7 đến 13 ngày khởi hành: Phí hủy là 50% tổng giá trị hợp đồng.",
+          "Hủy đặt biệt thự dưới 7 ngày hoặc không nhận phòng: Phí hủy là 100% tổng tiền đặt biệt thự.",
+          "Vào mùa cao điểm hoặc lễ Tết, chính sách hoàn hủy sẽ được áp dụng riêng biệt theo quy định đặt biệt thự."
+        ]
+      };
+    }
+    // Default (hotel)
+    return {
+      policy: [
+        "Thời gian nhận phòng khách sạn: Từ 14:00.",
+        "Thời gian trả phòng khách sạn: Trước 12:00 trưa.",
+        "Nhận phòng sớm hoặc trả phòng trễ tùy thuộc vào tình trạng phòng trống và có phí phụ thu quy định.",
+        "Mang theo Căn cước công dân hoặc Hộ chiếu gốc để làm thủ tục nhận phòng."
+      ],
+      child: [
+        "Miễn phí tiền phòng cho tối đa 2 trẻ em dưới 4 tuổi chung giường với bố mẹ.",
+        "Trẻ em từ 4 đến dưới 12 tuổi: Phụ thu ăn sáng theo quy định của khách sạn (không bao gồm giường phụ).",
+        "Trẻ em từ 12 tuổi trở lên: Tính phí phụ thu như người lớn và yêu cầu kê giường phụ."
+      ],
+      cancel: [
+        "Hủy phòng trước 7 ngày khởi hành: Miễn phí hủy.",
+        "Hủy phòng từ 3 đến 6 ngày khởi hành: Phí hủy là 50% tổng giá trị phòng nghỉ đã đặt.",
+        "Hủy phòng dưới 3 ngày hoặc không nhận phòng: Phí hủy là 100% tổng tiền đặt phòng.",
+        "Chính sách hoãn hủy có thể thay đổi tùy thuộc vào từng thời điểm cao điểm hoặc chương trình khuyến mại."
+      ]
+    };
+  }, [hotel]);
+
   if (!hotel) {
     return (
       <>
@@ -298,7 +395,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           <Building2 className="w-16 h-16 text-accent animate-pulse mb-4" />
           <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy khách sạn</h2>
           <p className="text-sm text-slate-500 mb-6">Đường dẫn không tồn tại hoặc khách sạn đã ngừng hoạt động.</p>
-          <Link href="/hotels" className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all">
+          <Link href="/stays-dining" className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all">
             Quay lại danh sách
           </Link>
         </div>
@@ -317,26 +414,46 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   const activeRoom = selectedRoomIdx !== null ? mockRooms[selectedRoomIdx as number] : null;
 
-  // Hotel regulations
-  const regulations = {
-    policy: [
-      "Thời gian nhận phòng khách sạn: Từ 14:00.",
-      "Thời gian trả phòng khách sạn: Trước 12:00 trưa.",
-      "Nhận phòng sớm hoặc trả phòng trễ tùy thuộc vào tình trạng phòng trống và có phí phụ thu quy định.",
-      "Mang theo Căn cước công dân hoặc Hộ chiếu gốc để làm thủ tục nhận phòng."
-    ],
-    child: [
-      "Miễn phí tiền phòng cho tối đa 2 trẻ em dưới 4 tuổi chung giường với bố mẹ.",
-      "Trẻ em từ 4 đến dưới 12 tuổi: Phụ thu ăn sáng theo quy định của khách sạn (không bao gồm giường phụ).",
-      "Trẻ em từ 12 tuổi trở lên: Tính phí phụ thu như người lớn và yêu cầu kê giường phụ."
-    ],
-    cancel: [
-      "Hủy phòng trước 7 ngày khởi hành: Miễn phí hủy.",
-      "Hủy phòng từ 3 đến 6 ngày khởi hành: Phí hủy là 50% tổng giá trị phòng nghỉ đã đặt.",
-      "Hủy phòng dưới 3 ngày hoặc không nhận phòng: Phí hủy là 100% tổng tiền đặt phòng.",
-      "Chính sách hoãn hủy có thể thay đổi tùy thuộc vào từng thời điểm cao điểm hoặc chương trình khuyến mại."
-    ]
+  const isRestaurant = hotel.category === "restaurant";
+  const isVilla = hotel.category === "villa";
+
+  const labels = {
+    subTitle: isRestaurant ? "Thực đơn & Không gian dùng bữa đặc sắc" : isVilla ? "Không gian biệt thự nghỉ dưỡng sang trọng" : "Không gian nghỉ ngơi tuyệt mỹ và dịch vụ đẳng cấp",
+    tabRooms: isRestaurant ? "Thực đơn" : isVilla ? "Hạng biệt thự" : "Hạng phòng",
+    ctaBook: isRestaurant ? "Đặt bàn ngay" : isVilla ? "Đặt biệt thự ngay" : "Đặt phòng ngay",
+    sectionTitle: isRestaurant ? "SET THỰC ĐƠN & BÀN TIỆC" : isVilla ? "CÁC HẠNG BIỆT THỰ" : "CÁC HẠNG PHÒNG",
+    detailDrawerTitle: isRestaurant ? "Chi tiết set thực đơn" : isVilla ? "Chi tiết căn biệt thự" : "Chi tiết hạng phòng",
+    roomPlanLabel: isRestaurant ? "Ảnh minh họa" : isVilla ? "Sơ đồ biệt thự" : "Sơ đồ phòng",
+    specsTitle: isRestaurant ? "THÔNG TIN NHÀ HÀNG" : isVilla ? "THÔNG TIN BIỆT THỰ" : "THÔNG TIN KHÁCH SẠN",
+    specsTotalRooms: isRestaurant ? "SỨC CHỨA TỐI ĐA" : isVilla ? "TỔNG SỐ CĂN" : "TỔNG SỐ PHÒNG",
+    specsTotalRoomsVal: isRestaurant ? "Lên đến 500 khách" : `${hotel.roomCount} căn`,
+    specsTypeLabel: isRestaurant ? "MÔ HÌNH" : "TIÊU CHUẨN",
+    specsTypeVal: isRestaurant ? "Nhà hàng Hải sản" : `${hotel.stars} sao`,
+    capacityLabel: isRestaurant ? "Dành cho:" : "Sức chứa:",
+    bookingTitle: isRestaurant ? "ĐĂNG KÝ YÊU CẦU ĐẶT BÀN" : isVilla ? "ĐĂNG KÝ YÊU CẦU ĐẶT BIỆT THỰ" : "ĐĂNG KÝ YÊU CẦU ĐẶT PHÒNG",
+    bookingHeader: isRestaurant ? "Đặt bàn ẩm thực" : isVilla ? "Đặt biệt thự nghỉ dưỡng" : "Đặt phòng khách sạn",
+    dateLabel: isRestaurant ? "Ngày dùng bữa *" : isVilla ? "Ngày nhận biệt thự *" : "Ngày nhận phòng *",
+    checkoutLabel: isRestaurant ? "" : isVilla ? "Ngày trả biệt thự *" : "Ngày trả phòng *",
+    passengerLabel: isRestaurant ? "Số khách dùng bữa" : "Số lượng khách nghỉ",
+    selectItemLabel: isRestaurant ? "Chọn Set Menu & Số lượng" : isVilla ? "Chọn loại biệt thự & số lượng" : "Chọn loại phòng & số lượng",
+    submitBookingBtn: isRestaurant ? "Gửi yêu cầu đặt bàn" : isVilla ? "Gửi yêu cầu đặt biệt thự" : "Gửi yêu cầu đặt phòng",
+    summaryTitle: isRestaurant ? "Báo giá tạm tính" : "Báo giá tạm tính",
+    summaryItemLabel: isRestaurant ? "Thực đơn đã chọn:" : "Danh sách phòng:",
+    summaryFirstLabel: isRestaurant ? "Nhà hàng:" : isVilla ? "Biệt thự:" : "Khách sạn:",
+    priceUnit: isRestaurant ? "/ suất" : "/ đêm",
+    priceUnitLong: isRestaurant ? "/ suất ăn" : "/ đêm phòng",
+    estimateAlert: isRestaurant 
+      ? "* Giá ước tính tính theo giá trị set menu cơ bản, chưa bao gồm nước uống, phụ thu phòng VIP hoặc dịch vụ đi kèm khác."
+      : "* Giá ước tính trên tính theo số đêm lưu trú, chưa bao gồm phụ thu trẻ em, cuối tuần, ngày lễ hoặc dịch vụ xe đưa đón. Tư vấn viên TRAVEL sẽ liên hệ sớm nhất.",
+    suggestedTitle: isRestaurant ? "GỢI Ý CÁC NHÀ HÀNG KHÁC" : isVilla ? "GỢI Ý CÁC BIỆT THỰ KHÁC" : "GỢI Ý CÁC KHÁCH SẠN KHÁC",
+    drawerHeaderSubtitle: isRestaurant ? "Thực đơn ẩm thực" : isVilla ? "Hạng biệt thự" : "Hạng phòng & Suites",
+    drawerCapacityLabel: isRestaurant ? "Dành cho" : "Sức chứa",
+    priceFromLabel: isRestaurant ? "Giá thực đơn từ" : isVilla ? "Giá biệt thự từ" : "Giá phòng từ",
+    drawerBookBtn: isRestaurant ? "Đặt thực đơn này" : isVilla ? "Đặt biệt thự này" : "Đặt phòng này",
+    bookingNotesPlaceholder: isRestaurant ? "Ví dụ: Yêu cầu bàn gần cửa sổ, không gian yên tĩnh, dị ứng thực phẩm..." : isVilla ? "Ví dụ: Biệt thự gần biển, nhận biệt thự trễ..." : "Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..."
   };
+
+
 
   const handleAddReview = (e: React.FormEvent) => {
     e.preventDefault();
@@ -362,8 +479,10 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
     toast.success("Đánh giá của bạn đã được gửi thành công và đang chờ duyệt!");
   };
 
-  // Suggestions (exclude current hotel)
-  const suggestedHotels = mockHotels.filter((h) => h.id !== hotel.id).slice(0, 3);
+  // Suggestions of the same category (exclude current)
+  const suggestedHotels = mockHotels
+    .filter((h) => h.id !== hotel.id && h.category === hotel.category)
+    .slice(0, 3);
 
   // Average rating calculation
   const avgRating = (allReviews.reduce((sum, r) => sum + r.rating, 0) / Math.max(1, allReviews.length)).toFixed(1);
@@ -385,7 +504,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
-            <Link href="/hotels" className="hover:text-[#001226]">Khách sạn</Link>
+            <Link href="/stays-dining" className="hover:text-[#001226]">Lưu trú & Ẩm thực</Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
             <span className="text-slate-800">{hotel.name}</span>
           </div>
@@ -469,7 +588,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
             {[
               { id: "overview", label: "Giới thiệu" },
-              { id: "rooms", label: "Hạng phòng" },
+              { id: "rooms", label: labels.tabRooms },
               { id: "regulations", label: "Quy định" },
               { id: "map", label: "Bản đồ" },
               { id: "reviews", label: "Đánh giá" },
@@ -507,7 +626,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
             {/* Overview text */}
             <div className="space-y-4">
               <h2 className="font-serif text-2xl md:text-3xl text-slate-900 leading-tight">
-                Không gian nghỉ ngơi tuyệt mỹ và dịch vụ đẳng cấp
+                {labels.subTitle}
               </h2>
               <p className="text-slate-650 text-sm md:text-base leading-relaxed font-sans font-light">
                 {hotel.description}
@@ -516,14 +635,16 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
             {/* Amenities Grid */}
             <div className="space-y-6 pt-6 border-t border-slate-100">
-              <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">TIỆN ÍCH KHÁCH SẠN</h3>
+              <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">
+                {isRestaurant ? "TIỆN ÍCH NHÀ HÀNG" : isVilla ? "TIỆN ÍCH BIỆT THỰ" : "TIỆN ÍCH KHÁCH SẠN"}
+              </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {hotel.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center gap-3 p-3 bg-slate-50 rounded-sm border border-slate-100 hover:border-accent/20 transition-colors duration-300">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-xs flex items-center justify-center flex-shrink-0">
-                      {getHotelAmenityIcon(amenity)}
-                    </div>
-                    <span className="text-xs font-semibold text-slate-700">{amenity}</span>
+                     <div className="w-10 h-10 rounded-full bg-white shadow-xs flex items-center justify-center flex-shrink-0">
+                       {getHotelAmenityIcon(amenity)}
+                     </div>
+                     <span className="text-xs font-semibold text-slate-700">{amenity}</span>
                   </div>
                 ))}
               </div>
@@ -537,7 +658,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               <div className="border-b border-slate-100 pb-5">
                 <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold mb-1">Giá chỉ từ</span>
                 <div className="text-3xl font-serif font-bold text-[#001226]">{formatPrice(priceFrom)}</div>
-                <span className="text-xs text-slate-400">/ đêm phòng</span>
+                <span className="text-xs text-slate-400">{labels.priceUnitLong}</span>
               </div>
 
               {/* Booking CTA Button */}
@@ -545,14 +666,14 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 onClick={handleBookingClick}
                 className="w-full py-4 bg-accent hover:bg-[#001226] text-[#001226] hover:text-white font-bold text-xs uppercase tracking-[0.2em] rounded-full transition-all duration-300 shadow-md cursor-pointer"
               >
-                Đặt Phòng Ngay
+                {labels.ctaBook}
               </button>
 
               {/* Specs */}
               <div className="border-t border-slate-100 pt-5 space-y-4">
                 <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
                   <Building2 className="w-4 h-4 text-accent" />
-                  <h4 className="font-serif text-xs font-bold text-slate-900 uppercase tracking-wide">THÔNG TIN KHÁCH SẠN</h4>
+                  <h4 className="font-serif text-xs font-bold text-slate-900 uppercase tracking-wide">{labels.specsTitle}</h4>
                 </div>
 
                 <div className="space-y-3 text-xs">
@@ -561,12 +682,12 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     <span className="font-bold text-slate-800 text-right max-w-[160px]">{hotel.location.split(",").slice(-1)[0].trim()}</span>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-slate-50">
-                    <span className="text-slate-500 font-medium">TỔNG SỐ PHÒNG</span>
-                    <span className="font-bold text-slate-800 uppercase">{hotel.roomCount} phòng</span>
+                    <span className="text-slate-500 font-medium uppercase">{labels.specsTotalRooms}</span>
+                    <span className="font-bold text-slate-800 uppercase">{labels.specsTotalRoomsVal}</span>
                   </div>
                   <div className="flex justify-between py-1.5 border-b border-slate-50">
-                    <span className="text-slate-500 font-medium">TIÊU CHUẨN</span>
-                    <span className="font-bold text-slate-800 uppercase">{hotel.stars} sao</span>
+                    <span className="text-slate-500 font-medium uppercase">{labels.specsTypeLabel}</span>
+                    <span className="font-bold text-slate-800 uppercase">{labels.specsTypeVal}</span>
                   </div>
                 </div>
               </div>
@@ -580,7 +701,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
         <div className="max-w-7xl mx-auto px-6 space-y-8">
           <div className="border-b border-slate-100 pb-6">
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              CÁC HẠNG PHÒNG
+              {labels.sectionTitle}
             </h2>
           </div>
 
@@ -619,19 +740,25 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     </h3>
 
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Layers className="w-3.5 h-3.5" />
-                        Diện tích: {room.size}
-                      </span>
-                      <span>•</span>
-                      <span>Sức chứa: {room.capacity}</span>
+                      {!isRestaurant && room.size && (
+                        <>
+                          <span className="flex items-center gap-1">
+                            <Layers className="w-3.5 h-3.5" />
+                            Diện tích: {room.size}
+                          </span>
+                          <span>•</span>
+                        </>
+                      )}
+                      <span>{labels.capacityLabel} {room.capacity}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-3 border-t border-slate-100">
                     <div>
                       <span className="text-[10px] text-slate-400 block font-medium">Giá từ</span>
-                      <span className="font-serif text-base font-bold text-slate-900">{formatPrice(room.price)}</span>
+                      <span className="font-serif text-base font-bold text-slate-900">
+                        {formatPrice(room.price)}<span className="text-[10px] text-slate-500 font-sans font-normal"> {labels.priceUnit}</span>
+                      </span>
                     </div>
                     <button
                       onClick={() => {
@@ -667,7 +794,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                <span>Nhận và trả phòng</span>
+                <span>{isRestaurant ? "Giờ phục vụ" : isVilla ? "Nhận & Trả biệt thự" : "Nhận và trả phòng"}</span>
                 <ChevronRight className="w-4 h-4 opacity-50" />
               </button>
               <button
@@ -678,7 +805,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                <span>Chính sách trẻ em</span>
+                <span>{isRestaurant ? "Chính sách trẻ em" : isVilla ? "Chính sách lưu trú" : "Chính sách trẻ em"}</span>
                 <ChevronRight className="w-4 h-4 opacity-50" />
               </button>
               <button
@@ -689,7 +816,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     : "text-slate-655 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                <span>Chính sách hoãn hủy</span>
+                <span>{isRestaurant ? "Hoãn hủy & Đặt cọc" : isVilla ? "Chính sách hoãn hủy" : "Chính sách hoãn hủy"}</span>
                 <ChevronRight className="w-4 h-4 opacity-50" />
               </button>
             </div>
@@ -723,7 +850,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               <h3 className="font-serif text-lg font-bold text-slate-900 uppercase">Thông tin địa điểm</h3>
               <ul className="list-disc pl-5 space-y-3 font-light text-slate-650 leading-relaxed md:text-base">
                 <li className="pl-1">
-                  Khách sạn <span className="font-semibold text-slate-800">{hotel.name}</span> tọa lạc tại địa chỉ: <span className="font-semibold text-slate-800">{hotel.location}</span>.
+                  <span className="font-semibold text-slate-800">{hotel.name}</span> tọa lạc tại địa chỉ: <span className="font-semibold text-slate-800">{hotel.location}</span>.
                 </li>
                 <li className="pl-1">
                   Vị trí đắc địa, thuận tiện di chuyển, kết nối thuận lợi tới các điểm vui chơi, nhà hàng và khu mua sắm trung tâm tại Quảng Ninh.
@@ -894,7 +1021,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <span className="text-[10px] uppercase tracking-[0.25em] text-accent-dark font-bold block">Khám phá thêm</span>
             <h2 className="font-serif text-2xl md:text-3xl text-slate-900 tracking-wide uppercase font-normal">
-              GỢI Ý CÁC KHÁCH SẠN KHÁC
+              {labels.suggestedTitle}
             </h2>
           </div>
 
@@ -915,6 +1042,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                 material="N/A"
                 cabinCount={item.roomCount}
                 variant="detailed"
+                category={item.category}
               />
             ))}
           </div>
@@ -955,7 +1083,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
             >
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500 tracking-wider">
                 <span className="uppercase">{hotel.name}</span>
-                <span className="text-slate-900 uppercase font-serif text-[11px] tracking-widest">Hạng phòng & Suites</span>
+                <span className="text-slate-900 uppercase font-serif text-[11px] tracking-widest">{labels.drawerHeaderSubtitle}</span>
                 <button
                   onClick={() => setSelectedRoomIdx(null)}
                   className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors text-slate-655 cursor-pointer"
@@ -969,18 +1097,20 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-slate-100 pb-6">
                   <div className="space-y-1 text-left">
-                    <span className="text-[10px] uppercase tracking-widest text-accent font-bold">Chi tiết hạng phòng</span>
+                    <span className="text-[10px] uppercase tracking-widest text-accent font-bold">{labels.detailDrawerTitle}</span>
                     <h3 className="font-serif text-2xl md:text-3xl text-slate-955 font-medium">
                       {activeRoom.name}
                     </h3>
                   </div>
                   <div className="flex gap-6 text-right self-start flex-shrink-0 whitespace-nowrap">
+                    {!isRestaurant && activeRoom.size && (
+                      <div>
+                        <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Diện tích</span>
+                        <span className="font-serif text-xl font-bold text-slate-800 block whitespace-nowrap">{activeRoom.size}</span>
+                      </div>
+                    )}
                     <div>
-                      <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Diện tích</span>
-                      <span className="font-serif text-xl font-bold text-slate-800 block whitespace-nowrap">{activeRoom.size}</span>
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Sức chứa</span>
+                      <span className="block text-[10px] text-slate-400 uppercase tracking-widest font-semibold">{labels.drawerCapacityLabel}</span>
                       <span className="font-serif text-xl font-bold text-slate-800 block whitespace-nowrap">{activeRoom.capacity}</span>
                     </div>
                   </div>
@@ -1039,9 +1169,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               {/* Sticky bottom bar: Price + Book CTA */}
               <div className="border-t border-slate-100 px-6 py-4 bg-white flex items-center justify-between gap-4 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-10">
                 <div className="flex flex-col text-left">
-                  <span className="text-[9px] uppercase tracking-widest text-slate-400 font-semibold block mb-0.5">Giá phòng từ</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-400 font-semibold block mb-0.5">{labels.priceFromLabel}</span>
                   <span className="font-serif text-base font-bold text-slate-900">
-                    {formatPrice(activeRoom.price)} <span className="text-[10px] text-slate-450 font-sans font-normal">/ đêm</span>
+                    {formatPrice(activeRoom.price)} <span className="text-[10px] text-slate-450 font-sans font-normal">{labels.priceUnit}</span>
                   </span>
                 </div>
                 <button
@@ -1053,7 +1183,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   }}
                   className="px-6 py-3 bg-[#001226] hover:bg-accent text-white hover:text-[#001226] border border-[#001226] hover:border-accent text-xs uppercase tracking-widest font-bold rounded-full transition-all cursor-pointer"
                 >
-                  Đặt phòng này
+                  {labels.drawerBookBtn}
                 </button>
               </div>
 
@@ -1064,7 +1194,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                     setSelectedRoomIdx((prev) => (prev === 0 ? mockRooms.length - 1 : prev! - 1));
                     setRoomPhotoIdx(0);
                   }}
-                  className="flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-accent-dark transition-colors cursor-pointer"
+                  className="flex items-center gap-2 text-xs font-semibold text-slate-650 hover:text-accent-dark transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4 rotate-180" />
                   <span>
@@ -1114,9 +1244,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 scrollbar-thin text-left">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="text-[9px] uppercase tracking-[0.2em] text-accent font-bold block">Đặt phòng khách sạn</span>
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-accent font-bold block">{labels.bookingHeader}</span>
                     <h3 className="font-serif text-xl md:text-2xl text-slate-900 font-medium">
-                      ĐĂNG KÝ YÊU CẦU ĐẶT PHÒNG
+                      {labels.bookingTitle}
                     </h3>
                     <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wide mt-1">
                       {hotel.name}
@@ -1133,52 +1263,91 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
                 <form onSubmit={handleBookingSubmit} className="space-y-5">
 
-                  {/* Stay Duration - Check-in & Check-out dates */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Ngày nhận phòng *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="date"
-                          required
-                          min={tomorrowStr}
-                          value={bookingCheckIn}
-                          onChange={(e) => handleCheckInChange(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                        />
-                        <Calendar className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                  {/* Stay Duration - Check-in & Check-out dates or Dining Date & Time Slot */}
+                  {isRestaurant ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
+                          {labels.dateLabel}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            required
+                            min={tomorrowStr}
+                            value={bookingCheckIn}
+                            onChange={(e) => handleCheckInChange(e.target.value)}
+                            className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                          />
+                          <Calendar className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                        Ngày trả phòng *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="date"
+                      <div className="space-y-2 text-left">
+                        <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
+                          Khung giờ dùng bữa *
+                        </label>
+                        <select
                           required
-                          min={(() => {
-                            if (!bookingCheckIn) return tomorrowStr;
-                            const d = new Date(bookingCheckIn);
-                            d.setDate(d.getDate() + 1);
-                            return d.toISOString().split("T")[0];
-                          })()}
-                          value={bookingCheckOut}
-                          onChange={(e) => setBookingCheckOut(e.target.value)}
-                          className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                        />
-                        <Calendar className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                          value={bookingTimeSlot}
+                          onChange={(e) => setBookingTimeSlot(e.target.value)}
+                          className="w-full bg-white border border-slate-300 rounded-lg px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent cursor-pointer"
+                        >
+                          {["10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00"].map((slot) => (
+                            <option key={slot} value={slot}>
+                              {slot}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
+                          {labels.dateLabel}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            required
+                            min={tomorrowStr}
+                            value={bookingCheckIn}
+                            onChange={(e) => handleCheckInChange(e.target.value)}
+                            className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                          />
+                          <Calendar className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
+                          {labels.checkoutLabel}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="date"
+                            required
+                            min={(() => {
+                              if (!bookingCheckIn) return tomorrowStr;
+                              const d = new Date(bookingCheckIn);
+                              d.setDate(d.getDate() + 1);
+                              return d.toISOString().split("T")[0];
+                            })()}
+                            value={bookingCheckOut}
+                            onChange={(e) => setBookingCheckOut(e.target.value)}
+                            className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                          />
+                          <Calendar className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Room quantities counters */}
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                      Chọn loại phòng & số lượng
+                      {labels.selectItemLabel}
                     </label>
                     <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1.5 scrollbar-thin border border-slate-100 rounded-lg p-2 bg-slate-50/50">
                       {mockRooms.map((room, idx) => (
@@ -1186,7 +1355,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                           <div className="text-left pr-4">
                             <span className="font-semibold text-xs text-slate-800 block leading-tight">{room.name}</span>
                             <span className="text-[10px] text-slate-450 block mt-1">
-                              {formatPrice(room.price)} / đêm • {room.size} • {room.capacity}
+                              {formatPrice(room.price)} {labels.priceUnit} {!isRestaurant && room.size && `• ${room.size}`} • {labels.capacityLabel} {room.capacity}
                             </span>
                           </div>
                           <div className="flex items-center gap-3 flex-shrink-0">
@@ -1203,7 +1372,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                             >
                               -
                             </button>
-                            <span className="text-xs font-bold text-slate-850 min-w-[14px] text-center">
+                            <span className="text-xs font-bold text-slate-855 min-w-[14px] text-center">
                               {bookingRoomsQty[idx] || 0}
                             </span>
                             <button
@@ -1228,7 +1397,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   {/* Passenger Counters */}
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">
-                      Số lượng khách nghỉ
+                      {labels.passengerLabel}
                     </label>
                     <div className="grid grid-cols-3 gap-3">
                       {[
@@ -1273,13 +1442,13 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
                     <div className="space-y-1">
                       <label className="text-[9px] uppercase tracking-wider text-slate-500 font-bold block">Yêu cầu thêm</label>
-                      <textarea rows={2} placeholder="Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..." value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
+                      <textarea rows={2} placeholder={labels.bookingNotesPlaceholder} value={bookingNotes} onChange={(e) => setBookingNotes(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg p-3 text-xs font-medium focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent shadow-xs" />
                     </div>
                   </div>
 
                   <div className="block md:hidden pt-4 border-t border-slate-100">
                     <button type="submit" disabled={!bookingRoomsQty.some(q => q > 0)} className={`w-full py-4 text-xs uppercase tracking-widest font-bold rounded-full transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${bookingRoomsQty.some(q => q > 0) ? "bg-[#001226] hover:bg-accent text-white hover:text-[#001226] cursor-pointer" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}>
-                      Gửi yêu cầu đặt phòng
+                      {labels.submitBookingBtn}
                     </button>
                   </div>
                 </form>
@@ -1289,17 +1458,18 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               <div className="w-full md:w-[350px] bg-slate-50 p-6 md:p-8 border-t md:border-t-0 md:border-l border-slate-200 flex flex-col justify-between overflow-y-auto text-left shadow-inner">
                 <div className="space-y-6">
                   <h4 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-200 pb-3">
-                    Báo giá tạm tính
+                    {labels.summaryTitle}
                   </h4>
 
                   {(() => {
                     const firstSelectedIdx = bookingRoomsQty.findIndex(q => q > 0);
                     const activeRoomForImage = firstSelectedIdx !== -1 ? mockRooms[firstSelectedIdx] : mockRooms[0];
+                    const summaryStayDurationText = isRestaurant ? "Đặt bàn dùng bữa" : `Thời gian lưu trú: ${bookingNights} đêm`;
                     return (
                       <div className="aspect-[16/10] rounded-lg overflow-hidden bg-slate-200 shadow-inner relative">
                         <img src={activeRoomForImage?.image || hotel.imageGallery[0]} alt="Room Preview" className="w-full h-full object-cover" />
                         <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-full text-[8px] font-bold text-slate-900 shadow-xs uppercase tracking-wider">
-                          Thời gian lưu trú: {bookingNights} đêm
+                          {summaryStayDurationText}
                         </div>
                       </div>
                     );
@@ -1307,25 +1477,35 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
                   <div className="space-y-4 text-xs text-slate-650">
                     <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Khách sạn:</span>
+                      <span className="font-medium text-slate-500">{labels.summaryFirstLabel}</span>
                       <span className="font-bold text-slate-800 text-right">{hotel.name}</span>
                     </div>
                     <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Nhận phòng:</span>
+                      <span className="font-medium text-slate-500">{labels.dateLabel.replace(" *", "")}:</span>
                       <span className="font-bold text-slate-800 text-right">{bookingCheckIn ? new Date(bookingCheckIn).toLocaleDateString("vi-VN") : "Chưa chọn"}</span>
                     </div>
+                    {!isRestaurant && (
+                      <div className="flex justify-between border-b border-slate-150 pb-2">
+                        <span className="font-medium text-slate-500">{labels.checkoutLabel?.replace(" *", "")}:</span>
+                        <span className="font-bold text-slate-800 text-right">{bookingCheckOut ? new Date(bookingCheckOut).toLocaleDateString("vi-VN") : "Chưa chọn"}</span>
+                      </div>
+                    )}
+                    {isRestaurant && (
+                      <div className="flex justify-between border-b border-slate-150 pb-2">
+                        <span className="font-medium text-slate-500">Khung giờ:</span>
+                        <span className="font-bold text-slate-800 text-right">{bookingTimeSlot}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Trả phòng:</span>
-                      <span className="font-bold text-slate-800 text-right">{bookingCheckOut ? new Date(bookingCheckOut).toLocaleDateString("vi-VN") : "Chưa chọn"}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-150 pb-2">
-                      <span className="font-medium text-slate-500">Khách nghỉ:</span>
+                      <span className="font-medium text-slate-500">{isRestaurant ? "Khách dùng bữa:" : "Khách nghỉ:"}</span>
                       <span className="font-bold text-slate-800 text-right">{bookingAdults} NL{bookingChildren > 0 && `, ${bookingChildren} TE`}{bookingInfants > 0 && `, ${bookingInfants} EB`}</span>
                     </div>
                     <div className="space-y-2 border-b border-slate-150 pb-3">
-                      <span className="font-medium text-slate-500 block">Danh sách phòng:</span>
+                      <span className="font-medium text-slate-500 block">{labels.summaryItemLabel}</span>
                       {!bookingRoomsQty.some(q => q > 0) ? (
-                        <span className="text-red-500 font-semibold block text-[11px] italic">Chưa chọn phòng nghỉ nào</span>
+                        <span className="text-red-500 font-semibold block text-[11px] italic">
+                          {isRestaurant ? "Chưa chọn thực đơn nào" : "Chưa chọn phòng nghỉ nào"}
+                        </span>
                       ) : (
                         <div className="space-y-1.5 pl-2 border-l-2 border-accent/40">
                           {mockRooms.map((room, idx) => {
@@ -1361,7 +1541,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
 
                   <div className="bg-amber-50 border border-amber-250 p-3 rounded-lg text-[10px] text-amber-800 leading-relaxed font-medium">
-                    * Giá ước tính trên tính theo số đêm lưu trú, chưa bao gồm phụ thu trẻ em, cuối tuần, ngày lễ hoặc dịch vụ xe đưa đón. Tư vấn viên TRAVEL sẽ liên hệ sớm nhất.
+                    {labels.estimateAlert}
                   </div>
 
                   <button
@@ -1374,7 +1554,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
                         : "bg-slate-200 text-slate-400 cursor-not-allowed"
                     }`}
                   >
-                    Gửi yêu cầu đặt phòng
+                    {labels.submitBookingBtn}
                   </button>
                 </div>
               </div>

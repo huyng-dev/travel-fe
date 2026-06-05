@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
@@ -22,12 +23,16 @@ export default function Lightbox({
   stars,
 }: LightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [prevInitialIndex, setPrevInitialIndex] = useState(initialIndex);
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || initialIndex !== prevInitialIndex) {
+    setPrevIsOpen(isOpen);
+    setPrevInitialIndex(initialIndex);
     if (isOpen) {
       setCurrentIndex(initialIndex);
     }
-  }, [isOpen, initialIndex]);
+  }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

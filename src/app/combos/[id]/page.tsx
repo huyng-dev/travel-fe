@@ -448,19 +448,25 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Cruise Inclusion */}
-                <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs">
-                  <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0">
-                      <Anchor className="w-5 h-5 text-accent" />
+                <Link
+                  href={`/cruises/${cruiseObj.id}`}
+                  className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs hover:border-accent/40 hover:shadow-md transition-all duration-300 block group"
+                >
+                  <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                        <Anchor className="w-5 h-5 text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Dịch vụ du thuyền</h4>
+                        <h3 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wide leading-tight group-hover:text-accent transition-colors">{cruiseObj.name}</h3>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Dịch vụ du thuyền</h4>
-                      <h3 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wide leading-tight">{cruiseObj.name}</h3>
-                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-accent group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </div>
 
                   <div className="aspect-[16/10] rounded-sm overflow-hidden bg-slate-200">
-                    <img src={cruiseObj.imageGallery[0]} alt={cruiseObj.name} className="w-full h-full object-cover" />
+                    <img src={cruiseObj.imageGallery[0]} alt={cruiseObj.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
 
                   <div className="space-y-2.5">
@@ -485,22 +491,28 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                       </span>
                     ))}
                   </div>
-                </div>
+                </Link>
 
                 {/* Hotel Inclusion */}
-                <div className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs">
-                  <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
-                    <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0">
-                      <HotelIcon className="w-5 h-5 text-accent" />
+                <Link
+                  href={`/stays-dining/${hotelObj.id}`}
+                  className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs hover:border-accent/40 hover:shadow-md transition-all duration-300 block group"
+                >
+                  <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0">
+                        <HotelIcon className="w-5 h-5 text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Dịch vụ nghỉ dưỡng</h4>
+                        <h3 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wide leading-tight group-hover:text-accent transition-colors">{hotelObj.name}</h3>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-xs uppercase tracking-wider text-slate-400 font-semibold block">Dịch vụ nghỉ dưỡng</h4>
-                      <h3 className="font-serif text-sm font-bold text-slate-900 uppercase tracking-wide leading-tight">{hotelObj.name}</h3>
-                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-accent group-hover:translate-x-1 transition-all flex-shrink-0" />
                   </div>
 
                   <div className="aspect-[16/10] rounded-sm overflow-hidden bg-slate-200">
-                    <img src={hotelObj.imageGallery[0]} alt={hotelObj.name} className="w-full h-full object-cover" />
+                    <img src={hotelObj.imageGallery[0]} alt={hotelObj.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   </div>
 
                   <div className="space-y-2.5">
@@ -525,7 +537,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
                       </span>
                     ))}
                   </div>
-                </div>
+                </Link>
               </div>
             </div>
 

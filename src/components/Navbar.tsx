@@ -13,7 +13,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   // States cho Dropdown hover trên desktop
-  const [hoveredMenu, setHoveredMenu] = useState<"cruise" | "hotel" | "blog" | null>(null);
+  const [hoveredMenu, setHoveredMenu] = useState<"cruise" | "hotel" | null>(null);
 
   // State cho mobile menu
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -48,34 +48,21 @@ export default function Navbar({ solid = false }: NavbarProps) {
     };
   }, [isMobileOpen]);
 
-  // Cấu trúc dữ liệu cho Dropdown dọc đơn giản (OTA Style) - combo đã bỏ dropdown
+  // Cấu trúc dữ liệu cho Dropdown dọc đơn giản (OTA Style) - combo và du thuyền đã bỏ dropdown
   const menuDropdowns = {
-    cruise: [
-      { label: "Vịnh Hạ Long", href: "/cruises?destination=Vịnh Hạ Long" },
-      { label: "Vịnh Lan Hạ", href: "/cruises?destination=Vịnh Lan Hạ" },
-      { label: "Đảo Cát Bà", href: "/cruises?destination=Đảo Cát Bà" },
-      { label: "Xem tất cả du thuyền", href: "/cruises", isBold: true }
-    ],
     hotel: [
-      { label: "Bãi Cháy (Trung tâm)", href: "/hotels?location=Bãi Cháy" },
-      { label: "Đảo Rều (Biệt lập)", href: "/hotels?location=Đảo Rều" },
-      { label: "Quang Hanh (Khoáng nóng)", href: "/hotels?location=Quang Hanh" },
-      { label: "Xem tất cả khách sạn", href: "/hotels", isBold: true }
-    ],
-    blog: [
-      { label: "Cẩm nang du lịch", href: "/blogs?category=du-lich" },
-      { label: "Trải nghiệm du thuyền", href: "/blogs?category=du-thuyen" },
-      { label: "Khách sạn nghỉ dưỡng", href: "/blogs?category=khach-san" },
-      { label: "Kinh nghiệm du hành", href: "/blogs?category=kinh-nghiem" },
-      { label: "Xem tất cả bài viết", href: "/blogs", isBold: true }
+      { label: "Khách sạn & Resort", href: "/stays-dining?category=hotel" },
+      { label: "Biệt thự & Villa", href: "/stays-dining?category=villa" },
+      { label: "Nhà hàng & Ẩm thực", href: "/stays-dining?category=restaurant" },
+      { label: "Xem tất cả", href: "/stays-dining", isBold: true }
     ]
   };
 
   const navMenus = [
+    { key: "hot-deal" as const, label: "Hot Deals", path: "/hot-deal" },
     { key: "cruise" as const, label: "Du thuyền", path: "/cruises" },
-    { key: "hotel" as const, label: "Khách sạn", path: "/hotels" },
-    { key: "combo" as const, label: "Combo du lịch", path: "/combos" },
-    { key: "blog" as const, label: "Blog", path: "/blogs" }
+    { key: "hotel" as const, label: "Lưu trú & Ẩm thực", path: "/stays-dining" },
+    { key: "combo" as const, label: "Combo", path: "/combos" }
   ];
 
   return (
@@ -97,8 +84,8 @@ export default function Navbar({ solid = false }: NavbarProps) {
                 key={menu.key}
                 className="relative"
                 onMouseEnter={() => {
-                  if (menu.key !== "combo") {
-                    setHoveredMenu(menu.key);
+                  if (menu.key === "hotel") {
+                    setHoveredMenu("hotel");
                   }
                 }}
                 onMouseLeave={() => setHoveredMenu(null)}
@@ -122,7 +109,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
 
                 {/* Dropdown panel on Hover (Vertical Single Column style) */}
                 <AnimatePresence>
-                  {hoveredMenu === menu.key && (
+                  {menu.key === "hotel" && hoveredMenu === "hotel" && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -131,7 +118,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
                       className="absolute left-0 top-full pt-2 z-50 text-slate-800 text-left"
                     >
                       <div className="w-60 bg-white border border-slate-100 shadow-2xl rounded-xl p-2 flex flex-col gap-0.5">
-                        {menuDropdowns[menu.key as keyof typeof menuDropdowns].map((lnk, lIdx) => (
+                        {menuDropdowns.hotel.map((lnk, lIdx) => (
                           <React.Fragment key={lIdx}>
                             {lnk.isBold && <div className="h-[1px] bg-slate-100 my-1.5" />}
                             <Link

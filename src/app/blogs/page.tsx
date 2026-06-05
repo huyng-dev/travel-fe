@@ -102,24 +102,26 @@ function BlogListContent() {
       </div>
 
       {/* 2. CATEGORY TABS STICKY BAR */}
-      <div className="border-b border-slate-100 bg-white sticky top-[72px] z-20 shadow-sm py-4">
-        <div className="max-w-7xl mx-auto px-6 flex items-center gap-2.5 overflow-x-auto scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.key;
-            return (
-              <button
-                key={cat.key}
-                onClick={() => handleTabChange(cat.key)}
-                className={`px-5 py-2 border rounded-full text-xs font-semibold tracking-wide transition-all duration-300 cursor-pointer whitespace-nowrap ${
-                  isActive
-                    ? "border-[#001226] bg-[#001226] text-white shadow-sm"
-                    : "border-slate-200 hover:border-slate-800 text-slate-650 hover:bg-slate-50"
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
+      <div className="bg-white border-b border-slate-100 py-4 sticky top-[72px] z-20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-start gap-2.5 overflow-x-auto no-scrollbar scroll-smooth">
+            {categories.map((cat) => {
+              const isActive = activeCategory === cat.key;
+              return (
+                <button
+                  key={cat.key}
+                  onClick={() => handleTabChange(cat.key)}
+                  className={`px-5 py-2.5 rounded-full text-[13px] md:text-[14px] font-bold transition-all duration-250 whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? "bg-[#001226] text-white shadow-md hover:scale-[1.02]"
+                      : "text-slate-655 hover:bg-slate-100 hover:text-slate-900 bg-transparent"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

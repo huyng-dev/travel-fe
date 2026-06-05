@@ -134,7 +134,7 @@ const getRichBlogContent = (id: string, blog: Blog) => {
       return (
         <>
           <p className={paragraphClass}>
-            Nằm yên bình giữa những thung lũng đá vôi trùng điệp mờ sương của vùng Quang Hanh, Yoko Onsen đang trở thành biểu tượng của liệu pháp nghỉ dưỡng phục hồi sức khỏe. Đây là khu nghỉ dưỡng suối khoáng nóng chuẩn Nhật Bản đầu tiên tại Việt Nam mang trong mình triết lý thiền định sâu sắc, giúp xua tan mệt mỏi và chữa lành cơ thể từ sâu bên trong.
+            Nằm yên bình giữa những thung lũng đá vôi trùng điệp mờ sương của vùng Hạ Long, Yoko Onsen đang trở thành biểu tượng của liệu pháp nghỉ dưỡng phục hồi sức khỏe. Đây là khu nghỉ dưỡng suối khoáng nóng chuẩn Nhật Bản đầu tiên tại Việt Nam mang trong mình triết lý thiền định sâu sắc, giúp xua tan mệt mỏi và chữa lành cơ thể từ sâu bên trong.
           </p>
 
           <div className={highlightClass}>
@@ -143,7 +143,7 @@ const getRichBlogContent = (id: string, blog: Blog) => {
 
           <h2 className={subHeadingClass}>Nguồn Khoáng Quý Giá Độc Nhất Vô Nhị</h2>
           <p className={paragraphClass}>
-            Nước khoáng tại Quang Hanh được dẫn trực tiếp từ mạch suối ngầm tự nhiên sâu hàng trăm mét dưới lòng đất vôi cổ xưa. Qua kiểm định, nguồn nước ở đây chứa hàm lượng Brom tự nhiên cực cao, kết hợp khoáng chất vi lượng quý giúp làm sạch da, lưu thông khí huyết, điều hòa huyết áp và giảm đau xương khớp đặc biệt hiệu quả.
+            Nguồn nước khoáng tự nhiên được dẫn trực tiếp từ mạch suối ngầm sâu hàng trăm mét dưới lòng đất vôi cổ xưa của vùng di sản. Qua kiểm định, nguồn nước ở đây chứa hàm lượng Brom tự nhiên cực cao, kết hợp khoáng chất vi lượng quý giúp làm sạch da, lưu thông khí huyết, điều hòa huyết áp và giảm đau xương khớp đặc biệt hiệu quả.
           </p>
 
           <h2 className={subHeadingClass}>Quy Trình Tắm Onsen Chuẩn Nhật Bản</h2>

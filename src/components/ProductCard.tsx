@@ -24,6 +24,7 @@ interface ProductCardProps {
   roomCount?: number;
   variant?: "compact" | "detailed";
   viewMode?: "grid" | "list";
+  category?: string;
 }
 
 export default function ProductCard({
@@ -38,12 +39,9 @@ export default function ProductCard({
   originalPrice,
   location,
   amenities,
-  launchYear,
-  material,
-  cabinCount,
-  roomCount,
   variant = "compact",
   viewMode = "grid",
+  category,
 }: ProductCardProps) {
   
   // Định dạng tiền tệ VNĐ
@@ -70,6 +68,26 @@ export default function ProductCard({
 
   const isDetailed = variant === "detailed";
 
+  // Tính tỷ lệ phần trăm giảm giá nếu có
+  const discountPercent = originalPrice && price && originalPrice > price 
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    : 0;
+
+  // Lấy nhãn phân loại dịch vụ
+  const getCategoryLabel = () => {
+    if (type === "combo") return "Combo trọn gói";
+    if (category) {
+      switch (category) {
+        case "cruise": return "Du thuyền";
+        case "hotel": return "Khách sạn";
+        case "villa": return "Villa";
+        case "restaurant": return "Nhà hàng";
+        default: return category;
+      }
+    }
+    return type === "cruise" ? "Du thuyền" : "Khách sạn";
+  };
+
   const cardContent = (
     <>
       {/* Image Section */}
@@ -83,19 +101,21 @@ export default function ProductCard({
         {/* Dark overlay gradients */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
 
-        {/* Badge */}
-        {badge && (
-          <span className="absolute top-4 left-4 z-10 px-3 py-0.5 text-[9.5px] uppercase tracking-[0.1em] font-bold bg-amber-400 text-slate-900 rounded-full shadow-md">
+        {/* Discount Badge / Custom Badge */}
+        {discountPercent > 0 ? (
+          <span className="absolute top-4 left-4 z-10 px-3 py-1 text-[11px] uppercase tracking-[0.12em] font-extrabold bg-rose-600 text-white rounded-full shadow-lg">
+            GIẢM {discountPercent}%
+          </span>
+        ) : badge ? (
+          <span className="absolute top-4 left-4 z-10 px-3 py-0.5 text-[11px] uppercase tracking-[0.1em] font-bold bg-amber-400 text-slate-900 rounded-full shadow-md">
             {badge}
           </span>
-        )}
+        ) : null}
 
         {/* Product Type Tag */}
-        {type !== "combo" && (
-          <span className="absolute top-4 right-4 z-10 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.1em] font-semibold bg-slate-900/60 text-white border border-white/20 backdrop-blur-md rounded-full">
-            {type === "cruise" ? "Du Thuyền" : "Khách Sạn"}
-          </span>
-        )}
+        <span className="absolute top-4 right-4 z-10 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.1em] font-semibold bg-slate-900/60 text-white border border-white/20 backdrop-blur-md rounded-full">
+          {getCategoryLabel()}
+        </span>
       </div>
 
       {/* Content Section */}
@@ -119,7 +139,7 @@ export default function ProductCard({
               Gói Trải Nghiệm Trọn Gói
             </span>
           )}
-          {location && (
+          {location && type !== "combo" && (
             <div className="flex items-center gap-1 font-medium text-slate-650 max-w-[150px] min-w-0 text-left">
               <MapPin className="w-3.5 h-3.5 text-accent flex-shrink-0" />
               <span className="truncate" title={location}>
@@ -140,36 +160,6 @@ export default function ProductCard({
             </p>
           )}
         </div>
-
-        {/* Technical Specifications Grid (Detailed view for Cruises & Hotels) */}
-        {isDetailed && type !== "combo" && (
-          <div className="grid grid-cols-3 gap-2 py-3 border-t border-b border-slate-100 text-[11px] text-slate-500 font-medium bg-slate-50/50 rounded-xl">
-            <div className="text-center border-r border-slate-100 last:border-0 px-1">
-              <span className="block text-[8px] uppercase tracking-wider text-slate-400 font-normal">
-                {type === "cruise" ? "Hạ thủy" : "Hạng sao"}
-              </span>
-              <span className="text-slate-800 font-bold">
-                {type === "cruise" ? (launchYear || "N/A") : `${stars} sao`}
-              </span>
-            </div>
-            <div className="text-center border-r border-slate-100 last:border-0 px-1">
-              <span className="block text-[8px] uppercase tracking-wider text-slate-400 font-normal">
-                {type === "cruise" ? "Chất liệu" : "Loại hình"}
-              </span>
-              <span className="text-slate-800 font-bold truncate max-w-[80px] inline-block" title={type === "cruise" ? material : (id === "hotel-yoko-onsen-quang-hanh" ? "Khu Onsen" : "Resort & Spa")}>
-                {type === "cruise" ? (material || "N/A") : (id === "hotel-yoko-onsen-quang-hanh" ? "Khu Onsen" : "Resort & Spa")}
-              </span>
-            </div>
-            <div className="text-center border-r border-slate-100 last:border-0 px-1">
-              <span className="block text-[8px] uppercase tracking-wider text-slate-400 font-normal">
-                {type === "cruise" ? "Số cabins" : "Quy mô"}
-              </span>
-              <span className="text-slate-800 font-bold">
-                {type === "cruise" ? `${cabinCount || "N/A"} phòng` : `${roomCount || "N/A"} phòng`}
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Highlighted Amenities */}
         {amenities && amenities.length > 0 && (
@@ -197,7 +187,7 @@ export default function ProductCard({
               {price ? (
                 <>
                   <span className="text-[10px] text-slate-400 font-normal block">Giá từ</span>
-                  <span className="text-sm font-bold text-accent-dark">{formatPrice(price)} / khách</span>
+                  <span className="text-base font-bold text-accent-dark">{formatPrice(price)} / khách</span>
                 </>
               ) : (
                 "Giá theo yêu cầu"
@@ -229,7 +219,7 @@ export default function ProductCard({
   const isList = viewMode === "list";
 
   if (type === "cruise" || type === "hotel" || type === "combo") {
-    const routePrefix = type === "cruise" ? "cruises" : type === "hotel" ? "hotels" : "combos";
+    const routePrefix = type === "cruise" ? "cruises" : type === "hotel" ? "stays-dining" : "combos";
     return (
       <Link
         href={`/${routePrefix}/${id}`}
