@@ -3,6 +3,7 @@ import { Mulish, Montserrat } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "@/components/ScrollToTop";
+import FloatingContact from "@/components/FloatingContact";
 
 const mulish = Mulish({
   variable: "--font-mulish",
@@ -48,6 +49,7 @@ export default function RootLayout({
           }}
         />
         <ScrollToTop />
+        <FloatingContact />
       </body>
     </html>
   );

@@ -35,7 +35,7 @@ export default function ScrollToTop() {
           exit={{ opacity: 0, scale: 0.8, y: 10 }}
           transition={{ duration: 0.2 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-[60] p-3 rounded-full bg-[#001226] text-accent hover:bg-accent hover:text-[#001226] border border-accent/25 hover:border-accent shadow-2xl transition-all duration-300 cursor-pointer"
+          className="fixed bottom-24 right-6 z-[60] p-3 rounded-full bg-accent text-white hover:bg-accent-dark hover:text-white border border-accent/30 hover:border-accent-dark/80 shadow-2xl transition-all duration-300 cursor-pointer"
           aria-label="Cuộn lên đầu trang"
         >
           <ArrowUp className="w-5 h-5" />

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { X, Phone, Compass, ChevronRight, Menu, Globe } from "lucide-react";
+import { X, Phone, Compass, ChevronRight, Menu, Globe, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface NavbarProps {
@@ -62,7 +62,8 @@ export default function Navbar({ solid = false }: NavbarProps) {
     { key: "hot-deal" as const, label: "Hot Deals", path: "/hot-deal" },
     { key: "cruise" as const, label: "Du thuyền", path: "/cruises" },
     { key: "hotel" as const, label: "Lưu trú & Ẩm thực", path: "/stays-dining" },
-    { key: "combo" as const, label: "Combo", path: "/combos" }
+    { key: "combo" as const, label: "Combo", path: "/combos" },
+    { key: "blog" as const, label: "Blog", path: "/blogs" }
   ];
 
   return (
@@ -77,89 +78,91 @@ export default function Navbar({ solid = false }: NavbarProps) {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative">
           
-          {/* Menu chính bên trái (Desktop hover dropdowns) */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navMenus.map((menu) => (
-              <div
-                key={menu.key}
-                className="relative"
-                onMouseEnter={() => {
-                  if (menu.key === "hotel") {
-                    setHoveredMenu("hotel");
-                  }
-                }}
-                onMouseLeave={() => setHoveredMenu(null)}
-              >
-                {/* Click navigates directly */}
-                <Link
-                  href={menu.path}
-                  className={`text-xs uppercase tracking-[0.15em] font-semibold py-3 transition-colors duration-300 relative group flex items-center gap-1 cursor-pointer ${
-                    hoveredMenu === menu.key
-                      ? "text-accent"
-                      : isHeaderSolid
-                      ? "text-slate-800 hover:text-accent"
-                      : "text-white hover:text-accent"
-                  }`}
-                >
-                  {menu.label}
-                  <span className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-300 ${
-                    hoveredMenu === menu.key ? "w-full" : "w-0 group-hover:w-full"
-                  }`} />
-                </Link>
-
-                {/* Dropdown panel on Hover (Vertical Single Column style) */}
-                <AnimatePresence>
-                  {menu.key === "hotel" && hoveredMenu === "hotel" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute left-0 top-full pt-2 z-50 text-slate-800 text-left"
-                    >
-                      <div className="w-60 bg-white border border-slate-100 shadow-2xl rounded-xl p-2 flex flex-col gap-0.5">
-                        {menuDropdowns.hotel.map((lnk, lIdx) => (
-                          <React.Fragment key={lIdx}>
-                            {lnk.isBold && <div className="h-[1px] bg-slate-100 my-1.5" />}
-                            <Link
-                              href={lnk.href}
-                              className={`px-3 py-2 text-xs rounded-lg transition-all duration-200 flex items-center justify-between group/link ${
-                                lnk.isBold
-                                  ? "font-bold text-accent hover:bg-slate-50 hover:text-accent"
-                                  : "font-medium text-slate-650 hover:bg-slate-50 hover:text-accent"
-                              }`}
-                            >
-                              <span>{lnk.label}</span>
-                              {lnk.isBold && (
-                                <ChevronRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform text-accent" />
-                              )}
-                            </Link>
-                          </React.Fragment>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+          <div className="flex items-center gap-10">
+            {/* Logo TRAVEL ở bên trái */}
+            <Link href="/" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2 group">
+              <Compass className="w-7 h-7 text-accent group-hover:rotate-45 transition-transform duration-500" />
+              <div className="flex flex-col">
+                <span className={`font-serif text-lg tracking-[0.25em] font-bold ${
+                  isHeaderSolid ? "text-slate-900" : "text-white"
+                }`}>
+                  TRAVEL
+                </span>
               </div>
-            ))}
-          </nav>
+            </Link>
 
-          {/* Logo TRAVEL ở trung tâm */}
-          <Link href="/" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2 group absolute left-1/2 -translate-x-1/2">
-            <Compass className="w-7 h-7 text-accent group-hover:rotate-45 transition-transform duration-500" />
-            <div className="flex flex-col text-center">
-              <span className={`font-serif text-lg tracking-[0.25em] font-bold ${
-                isHeaderSolid ? "text-slate-900" : "text-white"
-              }`}>
-                TRAVEL
-              </span>
-            </div>
-          </Link>
+            {/* Menu chính bên trái (Desktop hover dropdowns) */}
+            <nav className="hidden lg:flex items-center space-x-8">
+              {navMenus.map((menu) => (
+                <div
+                  key={menu.key}
+                  className="relative"
+                  onMouseEnter={() => {
+                    if (menu.key === "hotel") {
+                      setHoveredMenu("hotel");
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredMenu(null)}
+                >
+                  {/* Click navigates directly */}
+                  <Link
+                    href={menu.path}
+                    className={`text-xs uppercase tracking-[0.15em] font-semibold py-3 transition-colors duration-300 relative group flex items-center gap-1 cursor-pointer ${
+                      hoveredMenu === menu.key
+                        ? "text-accent"
+                        : isHeaderSolid
+                        ? "text-slate-800 hover:text-accent"
+                        : "text-white hover:text-accent"
+                    }`}
+                  >
+                    {menu.label}
+                    <span className={`absolute bottom-0 left-0 h-[2px] bg-accent transition-all duration-300 ${
+                      hoveredMenu === menu.key ? "w-full" : "w-0 group-hover:w-full"
+                    }`} />
+                  </Link>
 
-          {/* Hotline, Ngôn ngữ & Liên hệ bên phải */}
+                  {/* Dropdown panel on Hover (Vertical Single Column style) */}
+                  <AnimatePresence>
+                    {menu.key === "hotel" && hoveredMenu === "hotel" && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute left-0 top-full pt-2 z-50 text-slate-800 text-left"
+                      >
+                        <div className="w-60 bg-white border border-slate-100 shadow-2xl rounded-xl p-2 flex flex-col gap-0.5">
+                          {menuDropdowns.hotel.map((lnk, lIdx) => (
+                            <React.Fragment key={lIdx}>
+                              {lnk.isBold && <div className="h-[1px] bg-slate-100 my-1.5" />}
+                              <Link
+                                href={lnk.href}
+                                className={`px-3 py-2 text-xs rounded-lg transition-all duration-200 flex items-center justify-between group/link ${
+                                  lnk.isBold
+                                    ? "font-bold text-accent hover:bg-slate-50 hover:text-accent"
+                                    : "font-medium text-slate-650 hover:bg-slate-50 hover:text-accent"
+                                }`}
+                              >
+                                <span>{lnk.label}</span>
+                                {lnk.isBold && (
+                                  <ChevronRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform text-accent" />
+                                )}
+                              </Link>
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </nav>
+          </div>
+
+          {/* Hotline & Liên hệ bên phải */}
           <div className="flex items-center space-x-6 z-10 ml-auto">
-            {/* Bộ chọn Ngôn ngữ */}
-            <div className="relative">
+            {/* Bộ chọn Ngôn ngữ (Chỉ hiển thị trên desktop) */}
+            <div className="relative hidden lg:block">
               <button
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className={`flex items-center gap-1.5 text-xs font-semibold py-1 transition-colors duration-300 cursor-pointer ${
@@ -211,14 +214,14 @@ export default function Navbar({ solid = false }: NavbarProps) {
               </AnimatePresence>
             </div>
 
-            {/* Số điện thoại */}
+            {/* Số điện thoại (Hiển thị trực tiếp trên cả Mobile và Desktop) */}
             <a
               href="tel:19001234"
-              className={`hidden md:flex items-center gap-2 text-xs uppercase tracking-[0.12em] font-semibold ${
+              className={`flex items-center gap-1.5 text-base md:text-sm uppercase tracking-[0.05em] md:tracking-[0.1em] font-extrabold ${
                 isHeaderSolid ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
               }`}
             >
-              <Phone className="w-4 h-4 text-accent" />
+              <Phone className="w-4 h-4 text-accent animate-pulse" />
               <span>1900 1234</span>
             </a>
 
@@ -287,12 +290,55 @@ export default function Navbar({ solid = false }: NavbarProps) {
                 </Link>
               </div>
 
-              <div className="flex flex-col gap-3 pt-2">
-                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Hotline hỗ trợ 24/7</span>
-                <a href="tel:19001234" className="flex items-center gap-2 font-bold text-slate-800 hover:text-accent">
-                  <Phone className="w-4.5 h-4.5 text-accent" />
-                  1900 1234
-                </a>
+              {/* Thông tin liên hệ hỗ trợ & Email */}
+              <div className="flex flex-col gap-3 pt-2 border-t border-slate-100">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">Hotline hỗ trợ 24/7</span>
+                  <a href="tel:19001234" className="flex items-center gap-2.5 font-extrabold text-slate-800 hover:text-accent text-base">
+                    <Phone className="w-4.5 h-4.5 text-accent" />
+                    1900 1234
+                  </a>
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">Email liên hệ</span>
+                  <a href="mailto:info@travelhalong.vn" className="flex items-center gap-2.5 font-extrabold text-slate-800 hover:text-accent text-base">
+                    <Mail className="w-4.5 h-4.5 text-accent" />
+                    info@travelhalong.vn
+                  </a>
+                </div>
+              </div>
+
+              {/* Bộ chọn ngôn ngữ bên trong Mobile Drawer */}
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Ngôn ngữ / Language</span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setCurrentLang("vi");
+                      setIsMobileOpen(false);
+                    }}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ${
+                      currentLang === "vi"
+                        ? "bg-[#001226] text-white border border-[#001226]"
+                        : "bg-slate-50 text-slate-650 border border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    Tiếng Việt
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentLang("en");
+                      setIsMobileOpen(false);
+                    }}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ${
+                      currentLang === "en"
+                        ? "bg-[#001226] text-white border border-[#001226]"
+                        : "bg-slate-50 text-slate-650 border border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    English
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>
