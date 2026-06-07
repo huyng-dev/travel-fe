@@ -161,8 +161,8 @@ export default function Navbar({ solid = false }: NavbarProps) {
 
           {/* Hotline & Liên hệ bên phải */}
           <div className="flex items-center space-x-6 z-10 ml-auto">
-            {/* Bộ chọn Ngôn ngữ (Chỉ hiển thị trên desktop) */}
-            <div className="relative hidden lg:block">
+            {/* Bộ chọn Ngôn ngữ */}
+            <div className="relative">
               <button
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
                 className={`flex items-center gap-1.5 text-xs font-semibold py-1 transition-colors duration-300 cursor-pointer ${
@@ -308,38 +308,6 @@ export default function Navbar({ solid = false }: NavbarProps) {
                 </div>
               </div>
 
-              {/* Bộ chọn ngôn ngữ bên trong Mobile Drawer */}
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Ngôn ngữ / Language</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setCurrentLang("vi");
-                      setIsMobileOpen(false);
-                    }}
-                    className={`px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ${
-                      currentLang === "vi"
-                        ? "bg-[#001226] text-white border border-[#001226]"
-                        : "bg-slate-50 text-slate-650 border border-slate-200 hover:bg-slate-100"
-                    }`}
-                  >
-                    Tiếng Việt
-                  </button>
-                  <button
-                    onClick={() => {
-                      setCurrentLang("en");
-                      setIsMobileOpen(false);
-                    }}
-                    className={`px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all duration-200 ${
-                      currentLang === "en"
-                        ? "bg-[#001226] text-white border border-[#001226]"
-                        : "bg-slate-50 text-slate-650 border border-slate-200 hover:bg-slate-100"
-                    }`}
-                  >
-                    English
-                  </button>
-                </div>
-              </div>
             </motion.div>
           </>
         )}

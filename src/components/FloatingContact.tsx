@@ -11,7 +11,7 @@ export default function FloatingContact() {
       initial={{ scale: 0.8, opacity: 0, y: 10 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed bottom-8 right-6 z-[55]"
+      className="fixed bottom-8 right-6 z-[30]"
     >
       <Link href="/contact" aria-label="Liên hệ tư vấn nhanh">
         {/* Pulsing outer ring */}
