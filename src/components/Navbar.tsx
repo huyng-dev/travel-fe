@@ -160,7 +160,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
           </div>
 
           {/* Hotline & Liên hệ bên phải */}
-          <div className="flex items-center space-x-6 z-10 ml-auto">
+          <div className="flex items-center space-x-3 md:space-x-6 z-10 ml-auto">
             {/* Bộ chọn Ngôn ngữ */}
             <div className="relative">
               <button
@@ -217,7 +217,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
             {/* Số điện thoại (Hiển thị trực tiếp trên cả Mobile và Desktop) */}
             <a
               href="tel:19001234"
-              className={`flex items-center gap-1.5 text-xs md:text-sm uppercase tracking-[0.05em] md:tracking-[0.1em] font-extrabold ${
+              className={`flex items-center gap-1.5 text-sm uppercase tracking-[0.05em] md:tracking-[0.1em] font-extrabold ${
                 isHeaderSolid ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
               }`}
             >
