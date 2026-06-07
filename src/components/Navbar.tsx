@@ -217,7 +217,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
             {/* Số điện thoại (Hiển thị trực tiếp trên cả Mobile và Desktop) */}
             <a
               href="tel:19001234"
-              className={`flex items-center gap-1.5 text-base md:text-sm uppercase tracking-[0.05em] md:tracking-[0.1em] font-extrabold ${
+              className={`flex items-center gap-1.5 text-xs md:text-sm uppercase tracking-[0.05em] md:tracking-[0.1em] font-extrabold ${
                 isHeaderSolid ? "text-slate-800 hover:text-[#001226]" : "text-white hover:text-slate-200"
               }`}
             >
