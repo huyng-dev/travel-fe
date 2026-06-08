@@ -117,3 +117,31 @@ body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Tăng kích thước các chữ rất nhỏ để khách hàng dễ đọc ở các trang chính và chân trang */
+main .text-xs,
+footer .text-xs {
+  font-size: 13px;
+}
+
+main .text-\[11px\],
+footer .text-\[11px\] {
+  font-size: 12.5px;
+}
+
+main .text-\[10px\],
+footer .text-\[10px\] {
+  font-size: 11.5px;
+}
+
+main .text-\[9px\],
+footer .text-\[9px\] {
+  font-size: 10.5px;
+}
+
+main .text-\[8px\],
+footer .text-\[8px\] {
+  font-size: 10px;
+}
+
+

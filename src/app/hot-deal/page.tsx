@@ -136,7 +136,7 @@ function HotDealListContent() {
         </div>
 
         <div className="relative z-10 text-center text-white space-y-4 px-6 w-full max-w-6xl mt-32">
-          <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold block flex items-center justify-center gap-1.5">
+          <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold hidden md:flex items-center justify-center gap-1.5">
             Ưu Đãi Độc Quyền
           </span>
           <h1 className="font-serif text-3xl md:text-4xl tracking-wide font-normal max-w-2xl mx-auto leading-tight">

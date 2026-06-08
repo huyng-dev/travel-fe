@@ -67,7 +67,7 @@ export default function ContactPage() {
           </div>
 
           <div className="relative z-10 text-center text-white space-y-3 px-6 w-full max-w-4xl mt-20">
-            <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold block">
+            <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold hidden md:block">
               Dịch Vụ Khách Hàng Cao Cấp
             </span>
             <h1 className="font-serif text-3xl md:text-4xl tracking-wide font-normal">

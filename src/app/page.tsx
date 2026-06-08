@@ -13,6 +13,7 @@ import { mockCruises, mockHotels, mockCombos } from "@/data/mockData";
 import { ChevronRight, ChevronLeft, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LatestBlogs from "@/components/LatestBlogs";
+import PromoModal from "@/components/PromoModal";
 
 interface DisplayProduct {
   id: string;
@@ -581,6 +582,7 @@ export default function Home() {
       </main>
 
       <Footer />
+      <PromoModal />
     </>
   );
 }
