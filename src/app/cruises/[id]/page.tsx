@@ -483,7 +483,8 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
     <div className="w-full bg-white text-slate-800">
       <Navbar solid />
 
-      {/* 1. HEADER SECTION (White background) */}
+      <main className="flex-grow">
+        {/* 1. HEADER SECTION (White background) */}
       <section className="bg-white pt-28 pb-6">
         <div className="max-w-7xl mx-auto px-6 space-y-4">
           {/* Breadcrumb Path */}
@@ -850,7 +851,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
               <h3 className="font-serif text-3xl md:text-4xl text-slate-900 font-normal transition-all duration-300">
                 {mockActivities[activeActivityIdx].title}
               </h3>
-              <p className="text-slate-650 text-xs md:text-sm leading-relaxed font-sans font-light transition-all duration-300">
+              <p className="text-slate-650 text-sm md:text-base leading-relaxed font-sans font-light transition-all duration-300">
                 {mockActivities[activeActivityIdx].description}
               </p>
             </div>
@@ -1168,6 +1169,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
           </div>
         </div>
       </section>
+    </main>
 
       <Footer />
 

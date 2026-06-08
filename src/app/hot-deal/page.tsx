@@ -240,13 +240,14 @@ export default function HotDealPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-        </div>
-      }>
-        <HotDealListContent />
-      </Suspense>
+      <main className="flex-grow pt-0 bg-white">
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        }>
+          <HotDealListContent />
+        </Suspense>
         <section className="py-24 bg-teal-50/30 bg-wave-pattern border-t border-b border-teal-100/50">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center max-w-3xl mx-auto space-y-2 mb-12">
@@ -261,7 +262,8 @@ export default function HotDealPage() {
             <CrossReviewSection />
           </div>
         </section>
-      <LatestBlogs />
+        <LatestBlogs />
+      </main>
       <Footer />
     </>
   );

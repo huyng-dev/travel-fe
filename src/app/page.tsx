@@ -10,7 +10,7 @@ import ProductCard from "@/components/ProductCard";
 import CrossReviewSection from "@/components/CrossReviewSection";
 import SearchWidget from "@/components/SearchWidget";
 import { mockCruises, mockHotels, mockCombos } from "@/data/mockData";
-import { ChevronRight, ChevronLeft, ArrowUpRight } from "lucide-react";
+import { ChevronRight, ChevronLeft, ArrowUpRight, ThumbsUp, Tag, Gift, PhoneCall } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LatestBlogs from "@/components/LatestBlogs";
 import PromoModal from "@/components/PromoModal";
@@ -208,7 +208,7 @@ export default function Home() {
                   <h1 className="font-serif text-3xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white leading-tight tracking-wide drop-shadow-lg whitespace-pre-line">
                     {heroSlides[currentSlide].title}
                   </h1>
-                  <p className="text-xs sm:text-sm md:text-base text-slate-100 font-light leading-relaxed tracking-wider max-w-2xl mx-auto drop-shadow-sm">
+                  <p className="text-sm md:text-base text-slate-100 font-light leading-relaxed tracking-wider max-w-2xl mx-auto drop-shadow-sm">
                     {heroSlides[currentSlide].description}
                   </p>
                 </motion.div>
@@ -240,8 +240,60 @@ export default function Home() {
           </div>
         </section>
 
+        {/* TRUST POLICIES SECTION */}
+        <section id="trust-policies" className="bg-white pb-6 md:pb-8 pt-28 md:pt-8">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="bg-slate-50 border border-slate-100/80 rounded-3xl p-6 md:p-10 shadow-sm grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-accent/20 flex items-center justify-center bg-accent/5 flex-shrink-0">
+                  <ThumbsUp className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-serif text-slate-900 font-semibold tracking-wide text-sm md:text-base">Chọn lọc chất lượng</h4>
+                  <p className="text-[11.5px] md:text-sm text-slate-600 leading-relaxed">
+                    Chỉ tuyển chọn các dịch vụ lưu trú, ẩm thực và du thuyền chất lượng hàng đầu tại Hạ Long.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-accent/20 flex items-center justify-center bg-accent/5 flex-shrink-0">
+                  <Tag className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-serif text-slate-900 font-semibold tracking-wide text-sm md:text-base">Cam kết giá tốt nhất</h4>
+                  <p className="text-[11.5px] md:text-sm text-slate-600 leading-relaxed">
+                    Đảm bảo mức giá tốt nhất thị trường và sẵn sàng khớp giá nếu có nơi rẻ hơn.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-accent/20 flex items-center justify-center bg-accent/5 flex-shrink-0">
+                  <Gift className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-serif text-slate-900 font-semibold tracking-wide text-sm md:text-base">Nhiều ưu đãi đi kèm</h4>
+                  <p className="text-[11.5px] md:text-sm text-slate-600 leading-relaxed">
+                    Nhận thêm nhiều quà tặng và voucher dịch vụ đi kèm độc quyền khi đặt phòng/du thuyền.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 md:gap-4">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-accent/20 flex items-center justify-center bg-accent/5 flex-shrink-0">
+                  <PhoneCall className="w-5 h-5 md:w-6 md:h-6 text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-serif text-slate-900 font-semibold tracking-wide text-sm md:text-base">Hỗ trợ 24/7</h4>
+                  <p className="text-[11.5px] md:text-sm text-slate-600 leading-relaxed">
+                    Chuyên viên am hiểu địa phương hỗ trợ tận tình qua hotline và Zalo 24/7.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CURATED HOT DEALS SECTION */}
-        <section id="hot-deal" className="pt-36 pb-24 bg-slate-50 border-t border-b border-slate-100">
+        <section id="hot-deal" className="py-24 bg-slate-50 border-b border-slate-100">
           <div className="max-w-7xl mx-auto px-6 space-y-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-200">
               <div className="text-center md:text-left space-y-2">

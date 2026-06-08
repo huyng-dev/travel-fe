@@ -243,7 +243,8 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
     <div className="w-full bg-white text-slate-800">
       <Navbar />
 
-      {/* 1. HERO BANNER */}
+      <main className="flex-grow">
+        {/* 1. HERO BANNER */}
       <section className="relative h-[65vh] w-full bg-slate-900 overflow-hidden">
         <img
           src={blog.image}
@@ -408,6 +409,7 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
 
         </div>
       </section>
+    </main>
 
       <Footer />
     </div>

@@ -278,10 +278,12 @@ export default function StaysDiningPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center bg-white"><div className="w-10 h-10 border-[3px] border-accent border-t-transparent rounded-full animate-spin" /></div>}>
-        <StaysDiningContent />
-      </Suspense>
-      <LatestBlogs />
+      <main className="flex-grow pt-0 bg-white">
+        <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center bg-white"><div className="w-10 h-10 border-[3px] border-accent border-t-transparent rounded-full animate-spin" /></div>}>
+          <StaysDiningContent />
+        </Suspense>
+        <LatestBlogs />
+      </main>
       <Footer />
     </>
   );

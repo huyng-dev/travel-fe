@@ -151,7 +151,7 @@ export default function ProductCard({
 
         {/* Title */}
         <div className="space-y-1 text-left">
-          <h3 className="font-serif text-base font-semibold text-slate-900 tracking-wide group-hover:text-accent-dark transition-colors duration-300">
+          <h3 className="font-serif text-base md:text-lg font-semibold text-slate-900 tracking-wide group-hover:text-accent-dark transition-colors duration-300">
             {name}
           </h3>
           {tagline && (
@@ -167,7 +167,7 @@ export default function ProductCard({
             {amenities.slice(0, isDetailed ? 4 : 2).map((amenity, i) => (
               <span
                 key={i}
-                className="text-[10.5px] bg-slate-50 border border-slate-100/80 text-slate-650 px-2.5 py-0.5 rounded-full"
+                className="text-[12px] bg-slate-50 border border-slate-100/80 text-slate-650 px-2.5 py-0.5 rounded-full"
               >
                 {amenity}
               </span>

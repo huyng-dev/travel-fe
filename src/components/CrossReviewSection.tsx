@@ -214,7 +214,7 @@ export default function CrossReviewSection() {
                     <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold border ${activeBadge.className}`}>
                       {activeBadge.label}
                     </span>
-                    <span className="text-slate-800 font-bold normal-case text-xs md:text-sm">{activeReview.stayType}</span>
+                    <span className="text-slate-800 font-bold normal-case text-sm">{activeReview.stayType}</span>
                   </div>
                 )}
               </motion.div>

@@ -312,7 +312,8 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
     <div className="w-full bg-white text-slate-800">
       <Navbar solid />
 
-      {/* 1. HEADER SECTION (White background) */}
+      <main className="flex-grow">
+        {/* 1. HEADER SECTION (White background) */}
       <section className="bg-white pt-28 pb-6">
         <div className="max-w-7xl mx-auto px-6 space-y-4">
           {/* Breadcrumb Path */}
@@ -825,6 +826,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       </section>
+    </main>
 
       <Footer />
 

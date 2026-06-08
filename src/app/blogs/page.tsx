@@ -217,13 +217,15 @@ export default function BlogsPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={
-        <div className="min-h-screen flex items-center justify-center bg-white">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-        </div>
-      }>
-        <BlogListContentWithKey />
-      </Suspense>
+      <main className="flex-grow pt-0 bg-white">
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+          </div>
+        }>
+          <BlogListContentWithKey />
+        </Suspense>
+      </main>
       <Footer />
     </>
   );

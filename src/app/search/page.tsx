@@ -356,7 +356,7 @@ function SearchListContent() {
           </aside>
 
           {/* Results Area */}
-          <main className="flex-1 w-full space-y-10">
+          <div className="flex-1 w-full space-y-10">
             {/* Controls bar */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-8 border-b border-slate-100">
               <div className="space-y-1 text-left">
@@ -474,7 +474,7 @@ function SearchListContent() {
                 </button>
               </div>
             )}
-          </main>
+          </div>
         </div>
       </div>
 
@@ -533,9 +533,11 @@ export default function SearchPage() {
   return (
     <>
       <Navbar />
-      <Suspense fallback={<SearchLoading />}>
-        <SearchListContent />
-      </Suspense>
+      <main className="flex-grow pt-0 bg-white">
+        <Suspense fallback={<SearchLoading />}>
+          <SearchListContent />
+        </Suspense>
+      </main>
       <Footer />
     </>
   );
