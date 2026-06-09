@@ -17,7 +17,7 @@ import PromoModal from "@/components/PromoModal";
 
 interface DisplayProduct {
   id: string;
-  type: "cruise" | "hotel" | "combo";
+  type: "cruise" | "hotel" | "combo" | "restaurant";
   name: string;
   tagline?: string;
   image: string;
@@ -54,25 +54,25 @@ const serviceCategories = [
     thumbnail: "https://dulichviet.com.vn/images/bandidau/nen-chon-du-thuyen-nao-khi-di-du-lich-ha-long.jpg",
     title: "Du Thuyền Cao Cấp",
     subtitle: "Trải nghiệm kỳ quan Hạ Long trên những du thuyền hiện đại và sang trọng.",
-    path: "/cruises",
+    path: "/stays?category=cruise",
   },
   {
     thumbnail: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=800",
     title: "Khách Sạn & Resort",
     subtitle: "Khu nghỉ dưỡng sang trọng bên vịnh biển biệt lập, tiện ích chuẩn quốc tế.",
-    path: "/stays-dining?category=hotel",
+    path: "/stays?category=hotel",
   },
   {
     thumbnail: "https://digiticket.vn/blog/wp-content/uploads/2022/02/villa-ha-long-1.jpg",
     title: "Biệt Thự & Villa",
     subtitle: "Không gian nghỉ ngơi riêng tư, tiện nghi dành riêng cho gia đình và nhóm bạn.",
-    path: "/stays-dining?category=villa",
+    path: "/stays?category=villa",
   },
   {
     thumbnail: "https://static.vinwonders.com/production/nha-hang-ha-long-2.jpg",
     title: "Nhà Hàng & Ẩm Thực",
     subtitle: "Thưởng thức hải sản tươi ngon độc bản và ẩm thực tinh tế mang hương vị biển khơi.",
-    path: "/stays-dining?category=restaurant",
+    path: "/dining-culture?category=restaurant",
   },
 ];
 
@@ -150,10 +150,10 @@ export default function Home() {
       amenities: c.amenities,
       category: c.category,
     })),
-    // Hotels, Villas, Restaurants
+    // Hotels, Villas, Restaurants, Homestays
     ...mockHotels.filter(h => h.isHotDeal).map(h => ({
       id: h.id,
-      type: "hotel" as const,
+      type: h.category === "restaurant" ? ("restaurant" as const) : ("hotel" as const),
       name: h.name,
       tagline: h.description, // Dùng description làm tagline ngắn gọn
       image: h.imageGallery[0],
@@ -227,11 +227,11 @@ export default function Home() {
                 <span className="text-[10px] uppercase tracking-widest text-accent font-extrabold">Gợi ý tìm kiếm:</span>
                 <Link href="/cruises" className="hover:text-accent text-white transition-colors duration-300">#Du thuyền 5 sao</Link>
                 <span className="text-white/20">|</span>
-                <Link href="/stays-dining?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Khách sạn sang trọng</Link>
+                <Link href="/stays?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Khách sạn sang trọng</Link>
                 <span className="text-white/20">|</span>
-                <Link href="/stays-dining?category=villa" className="hover:text-accent text-white transition-colors duration-300">#Villa sát biển</Link>
+                <Link href="/stays?category=villa" className="hover:text-accent text-white transition-colors duration-300">#Villa sát biển</Link>
                 <span className="text-white/20">|</span>
-                <Link href="/stays-dining?category=restaurant" className="hover:text-accent text-white transition-colors duration-300">#Nhà hàng hải sản</Link>
+                <Link href="/dining-culture?category=restaurant" className="hover:text-accent text-white transition-colors duration-300">#Nhà hàng hải sản</Link>
               </div>
               <div className="w-full translate-y-1/2">
                 <SearchWidget />

@@ -89,6 +89,21 @@ export interface Review {
   stayType: string; // Tên của du thuyền hoặc khách sạn đã trải nghiệm
 }
 
+export interface OtherService {
+  id: string;
+  name: string;
+  type: "car" | "sim" | "guide" | "ticket";
+  description: string;
+  imageGallery: string[];
+  price: number;
+  originalPrice?: number;
+  rating: number;
+  summary: string;
+  attributes: {
+    [key: string]: string | number | boolean | string[];
+  };
+}
+
 // MOCK DATA ARRAYS
 
 export const mockCruises: Cruise[] = [
@@ -476,6 +491,79 @@ export const mockHotels: Hotel[] = [
     originalPrice: 1200000,
     category: "restaurant",
     isHotDeal: true
+  },
+  {
+    id: "hotel-homestay-vintage",
+    name: "Cánh Diều Homestay Hạ Long",
+    description: "Nằm nép mình bên sườn đồi thoai thoải tại Hòn Gai, Cánh Diều Homestay mang đến không gian lưu trú mộc mạc, yên bình với lối trang trí vintage hoài niệm. Homestay có khoảng sân vườn ngập tràn hoa lá, bếp nấu chung ấm cúng và sân thượng lộng gió ngắm trọn cảnh cầu Bãi Cháy lung linh về đêm.",
+    imageGallery: [
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200",
+      "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200",
+      "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200"
+    ],
+    stars: 4,
+    amenities: [
+      "Sân vườn BBQ",
+      "Bếp nấu tự do",
+      "Sân thượng view cầu",
+      "Xe máy cho thuê",
+      "Máy giặt tự phục vụ"
+    ],
+    location: "Ngõ 5 Hải Long, Hồng Hải, Hòn Gai, Hạ Long",
+    roomCount: 6,
+    roomTypes: [
+      {
+        name: "Phòng Gác Mái Có Ban Công",
+        description: "Không gian gác mái ấm cúng với cửa kính lớn nhìn ra sân vườn và thành phố.",
+        pricePerNight: 550000,
+        capacity: "2 Người lớn",
+        image: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=600"
+      },
+      {
+        name: "Phòng Family Hướng Biển",
+        description: "Phòng gia đình rộng rãi gồm 2 giường đôi lớn, ban công thoáng đãng.",
+        pricePerNight: 950000,
+        capacity: "4 Người lớn, 2 Trẻ em",
+        image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=600"
+      }
+    ],
+    priceFrom: 550000,
+    originalPrice: 700000,
+    category: "homestay",
+    isHotDeal: false
+  },
+  {
+    id: "hotel-homestay-bayview",
+    name: "Bayview Boutique Homestay Hạ Long",
+    description: "Tọa lạc ngay trên con đường bao biển Bãi Cháy tuyệt đẹp, Bayview Homestay sở hữu các căn hộ studio kính tràn viền hướng thẳng ra kỳ quan thiên nhiên. Không gian được decor theo phong cách Scandinavian tối giản nhưng hiện đại, trẻ trung, mang lại những góc check-in sống ảo cực chất cho giới trẻ.",
+    imageGallery: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200"
+    ],
+    stars: 4,
+    amenities: [
+      "Kính sát trần hướng vịnh",
+      "Máy chiếu phim HD",
+      "Smart-lock tự check-in",
+      "Bếp nhỏ trong phòng",
+      "Gần bãi tắm Bãi Cháy"
+    ],
+    location: "Đường Kỳ Quan, Bãi Cháy, Hạ Long",
+    roomCount: 8,
+    roomTypes: [
+      {
+        name: "Studio Standard View Vịnh",
+        description: "Căn hộ kính studio đầy đủ tiện ích bếp, máy chiếu và tầm nhìn trực diện biển Bãi Cháy.",
+        pricePerNight: 750000,
+        capacity: "2 Người lớn",
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=600"
+      }
+    ],
+    priceFrom: 750000,
+    originalPrice: 900000,
+    category: "homestay",
+    isHotDeal: false
   }
 ];
 
@@ -638,5 +726,92 @@ export const mockReviews: Review[] = [
     comment: "Gói combo Trải Nghiệm Kỳ Quan thực sự rất tuyệt vời. Việc kết hợp 1 đêm trên du thuyền Essence Grand và 1 đêm nghỉ dưỡng tại Vinpearl Đảo Rều giúp chúng tôi trải nghiệm trọn vẹn cả biển cả và đất liền Hạ Long mà không phải tự lên lịch trình phức tạp.",
     date: "2026-06-02",
     stayType: "Combo Trải Nghiệm Kỳ Quan"
+  }
+];
+
+export const mockOtherServices: OtherService[] = [
+  {
+    id: "other-car-limo",
+    name: "Xe Limousine Hà Nội - Hạ Long VIP D-Car",
+    type: "car",
+    description: "Dịch vụ xe Limousine D-Car 9 chỗ hạng thương gia đưa đón tận nơi từ Hà Nội đi Hạ Long và ngược lại. Xe chạy đường cao tốc mới cực nhanh, trang bị ghế da cao cấp massage chống mỏi, cổng sạc USB tại mỗi ghế, wifi tốc độ cao và nước uống lạnh miễn phí suốt hành trình.",
+    imageGallery: [
+      "https://ik.imagekit.io/tvlk/image/imageResource/2023/05/05/1683269341367-60e13fd140d9f45eec15a8f62574fff1.jpeg?tr=q-75",
+      "https://bizweb.dktcdn.net/thumb/1024x1024/100/512/250/products/3.jpg?v=1724991306797",
+      "https://bizweb.dktcdn.net/thumb/1024x1024/100/512/250/products/3.jpg?v=1724991306797"
+    ],
+    price: 250000,
+    originalPrice: 300000,
+    rating: 5,
+    summary: "Xe limousine đưa đón tận nơi Hà Nội - Hạ Long",
+    attributes: {
+      seats: 9,
+      carClass: "Limousine Thương Gia",
+      highway: "Cao tốc Hạ Long - Hải Phòng (1.5 - 2h)",
+      amenities: ["Ghế massage", "Cổng sạc USB", "Wifi tốc độ cao", "Nước uống & khăn lạnh"]
+    }
+  },
+  {
+    id: "other-sim-4g",
+    name: "eSIM / SIM 4G Du Lịch Việt Nam Tốc Độ Cao",
+    type: "sim",
+    description: "Sản phẩm SIM/eSIM 4G du lịch tốc độ cao sử dụng hạ tầng mạng lưới VinaPhone/Viettel rộng khắp, đảm bảo kết nối internet thông suốt 24/7 trên Vịnh Hạ Long và toàn quốc. Quý khách nhận SIM trực tiếp tại bến cảng Tuần Châu hoặc quét mã QR kích hoạt eSIM tiện lợi chỉ trong 1 phút.",
+    imageGallery: [
+      "https://ak-d.tripcdn.com/images//0586s12000s2z9cmcBF3A_C_750_422.jpg",
+      "https://images.unsplash.com/photo-1546054454-aa26e2b734c7?q=80&w=1200",
+      "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=1200"
+    ],
+    price: 150000,
+    originalPrice: 200000,
+    rating: 5,
+    summary: "Sim vật lý nhận tại cảng hoặc eSIM kích hoạt online",
+    attributes: {
+      carrier: "VinaPhone / Viettel LTE",
+      dataLimit: "10 GB / Ngày (Hết tốc độ cao hạ xuống 5Mbps)",
+      validity: "15 Ngày sử dụng",
+      activation: "Kích hoạt online qua QR Code (eSIM) hoặc phôi SIM vật lý"
+    }
+  },
+  {
+    id: "other-guide-local",
+    name: "Hướng Dẫn Viên Bản Địa Hạ Long Chuyên Nghiệp",
+    type: "guide",
+    description: "Đội ngũ hướng dẫn viên bản địa trẻ trung, năng động, được cấp thẻ hành nghề quốc tế chuyên nghiệp. HDV am hiểu sâu sắc lịch sử kiến tạo địa chất vịnh Hạ Long, các điểm check-in độc đáo nhất bờ vịnh và văn hóa vạn chài cổ. Đồng hành cùng gia dịch giúp lịch trình khám phá vịnh trọn vẹn và an tâm nhất.",
+    imageGallery: [
+      "https://media.baoquangninh.vn/dataimages/201708/original/images965392_hdv_ha_long_1.jpg",
+      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=1200",
+      "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1200"
+    ],
+    price: 800000,
+    originalPrice: 1000000,
+    rating: 5,
+    summary: "Hướng dẫn viên bản địa am hiểu tuyến điểm vịnh Hạ Long",
+    attributes: {
+      languages: ["Tiếng Việt", "Tiếng Anh (B2+ IELTS)", "Tiếng Trung giao tiếp"],
+      experience: "Trên 3 năm dẫn tour Vịnh",
+      certification: "Thẻ hướng dẫn viên du lịch quốc tế do Bộ VHTT&DL cấp",
+      maxGroupSize: "Phù hợp đoàn từ 2 - 20 người"
+    }
+  },
+  {
+    id: "other-ticket-sunworld",
+    name: "Vé Vui Chơi Công Viên Sun World Hạ Long Complex",
+    type: "ticket",
+    description: "Vé vào cổng trọn gói tổ hợp vui chơi giải trí đẳng cấp thế giới Sun World Hạ Long Complex. Vé bao gồm trải nghiệm cáp treo Nữ Hoàng vượt biển ngắm vịnh từ cabin 2 tầng, vòng quay Sun Wheel khổng lồ trên đồi Huyền Bí, công viên Rồng Dragon Park với các tàu lượn siêu tốc và công viên nước Typhoon Water Park mát lạnh.",
+    imageGallery: [
+      "https://vivuhalong.com/wp-content/uploads/2021/03/Sunword-Ha-Long-12.jpg",
+      "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1200",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200"
+    ],
+    price: 350000,
+    originalPrice: 400000,
+    rating: 5,
+    summary: "Vé vào cổng Sun World Hạ Long Complex quét mã QR tiện lợi",
+    attributes: {
+      ticketType: "Vé điện tử (E-Ticket nhận qua Email/Zalo)",
+      includes: ["Cáp treo Nữ Hoàng", "Khu đồi Huyền Bí", "Vòng quay Mặt Trời Sun Wheel", "Khu vui chơi trong nhà Kidoland"],
+      validity: "Sử dụng đúng ngày đăng ký trên vé",
+      entryMethod: "Quét mã QR trực tiếp tại cổng kiểm soát (Không cần xếp hàng đổi vé)"
+    }
   }
 ];

@@ -26,7 +26,7 @@ import CustomDropdown from "@/components/CustomDropdown";
 
 interface DisplayProduct {
   id: string;
-  type: "cruise" | "hotel" | "combo";
+  type: "cruise" | "hotel" | "combo" | "restaurant" | "other";
   name: string;
   tagline?: string;
   image: string;
@@ -96,6 +96,7 @@ function SearchListContent() {
     { value: "cruise", label: "Du thuyền" },
     { value: "hotel", label: "Khách sạn" },
     { value: "villa", label: "Villa" },
+    { value: "homestay", label: "Homestay" },
     { value: "restaurant", label: "Nhà hàng" },
   ];
 
@@ -172,7 +173,7 @@ function SearchListContent() {
     mockHotels.forEach((h) => {
       list.push({
         id: h.id,
-        type: "hotel",
+        type: h.category === "restaurant" ? "restaurant" : "hotel",
         name: h.name,
         tagline: h.description,
         image: h.imageGallery[0],

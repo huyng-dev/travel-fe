@@ -33,22 +33,22 @@ export default function Footer() {
           </h3>
           <ul className="space-y-2.5 text-xs">
             <li>
-              <Link href="/cruises" className="hover:text-accent transition-colors duration-200">
+              <Link href="/stays?category=cruise" className="hover:text-accent transition-colors duration-200">
                 Du thuyền Hạ Long
               </Link>
             </li>
             <li>
-              <Link href="/stays-dining?category=hotel" className="hover:text-accent transition-colors duration-200">
+              <Link href="/stays?category=hotel" className="hover:text-accent transition-colors duration-200">
                 Khách sạn & Resort
               </Link>
             </li>
             <li>
-              <Link href="/stays-dining?category=villa" className="hover:text-accent transition-colors duration-200">
+              <Link href="/stays?category=villa" className="hover:text-accent transition-colors duration-200">
                 Biệt thự & Villa
               </Link>
             </li>
             <li>
-              <Link href="/stays-dining?category=restaurant" className="hover:text-accent transition-colors duration-200">
+              <Link href="/dining-culture?category=restaurant" className="hover:text-accent transition-colors duration-200">
                 Nhà hàng & Ẩm thực
               </Link>
             </li>

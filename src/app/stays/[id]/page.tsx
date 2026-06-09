@@ -393,9 +393,9 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
         <Navbar solid />
         <div className="min-h-[70vh] flex flex-col items-center justify-center bg-white px-6">
           <Building2 className="w-16 h-16 text-accent animate-pulse mb-4" />
-          <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy khách sạn</h2>
-          <p className="text-sm text-slate-500 mb-6">Đường dẫn không tồn tại hoặc khách sạn đã ngừng hoạt động.</p>
-          <Link href="/stays-dining" className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all">
+          <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy nơi lưu trú</h2>
+          <p className="text-sm text-slate-500 mb-6">Đường dẫn không tồn tại hoặc nơi lưu trú đã ngừng hoạt động.</p>
+          <Link href="/stays" className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all">
             Quay lại danh sách
           </Link>
         </div>
@@ -414,43 +414,46 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
 
   const activeRoom = selectedRoomIdx !== null ? mockRooms[selectedRoomIdx as number] : null;
 
-  const isRestaurant = hotel.category === "restaurant";
+  const isRestaurant = false;
   const isVilla = hotel.category === "villa";
+  const isHomestay = hotel.category === "homestay";
 
   const labels = {
-    subTitle: isRestaurant ? "Thực đơn & Không gian dùng bữa đặc sắc" : isVilla ? "Không gian biệt thự nghỉ dưỡng sang trọng" : "Không gian nghỉ ngơi tuyệt mỹ và dịch vụ đẳng cấp",
-    tabRooms: isRestaurant ? "Thực đơn" : isVilla ? "Hạng biệt thự" : "Hạng phòng",
-    ctaBook: isRestaurant ? "Đặt bàn ngay" : isVilla ? "Đặt biệt thự ngay" : "Đặt phòng ngay",
-    sectionTitle: isRestaurant ? "SET THỰC ĐƠN & BÀN TIỆC" : isVilla ? "CÁC HẠNG BIỆT THỰ" : "CÁC HẠNG PHÒNG",
-    detailDrawerTitle: isRestaurant ? "Chi tiết set thực đơn" : isVilla ? "Chi tiết căn biệt thự" : "Chi tiết hạng phòng",
-    roomPlanLabel: isRestaurant ? "Ảnh minh họa" : isVilla ? "Sơ đồ biệt thự" : "Sơ đồ phòng",
-    specsTitle: isRestaurant ? "THÔNG TIN NHÀ HÀNG" : isVilla ? "THÔNG TIN BIỆT THỰ" : "THÔNG TIN KHÁCH SẠN",
-    specsTotalRooms: isRestaurant ? "SỨC CHỨA TỐI ĐA" : isVilla ? "TỔNG SỐ CĂN" : "TỔNG SỐ PHÒNG",
-    specsTotalRoomsVal: isRestaurant ? "Lên đến 500 khách" : `${hotel.roomCount} căn`,
-    specsTypeLabel: isRestaurant ? "MÔ HÌNH" : "TIÊU CHUẨN",
-    specsTypeVal: isRestaurant ? "Nhà hàng Hải sản" : `${hotel.stars} sao`,
-    capacityLabel: isRestaurant ? "Dành cho:" : "Sức chứa:",
-    bookingTitle: isRestaurant ? "ĐĂNG KÝ YÊU CẦU ĐẶT BÀN" : isVilla ? "ĐĂNG KÝ YÊU CẦU ĐẶT BIỆT THỰ" : "ĐĂNG KÝ YÊU CẦU ĐẶT PHÒNG",
-    bookingHeader: isRestaurant ? "Đặt bàn ẩm thực" : isVilla ? "Đặt biệt thự nghỉ dưỡng" : "Đặt phòng khách sạn",
-    dateLabel: isRestaurant ? "Ngày dùng bữa *" : isVilla ? "Ngày nhận biệt thự *" : "Ngày nhận phòng *",
-    checkoutLabel: isRestaurant ? "" : isVilla ? "Ngày trả biệt thự *" : "Ngày trả phòng *",
-    passengerLabel: isRestaurant ? "Số khách dùng bữa" : "Số lượng khách nghỉ",
-    selectItemLabel: isRestaurant ? "Chọn Set Menu & Số lượng" : isVilla ? "Chọn loại biệt thự & số lượng" : "Chọn loại phòng & số lượng",
-    submitBookingBtn: isRestaurant ? "Gửi yêu cầu đặt bàn" : isVilla ? "Gửi yêu cầu đặt biệt thự" : "Gửi yêu cầu đặt phòng",
-    summaryTitle: isRestaurant ? "Báo giá tạm tính" : "Báo giá tạm tính",
-    summaryItemLabel: isRestaurant ? "Thực đơn đã chọn:" : "Danh sách phòng:",
-    summaryFirstLabel: isRestaurant ? "Nhà hàng:" : isVilla ? "Biệt thự:" : "Khách sạn:",
-    priceUnit: isRestaurant ? "/ suất" : "/ đêm",
-    priceUnitLong: isRestaurant ? "/ suất ăn" : "/ đêm phòng",
-    estimateAlert: isRestaurant 
-      ? "* Giá ước tính tính theo giá trị set menu cơ bản, chưa bao gồm nước uống, phụ thu phòng VIP hoặc dịch vụ đi kèm khác."
-      : "* Giá ước tính trên tính theo số đêm lưu trú, chưa bao gồm phụ thu trẻ em, cuối tuần, ngày lễ hoặc dịch vụ xe đưa đón. Tư vấn viên TRAVEL sẽ liên hệ sớm nhất.",
-    suggestedTitle: isRestaurant ? "GỢI Ý CÁC NHÀ HÀNG KHÁC" : isVilla ? "GỢI Ý CÁC BIỆT THỰ KHÁC" : "GỢI Ý CÁC KHÁCH SẠN KHÁC",
-    drawerHeaderSubtitle: isRestaurant ? "Thực đơn ẩm thực" : isVilla ? "Hạng biệt thự" : "Hạng phòng & Suites",
-    drawerCapacityLabel: isRestaurant ? "Dành cho" : "Sức chứa",
-    priceFromLabel: isRestaurant ? "Giá thực đơn từ" : isVilla ? "Giá biệt thự từ" : "Giá phòng từ",
-    drawerBookBtn: isRestaurant ? "Đặt thực đơn này" : isVilla ? "Đặt biệt thự này" : "Đặt phòng này",
-    bookingNotesPlaceholder: isRestaurant ? "Ví dụ: Yêu cầu bàn gần cửa sổ, không gian yên tĩnh, dị ứng thực phẩm..." : isVilla ? "Ví dụ: Biệt thự gần biển, nhận biệt thự trễ..." : "Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..."
+    subTitle: isVilla 
+      ? "Không gian biệt thự nghỉ dưỡng sang trọng" 
+      : isHomestay 
+        ? "Không gian homestay gần gũi, ấm cúng bên bờ vịnh" 
+        : "Không gian nghỉ ngơi tuyệt mỹ và dịch vụ đẳng cấp",
+    tabRooms: isVilla ? "Hạng biệt thự" : isHomestay ? "Hạng homestay" : "Hạng phòng",
+    ctaBook: isVilla ? "Đặt biệt thự ngay" : isHomestay ? "Đặt homestay ngay" : "Đặt phòng ngay",
+    sectionTitle: isVilla ? "CÁC HẠNG BIỆT THỰ" : isHomestay ? "CÁC HẠNG HOMESTAY" : "CÁC HẠNG PHÒNG",
+    detailDrawerTitle: isVilla ? "Chi tiết căn biệt thự" : isHomestay ? "Chi tiết homestay" : "Chi tiết hạng phòng",
+    roomPlanLabel: isVilla ? "Sơ đồ biệt thự" : isHomestay ? "Ảnh góc chụp" : "Sơ đồ phòng",
+    specsTitle: isVilla ? "THÔNG TIN BIỆT THỰ" : isHomestay ? "THÔNG TIN HOMESTAY" : "THÔNG TIN KHÁCH SẠN",
+    specsTotalRooms: isVilla ? "TỔNG SỐ CĂN" : isHomestay ? "SỐ PHÒNG NGHỈ" : "TỔNG SỐ PHÒNG",
+    specsTotalRoomsVal: isVilla ? `${hotel.roomCount} căn` : isHomestay ? `${hotel.roomCount} phòng` : `${hotel.roomCount} phòng`,
+    specsTypeLabel: isHomestay ? "LOẠI HÌNH" : "TIÊU CHUẨN",
+    specsTypeVal: isHomestay ? "Homestay Boutique" : `${hotel.stars} sao`,
+    capacityLabel: "Sức chứa:",
+    bookingTitle: isVilla ? "ĐĂNG KÝ YÊU CẦU ĐẶT BIỆT THỰ" : isHomestay ? "ĐĂNG KÝ YÊU CẦU ĐẶT HOMESTAY" : "ĐĂNG KÝ YÊU CẦU ĐẶT PHÒNG",
+    bookingHeader: isVilla ? "Đặt biệt thự nghỉ dưỡng" : isHomestay ? "Đặt homestay ấm cúng" : "Đặt phòng khách sạn",
+    dateLabel: isVilla ? "Ngày nhận biệt thự *" : isHomestay ? "Ngày nhận homestay *" : "Ngày nhận phòng *",
+    checkoutLabel: isVilla ? "Ngày trả biệt thự *" : isHomestay ? "Ngày trả homestay *" : "Ngày trả phòng *",
+    passengerLabel: "Số lượng khách nghỉ",
+    selectItemLabel: isVilla ? "Chọn loại biệt thự & số lượng" : isHomestay ? "Chọn loại homestay & số lượng" : "Chọn loại phòng & số lượng",
+    submitBookingBtn: isVilla ? "Gửi yêu cầu đặt biệt thự" : isHomestay ? "Gửi yêu cầu đặt homestay" : "Gửi yêu cầu đặt phòng",
+    summaryTitle: "Báo giá tạm tính",
+    summaryItemLabel: "Danh sách phòng:",
+    summaryFirstLabel: isVilla ? "Biệt thự:" : isHomestay ? "Homestay:" : "Khách sạn:",
+    priceUnit: "/ đêm",
+    priceUnitLong: "/ đêm phòng",
+    estimateAlert: "* Giá ước tính trên tính theo số đêm lưu trú, chưa bao gồm phụ thu trẻ em, cuối tuần, ngày lễ hoặc dịch vụ xe đưa đón. Tư vấn viên TRAVEL sẽ liên hệ sớm nhất.",
+    suggestedTitle: isVilla ? "GỢI Ý CÁC BIỆT THỰ KHÁC" : isHomestay ? "GỢI Ý CÁC HOMESTAY KHÁC" : "GỢI Ý CÁC KHÁCH SẠN KHÁC",
+    drawerHeaderSubtitle: isVilla ? "Hạng biệt thự" : isHomestay ? "Hạng homestay" : "Hạng phòng & Suites",
+    drawerCapacityLabel: "Sức chứa",
+    priceFromLabel: isVilla ? "Giá biệt thự từ" : isHomestay ? "Giá homestay từ" : "Giá phòng từ",
+    drawerBookBtn: isVilla ? "Đặt biệt thự này" : isHomestay ? "Đặt homestay này" : "Đặt phòng này",
+    bookingNotesPlaceholder: isVilla ? "Ví dụ: Biệt thự gần biển, nhận biệt thự trễ..." : isHomestay ? "Ví dụ: Phòng tầng cao, nhận phòng trễ, dịch vụ thuê xe máy..." : "Ví dụ: Phòng tầng cao, 2 giường đơn ghép lại, nhận phòng trễ..."
   };
 
 
@@ -505,7 +508,7 @@ export default function HotelDetailPage({ params }: { params: Promise<{ id: stri
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
-            <Link href="/stays-dining" className="hover:text-[#001226]">Lưu trú & Ẩm thực</Link>
+            <Link href="/stays" className="hover:text-[#001226]">Lưu trú</Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
             <span className="text-slate-800">{hotel.name}</span>
           </div>

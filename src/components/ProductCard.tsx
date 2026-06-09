@@ -7,7 +7,7 @@ import { Star, MapPin, ArrowRight } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
-  type: "cruise" | "hotel" | "combo";
+  type: "cruise" | "hotel" | "combo" | "restaurant" | "other";
   name: string;
   tagline?: string;
   image: string;
@@ -81,11 +81,19 @@ export default function ProductCard({
         case "cruise": return "Du thuyền";
         case "hotel": return "Khách sạn";
         case "villa": return "Villa";
+        case "homestay": return "Homestay";
         case "restaurant": return "Nhà hàng";
+        case "car": return "Xe đưa đón";
+        case "sim": return "Sim du lịch";
+        case "guide": return "Hướng dẫn viên";
+        case "ticket": return "Vé tham quan";
         default: return category;
       }
     }
-    return type === "cruise" ? "Du thuyền" : "Khách sạn";
+    if (type === "cruise") return "Du thuyền";
+    if (type === "restaurant") return "Nhà hàng";
+    if (type === "other") return "Dịch vụ khác";
+    return "Khách sạn";
   };
 
   const cardContent = (
@@ -162,7 +170,7 @@ export default function ProductCard({
         </div>
 
         {/* Highlighted Amenities */}
-        {amenities && amenities.length > 0 && (
+        {type !== "other" && amenities && amenities.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
             {amenities.slice(0, isDetailed ? 4 : 2).map((amenity, i) => (
               <span
@@ -218,8 +226,13 @@ export default function ProductCard({
 
   const isList = viewMode === "list";
 
-  if (type === "cruise" || type === "hotel" || type === "combo") {
-    const routePrefix = type === "cruise" ? "cruises" : type === "hotel" ? "stays-dining" : "combos";
+  if (type === "cruise" || type === "hotel" || type === "combo" || type === "restaurant" || type === "other") {
+    const routePrefix = 
+      type === "cruise" ? "cruises" : 
+      type === "hotel" ? "stays" : 
+      type === "restaurant" ? "dining-culture" :
+      type === "combo" ? "combos" :
+      "other-services";
     return (
       <Link
         href={`/${routePrefix}/${id}`}

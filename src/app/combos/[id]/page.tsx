@@ -496,7 +496,7 @@ export default function ComboDetailPage({ params }: { params: Promise<{ id: stri
 
                 {/* Hotel Inclusion */}
                 <Link
-                  href={`/stays-dining/${hotelObj.id}`}
+                  href={hotelObj.category === "restaurant" ? `/dining-culture/${hotelObj.id}` : `/stays/${hotelObj.id}`}
                   className="bg-slate-50 border border-slate-200/60 rounded-lg p-6 space-y-4 shadow-xs hover:border-accent/40 hover:shadow-md transition-all duration-300 block group"
                 >
                   <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-3">

@@ -13,7 +13,7 @@ import SearchWidget from "@/components/SearchWidget";
 import LatestBlogs from "@/components/LatestBlogs";
 import CustomDropdown from "@/components/CustomDropdown";
 
-function StaysDiningContent() {
+function DiningCultureContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -37,14 +37,13 @@ function StaysDiningContent() {
     } else {
       params.set("category", tabValue);
     }
-    router.push(`/stays-dining?${params.toString()}`, { scroll: false });
+    router.push(`/dining-culture?${params.toString()}`, { scroll: false });
   };
 
   const tabOptions = [
     { value: "all", label: "Tất cả" },
-    { value: "hotel", label: "Khách sạn" },
-    { value: "villa", label: "Villa" },
     { value: "restaurant", label: "Nhà hàng" },
+    { value: "culture", label: "Trải nghiệm văn hoá" },
   ];
 
   const sortOptions = [
@@ -55,6 +54,7 @@ function StaysDiningContent() {
 
   // Logic lọc
   const filteredHotels = mockHotels.filter((hotel) => {
+    if (hotel.category !== "restaurant" && hotel.category !== "culture") return false;
     if (categoryQuery !== "all") {
       if (hotel.category !== categoryQuery) return false;
     }
@@ -74,7 +74,7 @@ function StaysDiningContent() {
       {/* 1. HERO BANNER */}
       <div className="relative h-[560px] md:h-[480px] w-full flex items-center justify-center bg-slate-900 z-30">
         <img
-          src="https://cdn3.ivivu.com/2023/06/Kh%C3%A1ch-s%E1%BA%A1n-Sol-H%E1%BA%A1-Long-ivivu.jpg"
+          src="https://nhahangngocphuongnam.com/wp-content/uploads/2025/07/nha-hang-ngoc-phuong-nam-view-vinpearl-ha-long.jpg"
           alt="Hotels Banner"
           className="absolute inset-0 w-full h-full object-cover opacity-50"
         />
@@ -87,21 +87,20 @@ function StaysDiningContent() {
               Trang chủ
             </Link>
             <ChevronRight className="w-3 h-3 text-white/40" />
-            <span className="text-white/90">Lưu trú & Ẩm thực</span>
+            <span className="text-white/90">Ẩm thực & Trải nghiệm</span>
           </div>
         </div>
 
         <div className="relative z-10 text-center text-white space-y-4 px-6 w-full max-w-6xl mt-32">
           <span className="text-[10px] md:text-xs tracking-[0.3em] uppercase text-accent font-semibold hidden md:block">
-            Nghỉ Dưỡng & Tận Hưởng
+            Ẩm Thực & Trải Nghiệm Văn Hoá
           </span>
           <h1 className="font-serif text-3xl md:text-4xl tracking-wide font-normal max-w-3xl mx-auto leading-tight">
-            KHÔNG GIAN NGHỈ DƯỠNG & ẨM THỰC TINH TẾ
+            TINH HOA ẨM THỰC & TRẢI NGHIỆM ĐỘC BẢN
           </h1>
 
-          
           <div className="max-w-6xl mx-auto w-full mt-6">
-            <SearchWidget initialCategory={["hotel", "villa", "restaurant"].includes(categoryQuery) ? categoryQuery : "hotel"} />
+            <SearchWidget initialCategory="restaurant" />
           </div>
         </div>
       </div>
@@ -178,7 +177,7 @@ function StaysDiningContent() {
                   <ProductCard
                     key={hotel.id}
                     id={hotel.id}
-                    type="hotel"
+                    type="restaurant"
                     name={hotel.name}
                     tagline={hotel.location.split(",").slice(-2).join(",").trim()}
                     image={hotel.imageGallery[0]}
@@ -223,12 +222,12 @@ function StaysDiningContent() {
               <div className="space-y-4">
                 <span className="text-[10px] uppercase tracking-[0.3em] text-accent font-bold">Về chúng tôi</span>
                 <h2 className="font-serif text-3xl md:text-4xl text-slate-900 leading-tight">
-                  Nâng Tầm Trải Nghiệm <br /> Nghỉ Dưỡng Tại Hạ Long
+                  Tinh Hoa Ẩm Thực <br /> Bên Bờ Kỳ Quan Thiên Nhiên
                 </h2>
                 <p className="text-sm text-slate-600 leading-relaxed max-w-xl">
-                  Halong Travel Desk tự hào mang đến bộ sưu tập những không gian lưu trú và ẩm thực chất lượng hàng đầu bên bờ kỳ quan. 
-                  Từ những khách sạn đầy đủ tiện nghi, biệt thự nghỉ dưỡng ấm cúng đến những nhà hàng hải sản đặc sắc, 
-                  mỗi lựa chọn đều được chúng tôi chuẩn bị kỹ lưỡng để đảm bảo sự hài lòng và thoải mái nhất cho quý khách.
+                  Halong Travel Desk tự hào giới thiệu những địa điểm ẩm thực đặc sắc và những chương trình trải nghiệm văn hoá độc đáo tại Hạ Long. 
+                  Từ những nhà hàng hải sản tươi sống được chế biến công phu đến những nét đẹp văn hóa truyền thống vạn chài, 
+                  mỗi dịch vụ đều mang lại dấu ấn khó phai trong hành trình khám phá di sản của quý khách.
                 </p>
               </div>
 
@@ -274,13 +273,13 @@ function StaysDiningContent() {
   );
 }
 
-export default function StaysDiningPage() {
+export default function DiningCulturePage() {
   return (
     <>
       <Navbar />
       <main className="flex-grow pt-0 bg-white">
         <Suspense fallback={<div className="min-h-[70vh] flex items-center justify-center bg-white"><div className="w-10 h-10 border-[3px] border-accent border-t-transparent rounded-full animate-spin" /></div>}>
-          <StaysDiningContent />
+          <DiningCultureContent />
         </Suspense>
         <LatestBlogs />
       </main>

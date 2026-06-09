@@ -28,10 +28,10 @@ export default function FloatingContact() {
       external: true,
     },
     {
-      name: "Viber",
-      icon: <Image src="/viber.svg" alt="Viber" width={30} height={30} className="select-none" />,
-      href: "https://viber.click/0901234567",
-      tooltip: "Viber",
+      name: "Whatsapp",
+      icon: <Image src="/whatsapp.svg" alt="Whatsapp" width={30} height={30} className="select-none" />,
+      href: "https://wa.me/840901234567",
+      tooltip: "Whatsapp",
       external: true,
     },
   ];

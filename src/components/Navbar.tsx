@@ -13,7 +13,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   // States cho Dropdown hover trên desktop
-  const [hoveredMenu, setHoveredMenu] = useState<"cruise" | "hotel" | null>(null);
+  const [hoveredMenu, setHoveredMenu] = useState<"stay" | "other" | null>(null);
 
   // State cho mobile menu
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -48,22 +48,31 @@ export default function Navbar({ solid = false }: NavbarProps) {
     };
   }, [isMobileOpen]);
 
-  // Cấu trúc dữ liệu cho Dropdown dọc đơn giản (OTA Style) - combo và du thuyền đã bỏ dropdown
+  // Cấu trúc dữ liệu cho Dropdown dọc đơn giản
   const menuDropdowns = {
-    hotel: [
-      { label: "Khách sạn & Resort", href: "/stays-dining?category=hotel" },
-      { label: "Biệt thự & Villa", href: "/stays-dining?category=villa" },
-      { label: "Nhà hàng & Ẩm thực", href: "/stays-dining?category=restaurant" },
-      { label: "Xem tất cả", href: "/stays-dining", isBold: true }
+    stay: [
+      { label: "Du thuyền", href: "/stays?category=cruise" },
+      { label: "Khách sạn", href: "/stays?category=hotel" },
+      { label: "Biệt thự & Villa", href: "/stays?category=villa" },
+      { label: "Homestay", href: "/stays?category=homestay" },
+      { label: "Tất cả lưu trú", href: "/stays", isBold: true }
+    ],
+    other: [
+      { label: "Thuê xe đưa đón", href: "/other-services?category=car" },
+      { label: "Sim du lịch", href: "/other-services?category=sim" },
+      { label: "Hướng dẫn viên bản địa", href: "/other-services?category=guide" },
+      { label: "Vé tham quan", href: "/other-services?category=ticket" },
+      { label: "Tất cả dịch vụ khác", href: "/other-services", isBold: true }
     ]
   };
 
   const navMenus = [
     { key: "hot-deal" as const, label: "Hot Deals", path: "/hot-deal" },
-    { key: "cruise" as const, label: "Du thuyền", path: "/cruises" },
-    { key: "hotel" as const, label: "Lưu trú & Ẩm thực", path: "/stays-dining" },
     { key: "combo" as const, label: "Combo", path: "/combos" },
-    { key: "blog" as const, label: "Blog", path: "/blogs" }
+    { key: "stay" as const, label: "Lưu trú", path: "/stays" },
+    { key: "dining-culture" as const, label: "Ẩm thực & Trải nghiệm", path: "/dining-culture" },
+    { key: "other" as const, label: "Dịch vụ khác", path: "/other-services" },
+    // { key: "blog" as const, label: "Blog", path: "/blogs" }
   ];
 
   return (
@@ -98,8 +107,8 @@ export default function Navbar({ solid = false }: NavbarProps) {
                   key={menu.key}
                   className="relative"
                   onMouseEnter={() => {
-                    if (menu.key === "hotel") {
-                      setHoveredMenu("hotel");
+                    if (menu.key === "stay" || menu.key === "other") {
+                      setHoveredMenu(menu.key);
                     }
                   }}
                   onMouseLeave={() => setHoveredMenu(null)}
@@ -121,9 +130,9 @@ export default function Navbar({ solid = false }: NavbarProps) {
                     }`} />
                   </Link>
 
-                  {/* Dropdown panel on Hover (Vertical Single Column style) */}
+                  {/* Dropdown panel on Hover */}
                   <AnimatePresence>
-                    {menu.key === "hotel" && hoveredMenu === "hotel" && (
+                    {(menu.key === "stay" || menu.key === "other") && hoveredMenu === menu.key && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -132,7 +141,7 @@ export default function Navbar({ solid = false }: NavbarProps) {
                         className="absolute left-0 top-full pt-2 z-50 text-slate-800 text-left"
                       >
                         <div className="w-60 bg-white border border-slate-100 shadow-2xl rounded-xl p-2 flex flex-col gap-0.5">
-                          {menuDropdowns.hotel.map((lnk, lIdx) => (
+                          {menuDropdowns[menu.key].map((lnk, lIdx) => (
                             <React.Fragment key={lIdx}>
                               {lnk.isBold && <div className="h-[1px] bg-slate-100 my-1.5" />}
                               <Link

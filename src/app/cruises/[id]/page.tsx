@@ -498,10 +498,10 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
             </Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
             <Link
-              href="/cruises"
+              href="/stays"
               className="hover:text-[#001226]"
             >
-              Du thuyền
+              Lưu trú
             </Link>
             <ChevronRight className="w-3 h-3 text-slate-300" />
             <span className="text-slate-800">{cruise.name}</span>

@@ -78,7 +78,11 @@ export default function SearchWidget({
   const allSearchItems = [
     ...mockCombos.map(cb => ({ id: cb.id, name: cb.name, type: "combo", path: `/combos/${cb.id}` })),
     ...mockCruises.map(c => ({ id: c.id, name: c.name, type: "cruise", path: `/cruises/${c.id}` })),
-    ...mockHotels.map(h => ({ id: h.id, name: h.name, type: h.category || "hotel", path: `/stays-dining/${h.id}` }))
+    ...mockHotels.map(h => {
+      const isDining = h.category === "restaurant" || h.category === "culture";
+      const routePrefix = isDining ? "dining-culture" : "stays";
+      return { id: h.id, name: h.name, type: h.category || "hotel", path: `/${routePrefix}/${h.id}` };
+    })
   ];
 
   const suggestions = keyword.trim()
@@ -90,6 +94,7 @@ export default function SearchWidget({
       case "cruise": return { label: "Du thuyền", className: "bg-blue-50 text-blue-700 border-blue-100" };
       case "hotel": return { label: "Khách sạn", className: "bg-teal-50 text-teal-700 border-teal-100" };
       case "villa": return { label: "Villa", className: "bg-indigo-50 text-indigo-700 border-indigo-100" };
+      case "homestay": return { label: "Homestay", className: "bg-rose-50 text-rose-700 border-rose-100" };
       case "restaurant": return { label: "Nhà hàng", className: "bg-amber-50 text-amber-700 border-amber-100" };
       case "combo": return { label: "Combo", className: "bg-purple-50 text-purple-700 border-purple-100" };
       default: return { label: "Dịch vụ", className: "bg-slate-50 text-slate-700 border-slate-100" };
@@ -143,6 +148,7 @@ export default function SearchWidget({
     { value: "cruise", label: "Du thuyền" },
     { value: "hotel", label: "Khách sạn" },
     { value: "villa", label: "Villa" },
+    { value: "homestay", label: "Homestay" },
     { value: "restaurant", label: "Nhà hàng" },
   ];
 
