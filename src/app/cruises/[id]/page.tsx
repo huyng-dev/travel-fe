@@ -228,7 +228,7 @@ export default function CruiseDetailPage({ params }: { params: Promise<{ id: str
           <h2 className="font-serif text-2xl font-bold text-slate-900 mb-2">Không tìm thấy du thuyền</h2>
           <p className="text-sm text-slate-500 mb-6">Đường dẫn không tồn tại hoặc du thuyền đã bị gỡ bỏ.</p>
           <Link
-            href="/cruises"
+            href="/stays"
             className="px-6 py-2.5 bg-[#001226] text-white hover:bg-accent hover:text-[#001226] text-xs uppercase tracking-widest font-bold rounded-full transition-all"
           >
             Quay lại danh sách

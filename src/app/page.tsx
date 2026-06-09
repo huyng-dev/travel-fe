@@ -225,7 +225,7 @@ export default function Home() {
               {/* Quick suggestion tags to make search area stand out */}
               <div className="md:flex hidden flex-wrap items-center justify-center gap-3 text-xs text-white/95 font-semibold backdrop-blur-md bg-slate-900/40 px-5 py-2 translate-y-1/2 rounded-full border border-white/15 shadow-xl select-none">
                 <span className="text-[10px] uppercase tracking-widest text-accent font-extrabold">Gợi ý tìm kiếm:</span>
-                <Link href="/cruises" className="hover:text-accent text-white transition-colors duration-300">#Du thuyền 5 sao</Link>
+                <Link href="/stays?category=cruise" className="hover:text-accent text-white transition-colors duration-300">#Du thuyền 5 sao</Link>
                 <span className="text-white/20">|</span>
                 <Link href="/stays?category=hotel" className="hover:text-accent text-white transition-colors duration-300">#Khách sạn sang trọng</Link>
                 <span className="text-white/20">|</span>
